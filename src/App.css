@@ -1,0 +1,11 @@
+/* App-level styles — keep minimal, everything else is in index.css or component CSS */
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+main {
+  flex: 1;
+}

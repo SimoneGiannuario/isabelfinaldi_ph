@@ -1,0 +1,26 @@
+.footer {
+  padding: var(--space-2xl) 0;
+  border-top: 1px solid var(--color-border);
+  text-align: center;
+}
+
+.footer p {
+  font-size: 0.85rem;
+  color: var(--color-text-muted);
+  font-weight: 300;
+  margin-top: var(--space-sm);
+}
+
+.footer .nav-logo {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-text);
+  text-decoration: none;
+  display: inline-block;
+  margin-bottom: var(--space-sm);
+}
+
+.footer .nav-logo span {
+  color: var(--color-accent);
+}
