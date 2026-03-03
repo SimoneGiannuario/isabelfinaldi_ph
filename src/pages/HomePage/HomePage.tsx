@@ -15,6 +15,7 @@ export default function HomePage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    document.title = "Isabel Finaldi — Fotografa | Portfolio";
   }, []);
 
   return (
@@ -140,7 +141,7 @@ export default function HomePage() {
               className="contact-form reveal"
               onSubmit={(e) => {
                 e.preventDefault();
-                alert(t.lang === "it" ? "Messaggio inviato! (Demo)" : "Message sent! (Demo)");
+                alert("Message sent! (Demo)");
               }}
             >
               <div className="form-group">
@@ -163,12 +164,14 @@ export default function HomePage() {
         </div>
       </section>
 
-      {lightbox.open && (
+      {lightbox.isOpen && (
         <Lightbox
           photo={lightbox.currentPhoto}
           onClose={lightbox.close}
           onPrev={() => lightbox.navigate(-1)}
           onNext={() => lightbox.navigate(1)}
+          currentIndex={lightbox.index + 1}
+          totalPhotos={featured.length}
         />
       )}
     </>

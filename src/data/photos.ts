@@ -1,7 +1,9 @@
 // Photo data — edit this to add/update/remove photos
-export const CATEGORIES = ["Portrait", "Landscape", "Street", "Events", "Creative"];
+import type { Photo } from "../types/photo";
 
-export const PHOTOS = [
+export const CATEGORIES: string[] = ["Portrait", "Landscape", "Street", "Events", "Creative"];
+
+export const PHOTOS: Photo[] = [
   {
     id: 1,
     src: "images/portrait_golden_hour.png",
@@ -136,16 +138,16 @@ export const PHOTOS = [
   },
 ];
 
-export function getFeaturedPhotos() {
+export function getFeaturedPhotos(): Photo[] {
   return getAllPhotos().filter((p) => p.featured).sort((a, b) => b.votes - a.votes);
 }
 
-export function getUniqueValues(key) {
+export function getUniqueValues(key: keyof Photo): (string | number | boolean)[] {
   const values = getAllPhotos().map((p) => p[key]).filter((v) => v !== null && v !== undefined);
-  return [...new Set(values)].sort();
+  return [...new Set(values as (string | number | boolean)[])].sort() as (string | number | boolean)[];
 }
 
-export function formatDate(dateStr) {
+export function formatDate(dateStr: string): string {
   const months = ["Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic"];
   const d = new Date(dateStr);
   return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
@@ -154,8 +156,8 @@ export function formatDate(dateStr) {
 // ── Custom photo persistence (localStorage) ───────────────────────────────────
 const LS_CUSTOM = "isf_custom_photos";
 
-export function getCustomPhotos() {
-  try { return JSON.parse(localStorage.getItem(LS_CUSTOM)) ?? []; }
+export function getCustomPhotos(): Photo[] {
+  try { return JSON.parse(localStorage.getItem(LS_CUSTOM) ?? "[]") as Photo[]; }
   catch { return []; }
 }
 
@@ -163,32 +165,32 @@ export function getCustomPhotos() {
 // Keyed by photo id so only changed fields are stored.
 const LS_STATIC_OVERRIDES = "isf_static_overrides";
 
-export function getStaticOverrides() {
-  try { return JSON.parse(localStorage.getItem(LS_STATIC_OVERRIDES)) ?? {}; }
+export function getStaticOverrides(): Record<string | number, Partial<Photo>> {
+  try { return JSON.parse(localStorage.getItem(LS_STATIC_OVERRIDES) ?? "{}") as Record<string | number, Partial<Photo>>; }
   catch { return {}; }
 }
 
-export function updateStaticOverride(id, updates) {
+export function updateStaticOverride(id: number | string, updates: Partial<Photo>): void {
   const all = getStaticOverrides();
   all[id] = { ...(all[id] ?? {}), ...updates };
   localStorage.setItem(LS_STATIC_OVERRIDES, JSON.stringify(all));
 }
 
-export function resetStaticOverride(id) {
+export function resetStaticOverride(id: number | string): void {
   const all = getStaticOverrides();
   delete all[id];
   localStorage.setItem(LS_STATIC_OVERRIDES, JSON.stringify(all));
 }
 
 // ── Merged photo list ─────────────────────────────────────────────────────────
-const BASE = import.meta.env.BASE_URL;
+const BASE = import.meta.env.BASE_URL as string;
 
-function withBase(photo) {
+function withBase(photo: Photo): Photo {
   if (!photo.src || photo.src.startsWith("data:") || photo.src.startsWith(BASE)) return photo;
   return { ...photo, src: `${BASE}${photo.src}` };
 }
 
-export function getAllPhotos() {
+export function getAllPhotos(): Photo[] {
   const overrides = getStaticOverrides();
   const staticWithOverrides = PHOTOS.map((p) =>
     overrides[p.id] ? { ...p, ...overrides[p.id] } : p
@@ -196,20 +198,19 @@ export function getAllPhotos() {
   return [...staticWithOverrides, ...getCustomPhotos()].map(withBase);
 }
 
-export function saveCustomPhoto(photo) {
+export function saveCustomPhoto(photo: Omit<Photo, "id" | "custom">): Photo {
   const existing = getCustomPhotos();
-  const newPhoto = { ...photo, id: `custom_${Date.now()}`, custom: true };
+  const newPhoto: Photo = { ...photo, id: `custom_${Date.now()}`, custom: true };
   localStorage.setItem(LS_CUSTOM, JSON.stringify([...existing, newPhoto]));
   return newPhoto;
 }
 
-export function updateCustomPhoto(id, updates) {
+export function updateCustomPhoto(id: string | number, updates: Partial<Photo>): void {
   const updated = getCustomPhotos().map((p) => p.id === id ? { ...p, ...updates } : p);
   localStorage.setItem(LS_CUSTOM, JSON.stringify(updated));
 }
 
-export function deleteCustomPhoto(id) {
+export function deleteCustomPhoto(id: string | number): void {
   const filtered = getCustomPhotos().filter((p) => p.id !== id);
   localStorage.setItem(LS_CUSTOM, JSON.stringify(filtered));
 }
-

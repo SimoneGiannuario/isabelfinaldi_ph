@@ -2,7 +2,9 @@
 // Translations — Italian (default) + English
 // ============================================================
 
-export const translations = {
+import type { Translations } from "../types/translations";
+
+export const translations: Translations = {
   it: {
     // Navbar
     nav: {
@@ -84,12 +86,12 @@ export const translations = {
       sortDateNew: "Più Recenti",
       sortDateOld: "Più Vecchie",
       sortName: "Nome A–Z",
-      photosFound: (n) => `${n} foto ${n !== 1 ? "trovate" : "trovata"}`,
+      photosFound: (n: number) => `${n} foto ${n !== 1 ? "trovate" : "trovata"}`,
       noPhotosTitle: "Nessuna foto trovata",
       noPhotosText: "Prova a modificare i filtri per scoprire altri scatti.",
       vote: "Vota",
       voted: "Già votato",
-      voteCount: (n) => `${n} voti`,
+      voteCount: (n: number) => `${n} voti`,
     },
   },
 
@@ -167,12 +169,12 @@ export const translations = {
       sortDateNew: "Newest First",
       sortDateOld: "Oldest First",
       sortName: "Name A–Z",
-      photosFound: (n) => `${n} photo${n !== 1 ? "s" : ""} found`,
+      photosFound: (n: number) => `${n} photo${n !== 1 ? "s" : ""} found`,
       noPhotosTitle: "No photos found",
       noPhotosText: "Try adjusting your filters to discover more work.",
       vote: "Vote",
       voted: "Already voted",
-      voteCount: (n) => `${n} votes`,
+      voteCount: (n: number) => `${n} votes`,
     },
   },
 };

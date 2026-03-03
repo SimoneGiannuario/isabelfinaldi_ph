@@ -1,12 +1,19 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 import { nhost } from "../nhost";
 
-const AdminAuthContext = createContext(null);
+interface AdminAuthContextValue {
+  isAuthenticated: boolean | null;
+  login: (email: string, password: string) => Promise<boolean>;
+  logout: () => Promise<void>;
+  error: string;
+}
 
-export function AdminAuthProvider({ children }) {
+const AdminAuthContext = createContext<AdminAuthContextValue | null>(null);
+
+export function AdminAuthProvider({ children }: { children: ReactNode }) {
   // Start with null (unknown) so we can show a loading state while
   // checking for an existing session, avoiding a flash of the login screen.
-  const [isAuthenticated, setIsAuthenticated] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [error, setError] = useState("");
 
   // On mount, restore session from Nhost localStorage if one exists
@@ -15,27 +22,28 @@ export function AdminAuthProvider({ children }) {
     setIsAuthenticated(!!session);
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email: string, password: string): Promise<boolean> => {
     setError("");
     try {
       const { body } = await nhost.auth.signInEmailPassword({ email, password });
-      if (body?.session) {
+      if ((body as Record<string, unknown>)?.session) {
         setIsAuthenticated(true);
         return true;
       }
       setError("Credenziali non valide. Riprova.");
       return false;
-    } catch (err) {
+    } catch (err: unknown) {
+      const error = err as Record<string, unknown> | undefined;
       const msg =
-        err?.body?.message ||
-        err?.message ||
+        (error?.body as Record<string, unknown>)?.message as string ||
+        (error?.message as string) ||
         "Errore di accesso. Riprova.";
       setError(msg);
       return false;
     }
   };
 
-  const logout = async () => {
+  const logout = async (): Promise<void> => {
     try {
       const session = nhost.getUserSession();
       if (session?.refreshTokenId) {
@@ -56,6 +64,8 @@ export function AdminAuthProvider({ children }) {
   );
 }
 
-export function useAdminAuth() {
-  return useContext(AdminAuthContext);
+export function useAdminAuth(): AdminAuthContextValue {
+  const ctx = useContext(AdminAuthContext);
+  if (!ctx) throw new Error("useAdminAuth must be used within an AdminAuthProvider");
+  return ctx;
 }

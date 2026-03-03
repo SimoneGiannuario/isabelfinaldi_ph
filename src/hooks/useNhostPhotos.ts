@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { PHOTOS } from '../data/photos';
 import { fetchNhostPhotos } from '../data/nhostPhotos';
+import type { Photo } from '../types/photo';
 
 /**
  * useNhostPhotos
@@ -15,9 +16,9 @@ import { fetchNhostPhotos } from '../data/nhostPhotos';
  *   refresh()    — re-fetch from Nhost
  */
 export function useNhostPhotos() {
-  const [nhostPhotos, setNhostPhotos] = useState([]);
+  const [nhostPhotos, setNhostPhotos] = useState<Photo[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -27,7 +28,7 @@ export function useNhostPhotos() {
       setNhostPhotos(photos);
     } catch (err) {
       console.error('useNhostPhotos:', err);
-      setError(err.message ?? 'Errore nel caricamento delle foto.');
+      setError((err as Error).message ?? 'Errore nel caricamento delle foto.');
     } finally {
       setLoading(false);
     }
@@ -35,7 +36,7 @@ export function useNhostPhotos() {
 
   useEffect(() => { load(); }, [load]);
 
-  const allPhotos = [...PHOTOS, ...nhostPhotos];
+  const allPhotos: Photo[] = [...PHOTOS, ...nhostPhotos];
 
   return { nhostPhotos, allPhotos, loading, error, refresh: load };
 }

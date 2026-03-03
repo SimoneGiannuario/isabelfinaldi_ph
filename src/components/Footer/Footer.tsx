@@ -5,9 +5,9 @@ import "./Footer.css";
 export default function Footer() {
   const { t } = useLang();
   return (
-    <footer className="footer">
+    <footer className="footer" role="contentinfo">
       <div className="container">
-        <Link to="/" className="nav-logo">
+        <Link to="/" className="nav-logo" aria-label="Isabel Finaldi — Torna alla home">
           Isabel <span>Finaldi</span>
         </Link>
         <p>{t.footer.rights}</p>

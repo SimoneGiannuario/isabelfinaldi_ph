@@ -1,21 +1,41 @@
 import { nhost } from '../nhost';
+import type { Photo } from '../types/photo';
 
 // ── GraphQL helpers ──────────────────────────────────────────────────────────
 
-const GQL = async (query, variables = {}) => {
+interface GraphQLResponse {
+  data?: Record<string, unknown>;
+  errors?: Array<{ message: string }>;
+}
+
+const GQL = async (query: string, variables: Record<string, unknown> = {}): Promise<Record<string, unknown>> => {
   const session = nhost.getUserSession();
-  const headers = { 'Content-Type': 'application/json' };
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
   if (session?.accessToken) {
     headers['Authorization'] = `Bearer ${session.accessToken}`;
     // Explicitly request the user role; sometimes Hasura defaults to public if not told
     headers['x-hasura-role'] = 'user';
   }
   const res = await nhost.graphql.request({ query, variables }, { headers });
-  if (res.body?.errors) throw new Error(res.body.errors[0]?.message ?? 'GraphQL error');
-  return res.body.data;
+  const body = res.body as GraphQLResponse | undefined;
+  if (body?.errors) throw new Error(body.errors[0]?.message ?? 'GraphQL error');
+  return (body?.data ?? {}) as Record<string, unknown>;
 };
 
 // ── Public: fetch all uploaded photos ────────────────────────────────────────
+
+interface NhostPhotoRow {
+  id: string;
+  title: string;
+  category: string;
+  shooting_name: string;
+  photomodel: string | string[] | null;
+  date: string;
+  featured: boolean;
+  votes: number;
+  storage_id: string;
+  src: string;
+}
 
 const FETCH_PHOTOS_QUERY = `
   query FetchPhotos {
@@ -34,10 +54,11 @@ const FETCH_PHOTOS_QUERY = `
   }
 `;
 
-export async function fetchNhostPhotos() {
+export async function fetchNhostPhotos(): Promise<Photo[]> {
   const data = await GQL(FETCH_PHOTOS_QUERY);
+  const photos = (data?.photos ?? []) as NhostPhotoRow[];
   // Normalize snake_case → camelCase to match existing photo shape
-  return (data?.photos ?? []).map((p) => ({
+  return photos.map((p) => ({
     id: p.id,
     title: p.title,
     category: p.category,
@@ -56,11 +77,21 @@ export async function fetchNhostPhotos() {
 
 // ── Admin: upload image to Storage + insert row ───────────────────────────────
 
-export async function uploadPhoto(file, meta) {
-  let uploadBody;
+export interface PhotoUploadMeta {
+  title: string;
+  category: string;
+  shootingName?: string;
+  photomodel?: string;
+  date: string;
+  featured?: boolean;
+  votes?: number;
+}
+
+export async function uploadPhoto(file: File, meta: PhotoUploadMeta): Promise<string | undefined> {
+  let uploadBody: unknown;
   try {
     const session = nhost.getUserSession();
-    const headers = {};
+    const headers: Record<string, string> = {};
     if (session?.accessToken) {
       headers['Authorization'] = `Bearer ${session.accessToken}`;
     }
@@ -72,11 +103,12 @@ export async function uploadPhoto(file, meta) {
     uploadBody = res.body;
   } catch (error) {
     console.error("Upload error:", error);
-    throw new Error(error.message ?? 'Upload failed');
+    throw new Error((error as Error).message ?? 'Upload failed');
   }
 
   // In v4, uploadFiles typically returns an object with `processedFiles` array
-  const files = uploadBody?.processedFiles || uploadBody;
+  const body = uploadBody as Record<string, unknown> | undefined;
+  const files = (body?.processedFiles || body) as Array<{ id: string }> | { id: string } | undefined;
   const storageFile = Array.isArray(files) ? files[0] : files;
   const storageId = storageFile?.id;
 
@@ -86,8 +118,8 @@ export async function uploadPhoto(file, meta) {
   }
 
   // Build public URL: Nhost Storage public URL pattern
-  const subdomain = import.meta.env.VITE_NHOST_SUBDOMAIN;
-  const region = import.meta.env.VITE_NHOST_REGION;
+  const subdomain = import.meta.env.VITE_NHOST_SUBDOMAIN as string;
+  const region = import.meta.env.VITE_NHOST_REGION as string;
   const src = `https://${subdomain}.storage.${region}.nhost.run/v1/files/${storageId}`;
 
   // 2. Insert metadata row via GraphQL
@@ -111,12 +143,12 @@ export async function uploadPhoto(file, meta) {
     src,
   };
   const data = await GQL(INSERT, { obj });
-  return data?.insert_photos_one?.id;
+  return (data?.insert_photos_one as { id: string } | undefined)?.id;
 }
 
 // ── Admin: update metadata only ───────────────────────────────────────────────
 
-export async function updateNhostPhoto(id, meta) {
+export async function updateNhostPhoto(id: string, meta: PhotoUploadMeta): Promise<void> {
   const UPDATE = `
     mutation UpdatePhoto($id: uuid!, $set: photos_set_input!) {
       update_photos_by_pk(pk_columns: { id: $id }, _set: $set) { id }
@@ -138,10 +170,10 @@ export async function updateNhostPhoto(id, meta) {
 
 // ── Admin: delete file + row ──────────────────────────────────────────────────
 
-export async function deleteNhostPhoto(id, storageId) {
+export async function deleteNhostPhoto(id: string, storageId: string): Promise<void> {
   try {
     const session = nhost.getUserSession();
-    const headers = {};
+    const headers: Record<string, string> = {};
     if (session?.accessToken) {
       headers['Authorization'] = `Bearer ${session.accessToken}`;
     }

@@ -1,12 +1,21 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, type ChangeEvent } from "react";
 import { formatDate } from "../../data/photos";
 import { useNhostPhotos } from "../../hooks/useNhostPhotos";
 import { useLightbox, useVotes } from "../../hooks/usePortfolio";
 import { useLang } from "../../context/LanguageContext";
 import Lightbox from "../../components/Lightbox/Lightbox";
+import type { Photo } from "../../types/photo";
 import "./GalleryPage.css";
 
 const MONTHS_LABEL = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+interface Filters {
+  category: string;
+  shootingName: string;
+  photomodel: string;
+  date: string;
+  search: string;
+}
 
 export default function GalleryPage() {
   const { t } = useLang();
@@ -14,7 +23,7 @@ export default function GalleryPage() {
   const lightbox = useLightbox(allPhotos);
   const votes = useVotes();
 
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<Filters>({
     category: "",
     shootingName: "",
     photomodel: "",
@@ -23,9 +32,12 @@ export default function GalleryPage() {
   });
   const [sortBy, setSortBy] = useState("votes");
 
-  useEffect(() => { window.scrollTo(0, 0); }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    document.title = "Galleria — Isabel Finaldi Photography";
+  }, []);
 
-  const unique = (key) => {
+  const unique = (key: keyof Photo): string[] => {
     const raw = allPhotos.map((p) => p[key]).filter(Boolean);
     // If the value might contain commas (like photomodels), handle both arrays and strings
     const splitVals = raw.flatMap((val) =>
@@ -33,8 +45,11 @@ export default function GalleryPage() {
     );
     return [...new Set(splitVals)].sort();
   };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const categories = useMemo(() => unique("category"), [allPhotos]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const shootings = useMemo(() => unique("shootingName"), [allPhotos]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const photomodels = useMemo(() => unique("photomodel"), [allPhotos]);
   const dates = useMemo(() => {
     const months = allPhotos.map((p) => p.date.substring(0, 7));
@@ -42,7 +57,7 @@ export default function GalleryPage() {
   }, [allPhotos]);
 
   const filtered = useMemo(() => {
-    let result = allPhotos.filter((photo) => {
+    const result = allPhotos.filter((photo) => {
       if (filters.category && photo.category !== filters.category) return false;
       if (filters.shootingName && photo.shootingName !== filters.shootingName) return false;
       if (filters.photomodel) {
@@ -61,8 +76,8 @@ export default function GalleryPage() {
     });
     result.sort((a, b) => {
       if (sortBy === "votes") return b.votes - a.votes;
-      if (sortBy === "date-new") return new Date(b.date) - new Date(a.date);
-      if (sortBy === "date-old") return new Date(a.date) - new Date(b.date);
+      if (sortBy === "date-new") return new Date(b.date).getTime() - new Date(a.date).getTime();
+      if (sortBy === "date-old") return new Date(a.date).getTime() - new Date(b.date).getTime();
       if (sortBy === "name") return a.title.localeCompare(b.title);
       return 0;
     });
@@ -76,14 +91,14 @@ export default function GalleryPage() {
       label: k === "search" ? `"${v}"` : v,
     }));
 
-  const setFilter = (key, value) => setFilters((prev) => ({ ...prev, [key]: value }));
+  const setFilter = (key: keyof Filters, value: string) => setFilters((prev) => ({ ...prev, [key]: value }));
 
   const resetFilters = () => {
     setFilters({ category: "", shootingName: "", photomodel: "", date: "", search: "" });
     setSortBy("votes");
   };
 
-  const dateLabel = (val) => {
+  const dateLabel = (val: string) => {
     const [y, m] = val.split("-");
     return `${MONTHS_LABEL[parseInt(m) - 1]} ${y}`;
   };
@@ -111,33 +126,33 @@ export default function GalleryPage() {
                 type="text"
                 placeholder={t.gallery.searchPlaceholder}
                 value={filters.search}
-                onChange={(e) => setFilter("search", e.target.value)}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => setFilter("search", e.target.value)}
               />
             </div>
             <div className="filter-group">
               <label htmlFor="filter-category">{t.gallery.categoryLabel}</label>
-              <select id="filter-category" value={filters.category} onChange={(e) => setFilter("category", e.target.value)}>
+              <select id="filter-category" value={filters.category} onChange={(e: ChangeEvent<HTMLSelectElement>) => setFilter("category", e.target.value)}>
                 <option value="">{t.gallery.allCategories}</option>
                 {categories.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
             <div className="filter-group">
               <label htmlFor="filter-shooting">{t.gallery.shootingLabel}</label>
-              <select id="filter-shooting" value={filters.shootingName} onChange={(e) => setFilter("shootingName", e.target.value)}>
+              <select id="filter-shooting" value={filters.shootingName} onChange={(e: ChangeEvent<HTMLSelectElement>) => setFilter("shootingName", e.target.value)}>
                 <option value="">{t.gallery.allShootings}</option>
                 {shootings.map((s) => <option key={s} value={s}>{s}</option>)}
               </select>
             </div>
             <div className="filter-group">
               <label htmlFor="filter-photomodel">{t.gallery.photomodelLabel}</label>
-              <select id="filter-photomodel" value={filters.photomodel} onChange={(e) => setFilter("photomodel", e.target.value)}>
+              <select id="filter-photomodel" value={filters.photomodel} onChange={(e: ChangeEvent<HTMLSelectElement>) => setFilter("photomodel", e.target.value)}>
                 <option value="">{t.gallery.allModels}</option>
                 {photomodels.map((m) => <option key={m} value={m}>{m}</option>)}
               </select>
             </div>
             <div className="filter-group">
               <label htmlFor="filter-date">{t.gallery.dateLabel}</label>
-              <select id="filter-date" value={filters.date} onChange={(e) => setFilter("date", e.target.value)}>
+              <select id="filter-date" value={filters.date} onChange={(e: ChangeEvent<HTMLSelectElement>) => setFilter("date", e.target.value)}>
                 <option value="">{t.gallery.allDates}</option>
                 {dates.map((d) => <option key={d} value={d}>{dateLabel(d)}</option>)}
               </select>
@@ -152,7 +167,7 @@ export default function GalleryPage() {
               {activeTags.map(({ key, label }) => (
                 <span key={key} className="filter-tag">
                   {label}
-                  <button onClick={() => setFilter(key, "")} aria-label={`Remove ${key} filter`}>✕</button>
+                  <button onClick={() => setFilter(key as keyof Filters, "")} aria-label={`Remove ${key} filter`}>✕</button>
                 </span>
               ))}
             </div>
@@ -164,10 +179,10 @@ export default function GalleryPage() {
       <section className="section gallery-section">
         <div className="container">
           <div className="gallery-info">
-            <span className="result-count">{t.gallery.photosFound(filtered.length)}</span>
+            <span className="result-count" role="status" aria-live="polite">{t.gallery.photosFound(filtered.length)}</span>
             <div className="sort-control">
               <label htmlFor="sort-select">{t.gallery.sortLabel}</label>
-              <select id="sort-select" value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+              <select id="sort-select" value={sortBy} onChange={(e: ChangeEvent<HTMLSelectElement>) => setSortBy(e.target.value)}>
                 <option value="votes">{t.gallery.sortVotes}</option>
                 <option value="date-new">{t.gallery.sortDateNew}</option>
                 <option value="date-old">{t.gallery.sortDateOld}</option>
@@ -226,12 +241,14 @@ export default function GalleryPage() {
         </div>
       </section>
 
-      {lightbox.open && (
+      {lightbox.isOpen && (
         <Lightbox
           photo={lightbox.currentPhoto}
           onClose={lightbox.close}
           onPrev={() => lightbox.navigate(-1)}
           onNext={() => lightbox.navigate(1)}
+          currentIndex={lightbox.index + 1}
+          totalPhotos={filtered.length}
         />
       )}
     </>

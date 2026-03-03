@@ -3,28 +3,34 @@ import { useAdminAuth } from "../../context/AdminAuthContext";
 import { PHOTOS, formatDate } from "../../data/photos";
 import { useNhostPhotos } from "../../hooks/useNhostPhotos";
 import { uploadPhoto, updateNhostPhoto, deleteNhostPhoto } from "../../data/nhostPhotos";
+import type { PhotoUploadMeta } from "../../data/nhostPhotos";
+import type { Photo } from "../../types/photo";
 import PhotoUploadForm from "./PhotoUploadForm";
+
+interface UploadItem extends PhotoUploadMeta {
+  file: File;
+}
 
 export default function AdminDashboard() {
   const { logout } = useAdminAuth();
   const { nhostPhotos, loading, error: fetchError, refresh } = useNhostPhotos();
   const [showUpload, setShowUpload] = useState(false);
-  const [editingPhoto, setEditingPhoto] = useState(null);
-  const [deleteConfirm, setDeleteConfirm] = useState(null);
-  const [saving, setSaving] = useState(false);
+  const [editingPhoto, setEditingPhoto] = useState<Photo | null>(null);
+  const [deleteConfirm, setDeleteConfirm] = useState<Photo | null>(null);
+  const [saving, setSaving] = useState<boolean | string>(false);
   const [saveError, setSaveError] = useState("");
 
-  const handleSave = async (formDataOrArray) => {
+  const handleSave = async (formDataOrArray: PhotoUploadMeta | UploadItem[]) => {
     setSaveError("");
 
     try {
       if (editingPhoto?.fromNhost) {
         // Edit existing Nhost photo (metadata only) - always single object
         setSaving("Salvataggio in corso...");
-        await updateNhostPhoto(editingPhoto.id, formDataOrArray);
+        await updateNhostPhoto(editingPhoto.id as string, formDataOrArray as PhotoUploadMeta);
       } else {
         // New upload - can be an array of objects
-        const items = Array.isArray(formDataOrArray) ? formDataOrArray : [formDataOrArray];
+        const items = Array.isArray(formDataOrArray) ? formDataOrArray : [formDataOrArray as UploadItem];
 
         for (let i = 0; i < items.length; i++) {
           if (items.length > 1) {
@@ -42,26 +48,26 @@ export default function AdminDashboard() {
       setEditingPhoto(null);
     } catch (err) {
       console.error("Save error:", err);
-      setSaveError(err.message ?? "Errore nel salvataggio.");
+      setSaveError((err as Error).message ?? "Errore nel salvataggio.");
     } finally {
       setSaving(false);
     }
   };
 
-  const handleDelete = async (photo) => {
+  const handleDelete = async (photo: Photo) => {
     setSaving(true);
     try {
-      await deleteNhostPhoto(photo.id, photo.storageId);
+      await deleteNhostPhoto(photo.id as string, photo.storageId!);
       await refresh();
     } catch (err) {
-      setSaveError(err.message ?? "Errore nella cancellazione.");
+      setSaveError((err as Error).message ?? "Errore nella cancellazione.");
     } finally {
       setSaving(false);
       setDeleteConfirm(null);
     }
   };
 
-  const handleEdit = (photo) => {
+  const handleEdit = (photo: Photo) => {
     setEditingPhoto(photo);
     setShowUpload(true);
   };
@@ -81,7 +87,7 @@ export default function AdminDashboard() {
 
   const existingPhotomodels = useMemo(() => {
     const raw = allPhotos.map(p => p.photomodel).filter(Boolean);
-    const splitVals = raw.flatMap(val =>
+    const splitVals = (raw as (string | string[])[]).flatMap(val =>
       Array.isArray(val) ? val : String(val).split(',').map(s => s.trim())
     ).filter(Boolean);
     return [...new Set(splitVals)].sort();
@@ -176,7 +182,7 @@ export default function AdminDashboard() {
                   <div className="admin-card-info">
                     <h4>{photo.title}</h4>
                     <p>{photo.category} · {formatDate(photo.date)}</p>
-                    {photo.photomodel && photo.photomodel.length > 0 && (
+                    {photo.photomodel && (Array.isArray(photo.photomodel) ? photo.photomodel.length > 0 : true) && (
                       <p className="admin-card-model">
                         📷 {Array.isArray(photo.photomodel) ? photo.photomodel.join(', ') : photo.photomodel}
                       </p>
@@ -221,11 +227,11 @@ export default function AdminDashboard() {
             <h3>Eliminare questa foto?</h3>
             <p>Questa azione non può essere annullata. Il file verrà rimosso anche da Nhost Storage.</p>
             <div className="modal-actions">
-              <button className="admin-btn" onClick={() => setDeleteConfirm(null)} disabled={saving}>Annulla</button>
+              <button className="admin-btn" onClick={() => setDeleteConfirm(null)} disabled={!!saving}>Annulla</button>
               <button
                 className="admin-btn admin-btn--danger"
                 onClick={() => handleDelete(deleteConfirm)}
-                disabled={saving}
+                disabled={!!saving}
               >
                 {saving ? "Eliminazione…" : "Sì, elimina"}
               </button>
