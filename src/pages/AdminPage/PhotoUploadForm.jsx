@@ -11,41 +11,131 @@ const EMPTY_FORM = {
   votes: 0,
 };
 
-export default function PhotoUploadForm({ photo, onSave, onCancel }) {
+/**
+ * PhotoUploadForm
+ * For new uploads: passes array of { ...meta, file: File } to onSave.
+ * For edits:       passes { ...meta } (no file — only metadata changes).
+ */
+export default function PhotoUploadForm({
+  photo, onSave, onCancel, saving, saveError,
+  existingTitles = [],
+  existingShootingNames = [],
+  existingPhotomodels = []
+}) {
   const isEdit = !!photo;
-  const [form, setForm] = useState(isEdit ? { ...photo } : EMPTY_FORM);
-  const [previewSrc, setPreviewSrc] = useState(isEdit ? photo.src : null);
+
+  // Nhost now returns an array for photomodels, but we want the user to type a comma string
+  const initialPhoto = isEdit ? {
+    ...photo,
+    photomodel: Array.isArray(photo.photomodel) ? photo.photomodel.join(', ') : (photo.photomodel || "")
+  } : EMPTY_FORM;
+
+  // For multi-upload, we keep an array of items: { file, previewSrc, form }
+  // When editing, we just have one item representing the existing photo.
+  const [items, setItems] = useState(
+    isEdit ? [{ form: initialPhoto, previewSrc: photo.src, file: null }] : []
+  );
+
+  // Which item in the `items` array is currently being edited in the form
+  const [currentIndex, setCurrentIndex] = useState(0);
+
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState("");
   const fileRef = useRef();
 
-  const set = (key, val) => setForm((prev) => ({ ...prev, [key]: val }));
+  // The active form data
+  const currentForm = items.length > 0 ? items[currentIndex].form : EMPTY_FORM;
 
-  const processFile = (file) => {
-    if (!file || !file.type.startsWith("image/")) {
-      setError("Seleziona un file immagine valido (JPG, PNG, WebP…)");
+  // Local state for the photomodel autocomplete input
+  const [modelInput, setModelInput] = useState("");
+  const [showModelSuggestions, setShowModelSuggestions] = useState(false);
+  const [showTitleSuggestions, setShowTitleSuggestions] = useState(false);
+  const [showShootingSuggestions, setShowShootingSuggestions] = useState(false);
+
+  // Compute available title suggestions
+  const availableTitleSuggestions = existingTitles.filter(t =>
+    t.toLowerCase().includes((currentForm.title || "").toLowerCase()) && t !== currentForm.title
+  );
+
+  // Compute available shooting suggestions
+  const availableShootingSuggestions = existingShootingNames.filter(s =>
+    s.toLowerCase().includes((currentForm.shootingName || "").toLowerCase()) && s !== currentForm.shootingName
+  );
+
+  // Compute remaining models that are NOT yet in the current form's photomodel string
+  const currentModels = (currentForm.photomodel || "").split(',').map(m => m.trim()).filter(Boolean);
+  const availableModelSuggestions = existingPhotomodels.filter(m =>
+    !currentModels.includes(m) &&
+    m.toLowerCase().includes(modelInput.toLowerCase())
+  );
+
+  const handleAddModel = (modelName) => {
+    const newString = currentModels.length > 0
+      ? currentModels.join(', ') + ', ' + modelName
+      : modelName;
+    setFormKey("photomodel", newString);
+    setModelInput("");
+    setShowModelSuggestions(false);
+  };
+
+  const setFormKey = (key, val) => {
+    setItems((prev) => {
+      const newItems = [...prev];
+      newItems[currentIndex] = {
+        ...newItems[currentIndex],
+        form: { ...newItems[currentIndex].form, [key]: val }
+      };
+      return newItems;
+    });
+  };
+
+  const processFiles = (fileList) => {
+    const newItems = [];
+    for (let i = 0; i < fileList.length; i++) {
+      const f = fileList[i];
+      if (f.type.startsWith("image/")) {
+        newItems.push({
+          file: f,
+          previewSrc: URL.createObjectURL(f),
+          form: { ...EMPTY_FORM } // fresh form for each new image
+        });
+      }
+    }
+
+    if (newItems.length === 0) {
+      setError("Seleziona almeno un file immagine valido (JPG, PNG, WebP…)");
       return;
     }
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      setPreviewSrc(e.target.result);
-      set("src", e.target.result);
-      setError("");
-    };
-    reader.readAsDataURL(file);
+
+    setItems((prev) => [...prev, ...newItems]);
+    setError("");
   };
 
   const onDrop = (e) => {
     e.preventDefault();
     setDragging(false);
-    processFile(e.dataTransfer.files[0]);
+    processFiles(e.dataTransfer.files);
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!isEdit && !previewSrc) { setError("Carica un'immagine prima di salvare."); return; }
-    if (!form.title.trim()) { setError("Il titolo è obbligatorio."); return; }
-    onSave(form);
+    if (!isEdit && items.length === 0) { setError("Carica almeno un'immagine prima di salvare."); return; }
+
+    // Validate all forms before saving
+    for (let i = 0; i < items.length; i++) {
+      if (!items[i].form.title.trim()) {
+        setCurrentIndex(i); // jump to the invalid form
+        setError("Il titolo è obbligatorio per tutte le foto.");
+        return;
+      }
+    }
+
+    if (isEdit) {
+      onSave({ ...items[0].form });
+    } else {
+      // Return array of { ...form, file }
+      onSave(items.map(item => ({ ...item.form, file: item.file })));
+    }
   };
 
   return (
@@ -57,75 +147,211 @@ export default function PhotoUploadForm({ photo, onSave, onCancel }) {
         </div>
 
         <form onSubmit={handleSubmit} className="upload-form">
-          {/* Drop zone */}
+          {/* Drop zone — only for new uploads */}
           {!isEdit && (
             <div
-              className={`drop-zone${dragging ? " drop-zone--active" : ""}${previewSrc ? " drop-zone--filled" : ""}`}
+              className={`drop-zone${dragging ? " drop-zone--active" : ""}${items.length > 0 ? " drop-zone--filled" : ""}`}
               onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
               onDragLeave={() => setDragging(false)}
               onDrop={onDrop}
               onClick={() => fileRef.current.click()}
+              style={items.length > 0 ? { padding: '20px' } : {}}
             >
-              {previewSrc ? (
-                <img src={previewSrc} alt="Anteprima" className="drop-preview" />
+              {items.length > 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+                  <img
+                    src={items[currentIndex].previewSrc}
+                    alt={`Anteprima ${currentIndex + 1}`}
+                    className="drop-preview"
+                    style={{ maxHeight: '150px', width: 'auto', objectFit: 'contain' }}
+                  />
+                  <div style={{ fontSize: '12px', color: '#666' }}>
+                    Foto {currentIndex + 1} di {items.length}
+                    {items.length < 50 && (
+                      <span style={{ marginLeft: '10px', color: 'var(--accent)', cursor: 'pointer', textDecoration: 'underline' }}>
+                        + Aggiungi altre
+                      </span>
+                    )}
+                  </div>
+                </div>
               ) : (
                 <div className="drop-hint">
                   <span className="drop-icon">📷</span>
-                  <p>Trascina qui un'immagine<br /><small>oppure clicca per sfogliare</small></p>
+                  <p>Trascina qui le immagini<br /><small>oppure clicca per sfogliare</small></p>
                 </div>
               )}
               <input
                 ref={fileRef}
                 type="file"
+                multiple
                 accept="image/*"
                 style={{ display: "none" }}
-                onChange={(e) => processFile(e.target.files[0])}
+                onChange={(e) => processFiles(e.target.files)}
               />
             </div>
           )}
 
           {/* Metadata fields */}
-          <div className="upload-fields">
-            <div className="admin-field">
-              <label>Titolo *</label>
-              <input value={form.title} onChange={(e) => set("title", e.target.value)} placeholder="Es. Luce d'Estate" required />
-            </div>
-            <div className="admin-field">
-              <label>Categoria *</label>
-              <select value={form.category} onChange={(e) => set("category", e.target.value)}>
-                {(CATEGORIES ?? ["Portrait", "Landscape", "Street", "Events", "Creative"]).map((c) => (
-                  <option key={c} value={c}>{c}</option>
-                ))}
-              </select>
-            </div>
-            <div className="admin-field">
-              <label>Nome Sessione</label>
-              <input value={form.shootingName} onChange={(e) => set("shootingName", e.target.value)} placeholder="Es. Golden Hour Session" />
-            </div>
-            <div className="admin-field">
-              <label>Fotomodella</label>
-              <input value={form.photomodel ?? ""} onChange={(e) => set("photomodel", e.target.value || null)} placeholder="Es. Giulia Marchetti (opzionale)" />
-            </div>
-            <div className="admin-field">
-              <label>Data</label>
-              <input type="date" value={form.date} onChange={(e) => set("date", e.target.value)} />
-            </div>
-            <div className="admin-field admin-field--row">
-              <label>In evidenza (homepage)</label>
-              <label className="toggle-switch">
-                <input type="checkbox" checked={form.featured} onChange={(e) => set("featured", e.target.checked)} />
-                <span className="toggle-slider" />
-              </label>
-            </div>
-          </div>
+          {items.length > 0 && (
+            <div className="upload-fields">
+              <div className="admin-field" style={{ position: 'relative' }}>
+                <label>Titolo (Foto {currentIndex + 1} di {items.length}) *</label>
+                <input
+                  value={currentForm.title}
+                  onChange={(e) => {
+                    setFormKey("title", e.target.value);
+                    setShowTitleSuggestions(true);
+                  }}
+                  onFocus={() => setShowTitleSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowTitleSuggestions(false), 200)}
+                  placeholder="Es. Luce d'Estate"
+                  required
+                />
+                {showTitleSuggestions && availableTitleSuggestions.length > 0 && (
+                  <div style={{
+                    position: 'absolute', top: '100%', left: 0, right: 0,
+                    background: 'var(--adm-surface)', border: '1px solid var(--adm-border)',
+                    zIndex: 10, borderRadius: '4px', marginTop: '4px',
+                    maxHeight: '150px', overflowY: 'auto', boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                  }}>
+                    {availableTitleSuggestions.map(t => (
+                      <div
+                        key={t}
+                        onClick={() => {
+                          setFormKey("title", t);
+                          setShowTitleSuggestions(false);
+                        }}
+                        style={{ padding: '8px 12px', cursor: 'pointer', borderBottom: '1px solid var(--adm-border)' }}
+                      >
+                        {t}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="admin-field">
+                <label>Categoria *</label>
+                <select value={currentForm.category} onChange={(e) => setFormKey("category", e.target.value)}>
+                  {(CATEGORIES ?? ["Portrait", "Landscape", "Street", "Events", "Creative"]).map((c) => (
+                    <option key={c} value={c}>{c}</option>
+                  ))}
+                </select>
+              </div>
+              <div className="admin-field" style={{ position: 'relative' }}>
+                <label>Nome Sessione</label>
+                <input
+                  value={currentForm.shootingName}
+                  onChange={(e) => {
+                    setFormKey("shootingName", e.target.value);
+                    setShowShootingSuggestions(true);
+                  }}
+                  onFocus={() => setShowShootingSuggestions(true)}
+                  onBlur={() => setTimeout(() => setShowShootingSuggestions(false), 200)}
+                  placeholder="Es. Golden Hour Session"
+                />
+                {showShootingSuggestions && availableShootingSuggestions.length > 0 && currentForm.shootingName && (
+                  <div style={{
+                    position: 'absolute', top: '100%', left: 0, right: 0,
+                    background: 'var(--adm-surface)', border: '1px solid var(--adm-border)',
+                    zIndex: 10, borderRadius: '4px', marginTop: '4px',
+                    maxHeight: '150px', overflowY: 'auto', boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                  }}>
+                    {availableShootingSuggestions.map(s => (
+                      <div
+                        key={s}
+                        onClick={() => {
+                          setFormKey("shootingName", s);
+                          setShowShootingSuggestions(false);
+                        }}
+                        style={{ padding: '8px 12px', cursor: 'pointer', borderBottom: '1px solid var(--adm-border)' }}
+                      >
+                        {s}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+              <div className="admin-field">
+                <label>Fotomodella/i</label>
 
-          {error && <p className="admin-error">{error}</p>}
+                {/* Visual String representation */}
+                <input
+                  value={currentForm.photomodel ?? ""}
+                  onChange={(e) => setFormKey("photomodel", e.target.value || null)}
+                  placeholder="Elenco finale (modificabile): Es. Giulia, Marco"
+                  style={{ marginBottom: '5px' }}
+                />
 
-          <div className="modal-actions">
-            <button type="button" className="admin-btn" onClick={onCancel}>Annulla</button>
-            <button type="submit" className="admin-btn admin-btn--primary">
-              {isEdit ? "Salva Modifiche" : "Carica Foto"}
-            </button>
+                {/* Autocomplete Input */}
+                <div style={{ position: 'relative' }}>
+                  <input
+                    type="text"
+                    value={modelInput}
+                    onChange={(e) => {
+                      setModelInput(e.target.value);
+                      setShowModelSuggestions(true);
+                    }}
+                    onFocus={() => setShowModelSuggestions(true)}
+                    onBlur={() => setTimeout(() => setShowModelSuggestions(false), 200)}
+                    placeholder="+ Cerca o aggiungi modella/o"
+                    style={{ background: 'var(--adm-surface-hover)', width: '100%' }}
+                  />
+
+                  {/* Suggestions Dropdown */}
+                  {showModelSuggestions && modelInput.trim().length > 0 && availableModelSuggestions.length > 0 && (
+                    <div style={{
+                      position: 'absolute', top: '100%', left: 0, right: 0,
+                      background: 'var(--adm-surface)', border: '1px solid var(--adm-border)',
+                      zIndex: 10, borderRadius: '4px', marginTop: '4px',
+                      maxHeight: '150px', overflowY: 'auto', boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
+                    }}>
+                      {availableModelSuggestions.map(m => (
+                        <div
+                          key={m}
+                          onClick={() => handleAddModel(m)}
+                          style={{ padding: '8px 12px', cursor: 'pointer', borderBottom: '1px solid var(--adm-border)' }}
+                        >
+                          {m}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className="admin-field">
+                <label>Data</label>
+                <input type="date" value={currentForm.date} onChange={(e) => setFormKey("date", e.target.value)} />
+              </div>
+              <div className="admin-field admin-field--row">
+                <label>In evidenza (homepage)</label>
+                <label className="toggle-switch">
+                  <input type="checkbox" checked={currentForm.featured} onChange={(e) => setFormKey("featured", e.target.checked)} />
+                  <span className="toggle-slider" />
+                </label>
+              </div>
+            </div>
+          )}
+
+          {(error || saveError) && <p className="admin-error">{error || saveError}</p>}
+
+          <div className="modal-actions" style={{ justifyContent: items.length > 1 ? 'space-between' : 'flex-end', display: 'flex', width: '100%' }}>
+            {items.length > 1 && (
+              <div className="pagination-actions" style={{ display: 'flex', gap: '10px' }}>
+                <button type="button" className="admin-btn" disabled={currentIndex === 0 || saving} onClick={() => setCurrentIndex(c => c - 1)}>
+                  &laquo; Precedente
+                </button>
+                <button type="button" className="admin-btn" disabled={currentIndex === items.length - 1 || saving} onClick={() => setCurrentIndex(c => c + 1)}>
+                  Successiva &raquo;
+                </button>
+              </div>
+            )}
+
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button type="button" className="admin-btn" onClick={onCancel} disabled={saving}>Annulla</button>
+              <button type="submit" className="admin-btn admin-btn--primary" disabled={saving || items.length === 0}>
+                {saving ? "Salvataggio…" : isEdit ? "Salva Modifiche" : (items.length > 1 ? `Carica ${items.length} Foto` : "Carica Foto")}
+              </button>
+            </div>
           </div>
         </form>
       </div>

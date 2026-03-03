@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
-import { PHOTOS, getUniqueValues, formatDate } from "../../data/photos";
+import { formatDate } from "../../data/photos";
+import { useNhostPhotos } from "../../hooks/useNhostPhotos";
 import { useLightbox, useVotes } from "../../hooks/usePortfolio";
 import { useLang } from "../../context/LanguageContext";
 import Lightbox from "../../components/Lightbox/Lightbox";
@@ -9,7 +10,8 @@ const MONTHS_LABEL = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "S
 
 export default function GalleryPage() {
   const { t } = useLang();
-  const lightbox = useLightbox(PHOTOS);
+  const { allPhotos, loading: photosLoading, error: photosError } = useNhostPhotos();
+  const lightbox = useLightbox(allPhotos);
   const votes = useVotes();
 
   const [filters, setFilters] = useState({
@@ -23,19 +25,33 @@ export default function GalleryPage() {
 
   useEffect(() => { window.scrollTo(0, 0); }, []);
 
-  const categories = useMemo(() => getUniqueValues("category"), []);
-  const shootings = useMemo(() => getUniqueValues("shootingName"), []);
-  const photomodels = useMemo(() => getUniqueValues("photomodel"), []);
+  const unique = (key) => {
+    const raw = allPhotos.map((p) => p[key]).filter(Boolean);
+    // If the value might contain commas (like photomodels), handle both arrays and strings
+    const splitVals = raw.flatMap((val) =>
+      Array.isArray(val) ? val : String(val).split(',').map((s) => s.trim())
+    );
+    return [...new Set(splitVals)].sort();
+  };
+  const categories = useMemo(() => unique("category"), [allPhotos]);
+  const shootings = useMemo(() => unique("shootingName"), [allPhotos]);
+  const photomodels = useMemo(() => unique("photomodel"), [allPhotos]);
   const dates = useMemo(() => {
-    const months = PHOTOS.map((p) => p.date.substring(0, 7));
+    const months = allPhotos.map((p) => p.date.substring(0, 7));
     return [...new Set(months)].sort().reverse();
-  }, []);
+  }, [allPhotos]);
 
   const filtered = useMemo(() => {
-    let result = PHOTOS.filter((photo) => {
+    let result = allPhotos.filter((photo) => {
       if (filters.category && photo.category !== filters.category) return false;
       if (filters.shootingName && photo.shootingName !== filters.shootingName) return false;
-      if (filters.photomodel && photo.photomodel !== filters.photomodel) return false;
+      if (filters.photomodel) {
+        // photomodel can be an array (Nhost) or a comma-separated string (static data)
+        const models = Array.isArray(photo.photomodel)
+          ? photo.photomodel
+          : (photo.photomodel || "").split(',').map(m => m.trim());
+        if (!models.includes(filters.photomodel)) return false;
+      }
       if (filters.date && photo.date.substring(0, 7) !== filters.date) return false;
       if (filters.search) {
         const haystack = `${photo.title} ${photo.category} ${photo.shootingName} ${photo.photomodel ?? ""}`.toLowerCase();
@@ -51,7 +67,7 @@ export default function GalleryPage() {
       return 0;
     });
     return result;
-  }, [filters, sortBy]);
+  }, [filters, sortBy, allPhotos]);
 
   const activeTags = Object.entries(filters)
     .filter(([, v]) => v !== "")
@@ -160,7 +176,11 @@ export default function GalleryPage() {
             </div>
           </div>
 
-          {filtered.length === 0 ? (
+          {photosLoading ? (
+            <div className="gallery-empty"><p>Caricamento foto…</p></div>
+          ) : photosError ? (
+            <div className="gallery-empty"><p style={{ color: "var(--clr-accent)" }}>{photosError}</p></div>
+          ) : filtered.length === 0 ? (
             <div className="gallery-empty">
               <h3>{t.gallery.noPhotosTitle}</h3>
               <p>{t.gallery.noPhotosText}</p>

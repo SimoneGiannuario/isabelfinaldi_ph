@@ -54,7 +54,7 @@ export const translations = {
       subjectPlaceholder: "Oggetto",
       messagePlaceholder: "Raccontami del tuo progetto...",
       sendButton: "Invia Messaggio",
-      location: "Milano, Italia",
+      location: "Foggia, Italia",
     },
 
     // Footer
@@ -139,7 +139,7 @@ export const translations = {
       subjectPlaceholder: "Subject",
       messagePlaceholder: "Tell me about your project...",
       sendButton: "Send Message",
-      location: "Milan, Italy",
+      location: "Foggia, Italy",
     },
 
     footer: {

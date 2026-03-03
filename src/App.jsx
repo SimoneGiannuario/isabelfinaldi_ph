@@ -18,7 +18,7 @@ function App() {
   return (
     <LanguageProvider>
       <PhotoProtection />
-      <BrowserRouter>
+      <BrowserRouter basename="/isabelfinaldi_ph">
         <Routes>
           {/* Admin — no public Navbar / Footer */}
           <Route path="/admin" element={<AdminPage />} />

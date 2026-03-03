@@ -1,6 +1,6 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { getFeaturedPhotos } from "../../data/photos";
+import { useNhostPhotos } from "../../hooks/useNhostPhotos";
 import { useScrollReveal, useLightbox } from "../../hooks/usePortfolio";
 import { useLang } from "../../context/LanguageContext";
 import Lightbox from "../../components/Lightbox/Lightbox";
@@ -8,7 +8,8 @@ import "./HomePage.css";
 
 export default function HomePage() {
   const { t } = useLang();
-  const featured = getFeaturedPhotos();
+  const { allPhotos } = useNhostPhotos();
+  const featured = useMemo(() => allPhotos.filter((p) => p.featured).sort((a, b) => b.votes - a.votes), [allPhotos]);
   const lightbox = useLightbox(featured);
   useScrollReveal();
 
@@ -133,9 +134,6 @@ export default function HomePage() {
               </div>
               <div className="social-links reveal">
                 <a href="#" aria-label="Instagram">IG</a>
-                <a href="#" aria-label="TikTok">TK</a>
-                <a href="#" aria-label="Pinterest">PT</a>
-                <a href="#" aria-label="Behance">BE</a>
               </div>
             </div>
             <form
