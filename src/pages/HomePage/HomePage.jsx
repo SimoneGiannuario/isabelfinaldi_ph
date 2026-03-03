@@ -22,7 +22,7 @@ export default function HomePage() {
       {/* HERO */}
       <section className="hero" id="hero">
         <div className="hero-bg">
-          <img src="/images/landscape_sunset.png" alt="Hero background" />
+          <img src={`${import.meta.env.BASE_URL}images/landscape_sunset.png`} alt="Hero background" />
         </div>
         <div className="hero-overlay" />
         <div className="hero-content">
@@ -81,7 +81,7 @@ export default function HomePage() {
         <div className="container">
           <div className="about-grid">
             <div className="about-image reveal">
-              <img src="/images/portrait_golden_hour.png" alt="Isabel Finaldi" />
+              <img src={`${import.meta.env.BASE_URL}images/portrait_golden_hour.png`} alt="Isabel Finaldi" />
             </div>
             <div className="about-text">
               <p className="section-subtitle reveal">{t.about.subtitle}</p>

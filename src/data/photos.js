@@ -4,7 +4,7 @@ export const CATEGORIES = ["Portrait", "Landscape", "Street", "Events", "Creativ
 export const PHOTOS = [
   {
     id: 1,
-    src: "src/assets/images/portrait_golden_hour.png",
+    src: "images/portrait_golden_hour.png",
     title: "Luce Dorata",
     category: "Portrait",
     shootingName: "Golden Hour Session",
@@ -15,7 +15,7 @@ export const PHOTOS = [
   },
   {
     id: 2,
-    src: "src/assets/images/portrait_studio_bw.png",
+    src: "images/portrait_studio_bw.png",
     title: "Ombre & Luce",
     category: "Portrait",
     shootingName: "Studio Noir",
@@ -26,7 +26,7 @@ export const PHOTOS = [
   },
   {
     id: 3,
-    src: "src/assets/images/landscape_sunset.png",
+    src: "images/landscape_sunset.png",
     title: "Tramonto Toscano",
     category: "Landscape",
     shootingName: "Tuscan Hills",
@@ -37,7 +37,7 @@ export const PHOTOS = [
   },
   {
     id: 4,
-    src: "src/assets/images/street_night.png",
+    src: "images/street_night.png",
     title: "Riflessi Urbani",
     category: "Street",
     shootingName: "Urban Vibes",
@@ -48,7 +48,7 @@ export const PHOTOS = [
   },
   {
     id: 5,
-    src: "src/assets/images/event_wedding.png",
+    src: "images/event_wedding.png",
     title: "Promesse nel Giardino",
     category: "Events",
     shootingName: "Villa Rossi Wedding",
@@ -59,7 +59,7 @@ export const PHOTOS = [
   },
   {
     id: 6,
-    src: "src/assets/images/portrait_golden_hour.png",
+    src: "images/portrait_golden_hour.png",
     title: "Sogni al Tramonto",
     category: "Creative",
     shootingName: "Golden Hour Session",
@@ -70,7 +70,7 @@ export const PHOTOS = [
   },
   {
     id: 7,
-    src: "src/assets/images/portrait_studio_bw.png",
+    src: "images/portrait_studio_bw.png",
     title: "Profilo nel Buio",
     category: "Portrait",
     shootingName: "Studio Noir",
@@ -81,7 +81,7 @@ export const PHOTOS = [
   },
   {
     id: 8,
-    src: "src/assets/images/landscape_sunset.png",
+    src: "images/landscape_sunset.png",
     title: "Colline Infinite",
     category: "Landscape",
     shootingName: "Tuscan Hills",
@@ -92,7 +92,7 @@ export const PHOTOS = [
   },
   {
     id: 9,
-    src: "src/assets/images/street_night.png",
+    src: "images/street_night.png",
     title: "Luci della Città",
     category: "Street",
     shootingName: "Notte Romana",
@@ -103,7 +103,7 @@ export const PHOTOS = [
   },
   {
     id: 10,
-    src: "src/assets/images/event_wedding.png",
+    src: "images/event_wedding.png",
     title: "Il Primo Ballo",
     category: "Events",
     shootingName: "Villa Rossi Wedding",
@@ -114,7 +114,7 @@ export const PHOTOS = [
   },
   {
     id: 11,
-    src: "src/assets/images/portrait_golden_hour.png",
+    src: "images/portrait_golden_hour.png",
     title: "Vento d'Estate",
     category: "Creative",
     shootingName: "Summer Breeze",
@@ -125,7 +125,7 @@ export const PHOTOS = [
   },
   {
     id: 12,
-    src: "src/assets/images/portrait_studio_bw.png",
+    src: "images/portrait_studio_bw.png",
     title: "Silenzio",
     category: "Portrait",
     shootingName: "Minimal Portraits",
@@ -181,12 +181,19 @@ export function resetStaticOverride(id) {
 }
 
 // ── Merged photo list ─────────────────────────────────────────────────────────
+const BASE = import.meta.env.BASE_URL;
+
+function withBase(photo) {
+  if (!photo.src || photo.src.startsWith("data:") || photo.src.startsWith(BASE)) return photo;
+  return { ...photo, src: `${BASE}${photo.src}` };
+}
+
 export function getAllPhotos() {
   const overrides = getStaticOverrides();
   const staticWithOverrides = PHOTOS.map((p) =>
     overrides[p.id] ? { ...p, ...overrides[p.id] } : p
   );
-  return [...staticWithOverrides, ...getCustomPhotos()];
+  return [...staticWithOverrides, ...getCustomPhotos()].map(withBase);
 }
 
 export function saveCustomPhoto(photo) {
