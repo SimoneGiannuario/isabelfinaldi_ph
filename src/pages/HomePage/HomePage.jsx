@@ -2,15 +2,16 @@ import { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { getFeaturedPhotos } from "../../data/photos";
 import { useScrollReveal, useLightbox } from "../../hooks/usePortfolio";
+import { useLang } from "../../context/LanguageContext";
 import Lightbox from "../../components/Lightbox/Lightbox";
 import "./HomePage.css";
 
 export default function HomePage() {
+  const { t } = useLang();
   const featured = getFeaturedPhotos();
   const lightbox = useLightbox(featured);
   useScrollReveal();
 
-  // Reset scroll on mount
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -24,19 +25,17 @@ export default function HomePage() {
         </div>
         <div className="hero-overlay" />
         <div className="hero-content">
-          <p className="hero-eyebrow">Photography Portfolio</p>
+          <p className="hero-eyebrow">{t.hero.eyebrow}</p>
           <h1 className="hero-title">
-            Isabel <em>Finaldi</em>
+            {t.hero.title1} <em>{t.hero.title2}</em>
           </h1>
-          <p className="hero-description">
-            Capturing emotions, light, and stories through the lens. Based in Italy, available worldwide.
-          </p>
+          <p className="hero-description">{t.hero.description}</p>
           <Link to="/gallery" className="hero-cta">
-            Explore My Work →
+            {t.hero.cta}
           </Link>
         </div>
         <div className="hero-scroll-indicator">
-          <span>Scroll</span>
+          <span>{t.hero.scroll}</span>
           <div className="scroll-line" />
         </div>
       </section>
@@ -44,9 +43,9 @@ export default function HomePage() {
       {/* FEATURED PHOTOS */}
       <section className="section" id="featured">
         <div className="container">
-          <p className="section-subtitle reveal">Most Loved</p>
+          <p className="section-subtitle reveal">{t.featured.subtitle}</p>
           <h2 className="section-title reveal">
-            Featured <em>Work</em>
+            {t.featured.title1} <em>{t.featured.title2}</em>
           </h2>
           <div className="section-divider reveal" />
           <div className="featured-grid">
@@ -70,7 +69,7 @@ export default function HomePage() {
           </div>
           <div className="featured-cta reveal">
             <Link to="/gallery" className="hero-cta">
-              View Full Gallery →
+              {t.featured.viewAll}
             </Link>
           </div>
         </div>
@@ -81,35 +80,28 @@ export default function HomePage() {
         <div className="container">
           <div className="about-grid">
             <div className="about-image reveal">
-              <img src="/images/portrait_golden_hour.png" alt="Isabel Finaldi — Photographer" />
+              <img src="/images/portrait_golden_hour.png" alt="Isabel Finaldi" />
             </div>
             <div className="about-text">
-              <p className="section-subtitle reveal">About Me</p>
+              <p className="section-subtitle reveal">{t.about.subtitle}</p>
               <h2 className="section-title reveal">
-                The Eye Behind<br />the <em>Lens</em>
+                {t.about.title1}<br /><em>{t.about.title2}</em>
               </h2>
               <div className="section-divider reveal" />
-              <p className="reveal">
-                Hi, I&apos;m Isabel — a young Italian photographer with a deep passion for capturing
-                the beauty in everyday moments. From sun-kissed portraits to atmospheric street scenes,
-                my work blends natural light with authentic emotion.
-              </p>
-              <p className="reveal">
-                I believe every photograph should tell a story. Whether it&apos;s a wedding, a creative
-                editorial, or the quiet magic of a landscape, I pour my heart into every single frame.
-              </p>
+              <p className="reveal">{t.about.paragraph1}</p>
+              <p className="reveal">{t.about.paragraph2}</p>
               <div className="about-stats reveal">
                 <div className="stat-item">
                   <h4>150+</h4>
-                  <p>Projects</p>
+                  <p>{t.about.stat1Label}</p>
                 </div>
                 <div className="stat-item">
                   <h4>3</h4>
-                  <p>Years Experience</p>
+                  <p>{t.about.stat2Label}</p>
                 </div>
                 <div className="stat-item">
                   <h4>50+</h4>
-                  <p>Happy Clients</p>
+                  <p>{t.about.stat3Label}</p>
                 </div>
               </div>
             </div>
@@ -122,15 +114,12 @@ export default function HomePage() {
         <div className="container">
           <div className="contact-wrapper">
             <div className="contact-info">
-              <p className="section-subtitle reveal">Get in Touch</p>
+              <p className="section-subtitle reveal">{t.contact.subtitle}</p>
               <h2 className="section-title reveal">
-                Let&apos;s Create<br />Something <em>Beautiful</em>
+                {t.contact.title1}<br /><em>{t.contact.title2}</em>
               </h2>
               <div className="section-divider reveal" />
-              <p className="reveal">
-                Have a project in mind? I&apos;d love to hear from you. Whether it&apos;s a portrait
-                session, an event, or a creative collaboration — let&apos;s make it happen.
-              </p>
+              <p className="reveal">{t.contact.paragraph}</p>
               <div className="contact-details reveal">
                 <a href="mailto:hello@isabelfinaldi.com">
                   <span className="icon">✉</span> hello@isabelfinaldi.com
@@ -139,7 +128,7 @@ export default function HomePage() {
                   <span className="icon">☏</span> +39 345 123 4567
                 </a>
                 <span className="contact-location">
-                  <span className="icon">◎</span> Milan, Italy
+                  <span className="icon">◎</span> {t.contact.location}
                 </span>
               </div>
               <div className="social-links reveal">
@@ -153,30 +142,29 @@ export default function HomePage() {
               className="contact-form reveal"
               onSubmit={(e) => {
                 e.preventDefault();
-                alert("Message sent! (Demo)");
+                alert(t.lang === "it" ? "Messaggio inviato! (Demo)" : "Message sent! (Demo)");
               }}
             >
               <div className="form-group">
-                <input type="text" placeholder="Your Name" required id="contact-name" />
+                <input type="text" placeholder={t.contact.namePlaceholder} required id="contact-name" />
               </div>
               <div className="form-group">
-                <input type="email" placeholder="Your Email" required id="contact-email" />
+                <input type="email" placeholder={t.contact.emailPlaceholder} required id="contact-email" />
               </div>
               <div className="form-group">
-                <input type="text" placeholder="Subject" id="contact-subject" />
+                <input type="text" placeholder={t.contact.subjectPlaceholder} id="contact-subject" />
               </div>
               <div className="form-group">
-                <textarea placeholder="Tell me about your project..." required id="contact-message" />
+                <textarea placeholder={t.contact.messagePlaceholder} required id="contact-message" />
               </div>
               <button type="submit" className="btn-submit" id="contact-submit">
-                Send Message
+                {t.contact.sendButton}
               </button>
             </form>
           </div>
         </div>
       </section>
 
-      {/* LIGHTBOX */}
       {lightbox.open && (
         <Lightbox
           photo={lightbox.currentPhoto}

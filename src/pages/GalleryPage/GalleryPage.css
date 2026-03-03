@@ -229,6 +229,91 @@
   color: var(--color-accent);
 }
 
+/* ===== VOTE BUTTON ===== */
+.vote-btn {
+  position: absolute;
+  top: var(--space-md);
+  right: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 10px;
+  background: rgba(14, 14, 14, 0.7);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 100px;
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  z-index: 10;
+  line-height: 1;
+}
+
+.vote-btn:hover:not(:disabled) {
+  background: rgba(220, 50, 70, 0.25);
+  border-color: rgba(220, 50, 70, 0.5);
+  transform: scale(1.08);
+}
+
+.vote-btn--voted {
+  background: rgba(220, 50, 70, 0.2);
+  border-color: rgba(220, 50, 70, 0.45);
+  cursor: default;
+}
+
+.vote-btn:disabled {
+  cursor: not-allowed;
+}
+
+.vote-heart {
+  font-size: 1rem;
+  line-height: 1;
+  transition: transform var(--transition-fast);
+}
+
+.vote-btn:not(:disabled):hover .vote-heart {
+  transform: scale(1.25);
+}
+
+.vote-btn--voted .vote-heart {
+  color: #e84060;
+  filter: drop-shadow(0 0 4px rgba(232, 64, 96, 0.5));
+}
+
+.vote-count {
+  font-size: 0.78rem;
+  font-weight: 600;
+  min-width: 18px;
+  text-align: center;
+}
+
+/* Pop animation when vote is cast */
+@keyframes votePop {
+  0% {
+    transform: scale(1);
+  }
+
+  40% {
+    transform: scale(1.35);
+  }
+
+  70% {
+    transform: scale(0.9);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.vote-btn--voted .vote-heart {
+  animation: votePop 0.4s ease forwards;
+}
+
+
 /* Empty state */
 .gallery-empty {
   text-align: center;

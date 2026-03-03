@@ -1,8 +1,10 @@
 // Photo data — edit this to add/update/remove photos
+export const CATEGORIES = ["Portrait", "Landscape", "Street", "Events", "Creative"];
+
 export const PHOTOS = [
   {
     id: 1,
-    src: "/images/portrait_golden_hour.png",
+    src: "src/assets/images/portrait_golden_hour.png",
     title: "Luce Dorata",
     category: "Portrait",
     shootingName: "Golden Hour Session",
@@ -13,7 +15,7 @@ export const PHOTOS = [
   },
   {
     id: 2,
-    src: "/images/portrait_studio_bw.png",
+    src: "src/assets/images/portrait_studio_bw.png",
     title: "Ombre & Luce",
     category: "Portrait",
     shootingName: "Studio Noir",
@@ -24,7 +26,7 @@ export const PHOTOS = [
   },
   {
     id: 3,
-    src: "/images/landscape_sunset.png",
+    src: "src/assets/images/landscape_sunset.png",
     title: "Tramonto Toscano",
     category: "Landscape",
     shootingName: "Tuscan Hills",
@@ -35,7 +37,7 @@ export const PHOTOS = [
   },
   {
     id: 4,
-    src: "/images/street_night.png",
+    src: "src/assets/images/street_night.png",
     title: "Riflessi Urbani",
     category: "Street",
     shootingName: "Urban Vibes",
@@ -46,7 +48,7 @@ export const PHOTOS = [
   },
   {
     id: 5,
-    src: "/images/event_wedding.png",
+    src: "src/assets/images/event_wedding.png",
     title: "Promesse nel Giardino",
     category: "Events",
     shootingName: "Villa Rossi Wedding",
@@ -57,7 +59,7 @@ export const PHOTOS = [
   },
   {
     id: 6,
-    src: "/images/portrait_golden_hour.png",
+    src: "src/assets/images/portrait_golden_hour.png",
     title: "Sogni al Tramonto",
     category: "Creative",
     shootingName: "Golden Hour Session",
@@ -68,7 +70,7 @@ export const PHOTOS = [
   },
   {
     id: 7,
-    src: "/images/portrait_studio_bw.png",
+    src: "src/assets/images/portrait_studio_bw.png",
     title: "Profilo nel Buio",
     category: "Portrait",
     shootingName: "Studio Noir",
@@ -79,7 +81,7 @@ export const PHOTOS = [
   },
   {
     id: 8,
-    src: "/images/landscape_sunset.png",
+    src: "src/assets/images/landscape_sunset.png",
     title: "Colline Infinite",
     category: "Landscape",
     shootingName: "Tuscan Hills",
@@ -90,7 +92,7 @@ export const PHOTOS = [
   },
   {
     id: 9,
-    src: "/images/street_night.png",
+    src: "src/assets/images/street_night.png",
     title: "Luci della Città",
     category: "Street",
     shootingName: "Notte Romana",
@@ -101,7 +103,7 @@ export const PHOTOS = [
   },
   {
     id: 10,
-    src: "/images/event_wedding.png",
+    src: "src/assets/images/event_wedding.png",
     title: "Il Primo Ballo",
     category: "Events",
     shootingName: "Villa Rossi Wedding",
@@ -112,7 +114,7 @@ export const PHOTOS = [
   },
   {
     id: 11,
-    src: "/images/portrait_golden_hour.png",
+    src: "src/assets/images/portrait_golden_hour.png",
     title: "Vento d'Estate",
     category: "Creative",
     shootingName: "Summer Breeze",
@@ -123,7 +125,7 @@ export const PHOTOS = [
   },
   {
     id: 12,
-    src: "/images/portrait_studio_bw.png",
+    src: "src/assets/images/portrait_studio_bw.png",
     title: "Silenzio",
     category: "Portrait",
     shootingName: "Minimal Portraits",
@@ -135,11 +137,11 @@ export const PHOTOS = [
 ];
 
 export function getFeaturedPhotos() {
-  return PHOTOS.filter((p) => p.featured).sort((a, b) => b.votes - a.votes);
+  return getAllPhotos().filter((p) => p.featured).sort((a, b) => b.votes - a.votes);
 }
 
 export function getUniqueValues(key) {
-  const values = PHOTOS.map((p) => p[key]).filter((v) => v !== null && v !== undefined);
+  const values = getAllPhotos().map((p) => p[key]).filter((v) => v !== null && v !== undefined);
   return [...new Set(values)].sort();
 }
 
@@ -148,3 +150,59 @@ export function formatDate(dateStr) {
   const d = new Date(dateStr);
   return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
 }
+
+// ── Custom photo persistence (localStorage) ───────────────────────────────────
+const LS_CUSTOM = "isf_custom_photos";
+
+export function getCustomPhotos() {
+  try { return JSON.parse(localStorage.getItem(LS_CUSTOM)) ?? []; }
+  catch { return []; }
+}
+
+// ── Static photo metadata overrides (localStorage) ───────────────────────────
+// Keyed by photo id so only changed fields are stored.
+const LS_STATIC_OVERRIDES = "isf_static_overrides";
+
+export function getStaticOverrides() {
+  try { return JSON.parse(localStorage.getItem(LS_STATIC_OVERRIDES)) ?? {}; }
+  catch { return {}; }
+}
+
+export function updateStaticOverride(id, updates) {
+  const all = getStaticOverrides();
+  all[id] = { ...(all[id] ?? {}), ...updates };
+  localStorage.setItem(LS_STATIC_OVERRIDES, JSON.stringify(all));
+}
+
+export function resetStaticOverride(id) {
+  const all = getStaticOverrides();
+  delete all[id];
+  localStorage.setItem(LS_STATIC_OVERRIDES, JSON.stringify(all));
+}
+
+// ── Merged photo list ─────────────────────────────────────────────────────────
+export function getAllPhotos() {
+  const overrides = getStaticOverrides();
+  const staticWithOverrides = PHOTOS.map((p) =>
+    overrides[p.id] ? { ...p, ...overrides[p.id] } : p
+  );
+  return [...staticWithOverrides, ...getCustomPhotos()];
+}
+
+export function saveCustomPhoto(photo) {
+  const existing = getCustomPhotos();
+  const newPhoto = { ...photo, id: `custom_${Date.now()}`, custom: true };
+  localStorage.setItem(LS_CUSTOM, JSON.stringify([...existing, newPhoto]));
+  return newPhoto;
+}
+
+export function updateCustomPhoto(id, updates) {
+  const updated = getCustomPhotos().map((p) => p.id === id ? { ...p, ...updates } : p);
+  localStorage.setItem(LS_CUSTOM, JSON.stringify(updated));
+}
+
+export function deleteCustomPhoto(id) {
+  const filtered = getCustomPhotos().filter((p) => p.id !== id);
+  localStorage.setItem(LS_CUSTOM, JSON.stringify(filtered));
+}
+

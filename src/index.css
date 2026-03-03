@@ -162,3 +162,93 @@ a:hover {
     padding: 0 var(--space-lg);
   }
 }
+
+/* ============================================================
+   Photo Protection
+   ============================================================ */
+
+/* 1. Disable pointer events on image elements themselves.
+      Clicks (for lightbox / voting) are caught by parent <div>s. */
+.gallery-item img,
+.photo-card img,
+.hero-bg img,
+.about-image img {
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Lightbox image — still block drag/right-click */
+.lightbox-image {
+  -webkit-user-drag: none;
+  pointer-events: none;
+}
+
+/* 2. Transparent interaction shield over gallery cards.
+      Positioned below vote-btn (z-index 10) so voting still works. */
+.gallery-item::after,
+.photo-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  /* above img, below vote-btn */
+  cursor: pointer;
+}
+
+/* 3. Screenshot guard — JS adds .screenshot-guard to <body>
+      Blurs and darkens everything except the watermark text */
+body.screenshot-guard::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(14, 14, 14, 0.85);
+  backdrop-filter: blur(24px) brightness(0.3);
+  -webkit-backdrop-filter: blur(24px) brightness(0.3);
+  pointer-events: none;
+}
+
+body.screenshot-guard::after {
+  content: "© Isabel Finaldi Photography — Tutti i diritti riservati";
+  position: fixed;
+  inset: 0;
+  z-index: 100000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-heading);
+  font-size: clamp(1rem, 2.5vw, 1.6rem);
+  font-style: italic;
+  color: rgba(201, 169, 110, 0.9);
+  text-align: center;
+  padding: var(--space-xl);
+  pointer-events: none;
+  letter-spacing: 0.05em;
+}
+
+/* 4. Print protection — hide all photos and show watermark */
+@media print {
+
+  .gallery-item img,
+  .photo-card img,
+  .hero-bg img,
+  .about-image img,
+  .lightbox-image {
+    display: none !important;
+    visibility: hidden !important;
+  }
+
+  .gallery-item::before,
+  .photo-card::before {
+    content: "© Isabel Finaldi Photography — Tutti i diritti riservati";
+    display: block;
+    padding: var(--space-xl);
+    background: #f5f0eb;
+    color: #0e0e0e;
+    font-style: italic;
+    text-align: center;
+    border: 1px solid #ccc;
+  }
+}
