@@ -7,6 +7,7 @@ import Footer from "./components/Footer/Footer";
 import HomePage from "./pages/HomePage/HomePage";
 import "./App.css";
 
+
 // Lazy-loaded routes — only downloaded when navigated to
 const GalleryPage = lazy(() => import("./pages/GalleryPage/GalleryPage"));
 const AdminPage = lazy(() => import("./pages/AdminPage/AdminPage"));
@@ -37,7 +38,7 @@ function App() {
   return (
     <LanguageProvider>
       <PhotoProtection />
-      <BrowserRouter basename="/isabelfinaldi_ph">
+      <BrowserRouter >{/* basename="/isabelfinaldi_ph" */}
         {/* Skip navigation — first focusable element */}
         <a href="#main-content" className="skip-nav">
           Vai al contenuto principale
