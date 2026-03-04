@@ -12,6 +12,8 @@ import "./App.css";
 const GalleryPage = lazy(() => import("./pages/GalleryPage/GalleryPage"));
 const AdminPage = lazy(() => import("./pages/AdminPage/AdminPage"));
 
+//prova
+
 // Activates all photo protection globally (right-click, drag, PrintScreen, print)
 function PhotoProtection() {
   usePhotoProtection();
