@@ -6,7 +6,7 @@ export const CATEGORIES: string[] = ["Portrait", "Landscape", "Street", "Events"
 export const PHOTOS: Photo[] = [
   {
     id: 1,
-    src: "images/portrait_golden_hour.png",
+    src: "images/portrait_golden_hour.webp",
     title: "Luce Dorata",
     category: "Portrait",
     shootingName: "Golden Hour Session",
@@ -17,7 +17,7 @@ export const PHOTOS: Photo[] = [
   },
   {
     id: 2,
-    src: "images/portrait_studio_bw.png",
+    src: "images/portrait_studio_bw.webp",
     title: "Ombre & Luce",
     category: "Portrait",
     shootingName: "Studio Noir",
@@ -28,7 +28,7 @@ export const PHOTOS: Photo[] = [
   },
   {
     id: 3,
-    src: "images/landscape_sunset.png",
+    src: "images/landscape_sunset.webp",
     title: "Tramonto Toscano",
     category: "Landscape",
     shootingName: "Tuscan Hills",
@@ -39,7 +39,7 @@ export const PHOTOS: Photo[] = [
   },
   {
     id: 4,
-    src: "images/street_night.png",
+    src: "images/street_night.webp",
     title: "Riflessi Urbani",
     category: "Street",
     shootingName: "Urban Vibes",
@@ -50,7 +50,7 @@ export const PHOTOS: Photo[] = [
   },
   {
     id: 5,
-    src: "images/event_wedding.png",
+    src: "images/event_wedding.webp",
     title: "Promesse nel Giardino",
     category: "Events",
     shootingName: "Villa Rossi Wedding",
@@ -61,7 +61,7 @@ export const PHOTOS: Photo[] = [
   },
   {
     id: 6,
-    src: "images/portrait_golden_hour.png",
+    src: "images/portrait_golden_hour.webp",
     title: "Sogni al Tramonto",
     category: "Creative",
     shootingName: "Golden Hour Session",
@@ -72,7 +72,7 @@ export const PHOTOS: Photo[] = [
   },
   {
     id: 7,
-    src: "images/portrait_studio_bw.png",
+    src: "images/portrait_studio_bw.webp",
     title: "Profilo nel Buio",
     category: "Portrait",
     shootingName: "Studio Noir",
@@ -83,7 +83,7 @@ export const PHOTOS: Photo[] = [
   },
   {
     id: 8,
-    src: "images/landscape_sunset.png",
+    src: "images/landscape_sunset.webp",
     title: "Colline Infinite",
     category: "Landscape",
     shootingName: "Tuscan Hills",
@@ -94,7 +94,7 @@ export const PHOTOS: Photo[] = [
   },
   {
     id: 9,
-    src: "images/street_night.png",
+    src: "images/street_night.webp",
     title: "Luci della Città",
     category: "Street",
     shootingName: "Notte Romana",
@@ -105,7 +105,7 @@ export const PHOTOS: Photo[] = [
   },
   {
     id: 10,
-    src: "images/event_wedding.png",
+    src: "images/event_wedding.webp",
     title: "Il Primo Ballo",
     category: "Events",
     shootingName: "Villa Rossi Wedding",
@@ -116,7 +116,7 @@ export const PHOTOS: Photo[] = [
   },
   {
     id: 11,
-    src: "images/portrait_golden_hour.png",
+    src: "images/portrait_golden_hour.webp",
     title: "Vento d'Estate",
     category: "Creative",
     shootingName: "Summer Breeze",
@@ -127,7 +127,7 @@ export const PHOTOS: Photo[] = [
   },
   {
     id: 12,
-    src: "images/portrait_studio_bw.png",
+    src: "images/portrait_studio_bw.webp",
     title: "Silenzio",
     category: "Portrait",
     shootingName: "Minimal Portraits",
@@ -213,4 +213,10 @@ export function updateCustomPhoto(id: string | number, updates: Partial<Photo>):
 export function deleteCustomPhoto(id: string | number): void {
   const filtered = getCustomPhotos().filter((p) => p.id !== id);
   localStorage.setItem(LS_CUSTOM, JSON.stringify(filtered));
+}
+
+export function getSrcSet(src: string): string | undefined {
+  if (!src || src.includes('nhost') || src.startsWith('data:') || !src.endsWith('.webp')) return undefined;
+  const base = src.replace(/\.webp$/, '');
+  return `${base}-400w.webp 400w, ${base}-800w.webp 800w, ${base}-1200w.webp 1200w, ${src} 1600w`;
 }

@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect, type ChangeEvent } from "react";
 import { formatDate } from "../../data/photos";
 import { useNhostPhotos } from "../../hooks/useNhostPhotos";
 import { useLightbox, useVotes } from "../../hooks/usePortfolio";
+import { getSrcSet } from "../../data/photos";
 import { useLang } from "../../context/LanguageContext";
 import Lightbox from "../../components/Lightbox/Lightbox";
 import type { Photo } from "../../types/photo";
@@ -211,7 +212,11 @@ export default function GalleryPage() {
                     className={`gallery-item${voted ? " gallery-item--voted" : ""}`}
                     onClick={() => lightbox.open(index, filtered)}
                   >
-                    <img src={photo.src} alt={photo.title} loading="lazy" />
+                    <img
+                      src={photo.src}
+                      srcSet={getSrcSet(photo.src)}
+                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                      alt={photo.title} loading="lazy" />
                     <div className="gallery-item-overlay">
                       <h4 className="gallery-item-title">{photo.title}</h4>
                       <div className="gallery-item-details">

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useNhostPhotos } from "../../hooks/useNhostPhotos";
 import { useScrollReveal, useLightbox } from "../../hooks/usePortfolio";
 import { useLang } from "../../context/LanguageContext";
+import { getSrcSet } from "../../data/photos";
 import Lightbox from "../../components/Lightbox/Lightbox";
 import "./HomePage.css";
 
@@ -23,7 +24,11 @@ export default function HomePage() {
       {/* HERO */}
       <section className="hero" id="hero">
         <div className="hero-bg">
-          <img src={`${import.meta.env.BASE_URL}images/landscape_sunset.png`} alt="Hero background" />
+          <img
+            src={`${import.meta.env.BASE_URL}images/landscape_sunset.webp`}
+            srcSet={getSrcSet(`${import.meta.env.BASE_URL}images/landscape_sunset.webp`)}
+            sizes="100vw"
+            alt="Hero background" fetchPriority="high" loading="eager" />
         </div>
         <div className="hero-overlay" />
         <div className="hero-content">
@@ -57,7 +62,11 @@ export default function HomePage() {
                 className={`photo-card reveal reveal-delay-${(index % 4) + 1}${index === 0 ? " tall" : ""}`}
                 onClick={() => lightbox.open(index, featured)}
               >
-                <img src={photo.src} alt={photo.title} loading="lazy" />
+                <img
+                  src={photo.src}
+                  srcSet={getSrcSet(photo.src)}
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  alt={photo.title} loading="lazy" />
                 <div className="photo-card-overlay">
                   <h3 className="photo-card-title">{photo.title}</h3>
                   <div className="photo-card-meta">
@@ -82,7 +91,11 @@ export default function HomePage() {
         <div className="container">
           <div className="about-grid">
             <div className="about-image reveal">
-              <img src={`${import.meta.env.BASE_URL}images/portrait_golden_hour.png`} alt="Isabel Finaldi" />
+              <img
+                src={`${import.meta.env.BASE_URL}images/portrait_golden_hour.webp`}
+                srcSet={getSrcSet(`${import.meta.env.BASE_URL}images/portrait_golden_hour.webp`)}
+                sizes="(max-width: 768px) 100vw, 50vw"
+                alt="Isabel Finaldi" />
             </div>
             <div className="about-text">
               <p className="section-subtitle reveal">{t.about.subtitle}</p>
@@ -145,15 +158,19 @@ export default function HomePage() {
               }}
             >
               <div className="form-group">
+                <label htmlFor="contact-name" className="sr-only">{t.contact.namePlaceholder}</label>
                 <input type="text" placeholder={t.contact.namePlaceholder} required id="contact-name" />
               </div>
               <div className="form-group">
+                <label htmlFor="contact-email" className="sr-only">{t.contact.emailPlaceholder}</label>
                 <input type="email" placeholder={t.contact.emailPlaceholder} required id="contact-email" />
               </div>
               <div className="form-group">
+                <label htmlFor="contact-subject" className="sr-only">{t.contact.subjectPlaceholder}</label>
                 <input type="text" placeholder={t.contact.subjectPlaceholder} id="contact-subject" />
               </div>
               <div className="form-group">
+                <label htmlFor="contact-message" className="sr-only">{t.contact.messagePlaceholder}</label>
                 <textarea placeholder={t.contact.messagePlaceholder} required id="contact-message" />
               </div>
               <button type="submit" className="btn-submit" id="contact-submit">

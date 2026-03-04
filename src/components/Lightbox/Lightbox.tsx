@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { formatDate } from "../../data/photos";
+import { formatDate, getSrcSet } from "../../data/photos";
 import type { Photo } from "../../types/photo";
 import "./Lightbox.css";
 
@@ -70,7 +70,11 @@ export default function Lightbox({ photo, onClose, onPrev, onNext, currentIndex,
       <button ref={closeRef} className="lightbox-close" onClick={onClose} aria-label="Chiudi lightbox">✕</button>
       <button className="lightbox-nav lightbox-prev" onClick={onPrev} aria-label="Foto precedente">‹</button>
       <div className="lightbox-content">
-        <img src={photo.src} alt={photo.title} />
+        <img
+          src={photo.src}
+          srcSet={getSrcSet(photo.src)}
+          sizes="100vw"
+          alt={photo.title} />
       </div>
       <button className="lightbox-nav lightbox-next" onClick={onNext} aria-label="Foto successiva">›</button>
       <div className="lightbox-info" aria-live="polite">
