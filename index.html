@@ -26,15 +26,99 @@
   <meta name="twitter:title" content="Isabel Finaldi — Fotografa" />
   <meta name="twitter:description" content="Catturando emozioni, luce e storie attraverso l'obiettivo." />
 
+  <!-- Preload hero image for optimal LCP -->
+  <link rel="preload" as="image" href="/images/landscape_sunset.webp"
+    imagesrcset="/images/landscape_sunset-400w.webp 400w, /images/landscape_sunset-800w.webp 800w, /images/landscape_sunset-1200w.webp 1200w, /images/landscape_sunset.webp 1600w"
+    imagesizes="100vw" fetchpriority="high" />
+
   <!-- Favicon -->
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>" />
-  <script type="module" crossorigin src="/isabelfinaldi_ph/assets/index-lWOLMlo7.js"></script>
-  <link rel="stylesheet" crossorigin href="/isabelfinaldi_ph/assets/index-C3VPURD0.css">
+  <!-- Inline styles for instant First Contentful Paint -->
+  <style>
+    body {
+      margin: 0;
+      background-color: #0e0e0e;
+      color: #f5f0eb;
+      font-family: system-ui, -apple-system, sans-serif;
+    }
+
+    #initial-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: #0e0e0e;
+      z-index: 9999;
+    }
+
+    .loader-logo {
+      font-size: 1.5rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      margin-bottom: 2rem;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    .loader-line-container {
+      width: 150px;
+      height: 1px;
+      background-color: rgba(245, 240, 235, 0.1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .loader-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 40%;
+      background-color: #ccaa88;
+      animation: slide 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 0.5;
+      }
+
+      50% {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slide {
+      0% {
+        transform: translateX(-100%);
+      }
+
+      100% {
+        transform: translateX(250%);
+      }
+    }
+  </style>
+  <script type="module" crossorigin src="/assets/index-Ca734JM4.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-CLMETmQj.css">
 </head>
 
 <body>
-  <div id="root"></div>
+  <div id="root">
+    <!-- This skeleton is wiped instantly when React mounts -->
+    <div id="initial-loader">
+      <div class="loader-logo">Isabel Finaldi</div>
+      <div class="loader-line-container">
+        <div class="loader-line"></div>
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>
