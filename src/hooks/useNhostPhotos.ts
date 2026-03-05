@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
-import { PHOTOS } from '../data/photos';
 import { fetchNhostPhotos } from '../data/nhostPhotos';
 import type { Photo } from '../types/photo';
+
+const preloadedUrls = new Set<string>();
 
 /**
  * useNhostPhotos
@@ -26,6 +27,18 @@ export function useNhostPhotos() {
     try {
       const photos = await fetchNhostPhotos();
       setNhostPhotos(photos);
+
+      // Preload the photos
+      photos.forEach(photo => {
+        if (!preloadedUrls.has(photo.src)) {
+          preloadedUrls.add(photo.src);
+          const link = document.createElement('link');
+          link.rel = 'preload';
+          link.as = 'image';
+          link.href = photo.src;
+          document.head.appendChild(link);
+        }
+      });
     } catch (err) {
       console.error('useNhostPhotos:', err);
       setError((err as Error).message ?? 'Errore nel caricamento delle foto.');
