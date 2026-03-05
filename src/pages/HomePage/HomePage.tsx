@@ -56,16 +56,24 @@ export default function HomePage() {
           </h2>
           <div className="section-divider reveal" />
           <div className="featured-grid">
-            {featured.map((photo, index) => (
-              <div
+            {featured.map((photo, index) => {
+              const widths = [320, 480, 640, 960, 1280, 1600];
+
+              const srcSet = widths
+                .map(w => `/api/convert?url=${encodeURIComponent(photo.src)}&w=${w} ${w}w`)
+                .join(", ");
+
+              const base = `/api/convert-webp?url=${encodeURIComponent(photo.src)}`;
+
+              return (<div
                 key={photo.id}
                 className={`photo-card reveal reveal-delay-${(index % 4) + 1}${index === 0 ? " tall" : ""}`}
                 onClick={() => lightbox.open(index, featured)}
               >
                 <img
-                  src={photo.src}
-                  srcSet={getSrcSet(photo.src)}
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  src={`${base}&w=960`}
+                  srcSet={srcSet}
+                  sizes="(max-width: 600px) 100vw, 50vw"
                   alt={photo.title} loading="lazy" />
                 <div className="photo-card-overlay">
                   <h3 className="photo-card-title">{photo.title}</h3>
@@ -75,8 +83,10 @@ export default function HomePage() {
                     <span className="votes">♥ {photo.votes}</span>
                   </div>
                 </div>
-              </div>
-            ))}
+              </div>)
+            }
+
+            )}
           </div>
           <div className="featured-cta reveal">
             <Link to="/gallery" className="hero-cta">

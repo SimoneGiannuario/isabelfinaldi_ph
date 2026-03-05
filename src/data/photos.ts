@@ -216,7 +216,7 @@ export function deleteCustomPhoto(id: string | number): void {
 }
 
 export function getSrcSet(src: string): string | undefined {
-  if (!src || src.includes('nhost') || src.startsWith('data:') || !src.endsWith('.webp')) return undefined;
+  if (!src || src.includes('nhost') || src.startsWith('data:') || !src.endsWith('webp')) return undefined;
   const base = src.replace(/\.webp$/, '');
   return `${base}-400w.webp 400w, ${base}-800w.webp 800w, ${base}-1200w.webp 1200w, ${src} 1600w`;
 }
