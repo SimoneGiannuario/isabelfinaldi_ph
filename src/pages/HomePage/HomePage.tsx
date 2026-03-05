@@ -60,10 +60,10 @@ export default function HomePage() {
               const widths = [320, 480, 640, 960, 1280, 1600];
 
               const srcSet = widths
-                .map(w => `/api/convert-webp?url=${encodeURIComponent(photo.src)}&w=${w} ${w}w`)
+                .map(w => `/api/convert-webp?url=${photo.src}&w=${w} ${w}w`)
                 .join(", ");
 
-              const base = `/api/convert-webp?url=${encodeURIComponent(photo.src)}`;
+              const base = `/api/convert-webp?url=${photo.src}`;
 
               return (<div
                 key={photo.id}
