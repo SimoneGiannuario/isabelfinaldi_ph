@@ -29,7 +29,7 @@ export default async function handler(req, res) {
     const buffer = Buffer.from(await response.arrayBuffer());
 
     // Pipeline Sharp
-    let pipeline = sharp(buffer);
+    let pipeline = sharp(buffer).rotate();
 
     if (width) {
       pipeline = pipeline.resize({ width });
