@@ -72,7 +72,7 @@ export default function AdminDashboard() {
     setShowUpload(true);
   };
 
-  const totalCount = PHOTOS.length + nhostPhotos.length;
+  const totalCount = /* PHOTOS.length +  */nhostPhotos.length;
 
   // Aggregate all photos to compute autocomplete dropdowns
   const allPhotos = useMemo(() => [...PHOTOS, ...nhostPhotos], [nhostPhotos]);
@@ -116,7 +116,7 @@ export default function AdminDashboard() {
           <div>
             <h1 className="admin-title">Gestione Foto</h1>
             <p className="admin-subtitle">
-              {PHOTOS.length} foto integrate · {nhostPhotos.length} caricate · {totalCount} totali
+              {/* {PHOTOS.length} foto integrate ·  */}{nhostPhotos.length} caricate · {totalCount} totali
             </p>
           </div>
           <button
@@ -130,7 +130,7 @@ export default function AdminDashboard() {
         {saveError && <p className="admin-error" style={{ padding: "0 var(--adm-space)" }}>{saveError}</p>}
 
         {/* ── Static (integrated) photos ── */}
-        <section className="admin-section" id="photos">
+        {/* <section className="admin-section" id="photos">
           <h3 className="admin-section-title">
             📸 Foto Integrate <span className="badge">{PHOTOS.length}</span>
           </h3>
@@ -149,7 +149,7 @@ export default function AdminDashboard() {
               </div>
             ))}
           </div>
-        </section>
+        </section> */}
 
         {/* ── Uploaded (Nhost) photos ── */}
         <section className="admin-section">

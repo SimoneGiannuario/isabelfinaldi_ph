@@ -36,7 +36,7 @@ export function useNhostPhotos() {
 
   useEffect(() => { load(); }, [load]);
 
-  const allPhotos: Photo[] = [...PHOTOS, ...nhostPhotos];
+  const allPhotos: Photo[] = [/* ...PHOTOS,  */...nhostPhotos];
 
   return { nhostPhotos, allPhotos, loading, error, refresh: load };
 }
