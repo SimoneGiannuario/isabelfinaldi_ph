@@ -71,7 +71,7 @@ export default function HomePage() {
                 onClick={() => lightbox.open(index, featured)}
               >
                 <img
-                  src={`${base}&w=960`}
+                  src={`${base}`}
                   srcSet={srcSet}
                   sizes="(max-width: 600px) 100vw, 50vw"
                   alt={photo.title} loading="lazy" />

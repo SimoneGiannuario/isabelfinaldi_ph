@@ -206,6 +206,14 @@ export default function GalleryPage() {
               {filtered.map((photo, index) => {
                 const voted = votes.hasVoted(photo.id);
                 const count = votes.getCount(photo);
+
+                const widths = [320, 480, 640, 960, 1280, 1600];
+
+                const srcSet = widths
+                  .map(w => `/api/convert-webp?url=${encodeURIComponent(photo.src)}&w=${w} ${w}w`)
+                  .join(", ");
+
+                const base = `/api/convert-webp?url=${encodeURIComponent(photo.src)}`;
                 return (
                   <div
                     key={photo.id}
@@ -213,8 +221,8 @@ export default function GalleryPage() {
                     onClick={() => lightbox.open(index, filtered)}
                   >
                     <img
-                      src={photo.src}
-                      srcSet={getSrcSet(photo.src)}
+                      src={`${base}&w=960`}
+                      srcSet={srcSet}
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       alt={photo.title} loading="lazy" />
                     <div className="gallery-item-overlay">
