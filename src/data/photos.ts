@@ -216,11 +216,10 @@ export function deleteCustomPhoto(id: string | number): void {
 }
 
 export function getOptimizedUrl(src: string, width?: number): string {
-  if (!src || src.startsWith('data:') || src.startsWith('blob:')) return src || '';
+  if (!src || src.startsWith('data:') || src.startsWith('blob:') || src.startsWith('http')) return src || '';
 
   const apiUrl = import.meta.env.VITE_CLOUDFLARE_API_URL;
-  // If VITE_IMAGE_DOMAIN is not set, use VITE_CLOUDFLARE_API_URL as the host for resizing
-  const imgDomain = import.meta.env.VITE_IMAGE_DOMAIN || apiUrl;
+  const imgDomain = import.meta.env.VITE_IMAGE_DOMAIN;
 
   // If the src is a relative path (e.g. from Nhost/Cloudflare DB like `images/uuid`), 
   // ensure it is prefixed with the Cloudflare Worker URL so it doesn't 404 on the React host.
@@ -231,7 +230,9 @@ export function getOptimizedUrl(src: string, width?: number): string {
     fullSrc = `${cleanApiUrl}${cleanSrc}`;
   }
 
-  // If literally no domains are configured, return the raw src.
+  // Cloudflare strictly disables Image Resizing (/cdn-cgi/image) on .workers.dev URLs.
+  // If the user hasn't explicitly set a VITE_IMAGE_DOMAIN (Custom Domain mapped to Cloudflare),
+  // fallback to providing the uncompressed raw image directly from the Worker!
   if (!imgDomain) return fullSrc;
 
   let path = fullSrc;
@@ -248,8 +249,6 @@ export function getOptimizedUrl(src: string, width?: number): string {
 
   const base = imgDomain.replace(/\/$/, '');
 
-  // If pulling from another domain, cloudflare usually prefers the absolute URL of the source image.
-  // But since we are mapping our Custom Domain directly to our Worker/R2, we only want the path.
   const sourceUrlPath = path.startsWith('/') ? path : `/${path}`;
 
   return `${base}/cdn-cgi/image/${params.join(',')}${sourceUrlPath}`;
@@ -259,8 +258,7 @@ export function getSrcSet(src: string): string | undefined {
   if (!src || src.startsWith('data:') || src.startsWith('blob:')) return undefined;
 
   // Do not generate a srcset if we aren't using a resizing service, preventing unnecessary 404s.
-  const imgDomain = import.meta.env.VITE_IMAGE_DOMAIN || import.meta.env.VITE_CLOUDFLARE_API_URL;
-  if (!imgDomain) return undefined;
+  if (!import.meta.env.VITE_IMAGE_DOMAIN) return undefined;
 
   const widths = [400, 800, 1200, 1600];
   return widths.map(w => `${getOptimizedUrl(src, w)} ${w}w`).join(', ');
