@@ -216,7 +216,7 @@ export function deleteCustomPhoto(id: string | number): void {
 }
 
 export function getOptimizedUrl(src: string, width?: number): string {
-  if (!src || src.startsWith('data:') || src.startsWith('blob:') || src.startsWith('http')) return src || '';
+  if (!src || src.startsWith('data:') || src.startsWith('blob:')) return src || '';
 
   const apiUrl = import.meta.env.VITE_CLOUDFLARE_API_URL;
   // If VITE_IMAGE_DOMAIN is not set, use VITE_CLOUDFLARE_API_URL as the host for resizing
