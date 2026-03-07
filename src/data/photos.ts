@@ -248,9 +248,10 @@ export function getOptimizedUrl(src: string, width?: number): string {
   const base = imgDomain.replace(/\/$/, '');
 
   // If pulling from another domain, cloudflare usually prefers the absolute URL of the source image.
-  const sourceUrl = fullSrc.startsWith('http') ? fullSrc : `${window.location.origin}${path}`;
+  // But since we are mapping our Custom Domain directly to our Worker/R2, we only want the path.
+  const sourceUrlPath = path.startsWith('/') ? path : `/${path}`;
 
-  return `${base}/cdn-cgi/image/${params.join(',')}/${sourceUrl}`;
+  return `${base}/cdn-cgi/image/${params.join(',')}${sourceUrlPath}`;
 }
 
 export function getSrcSet(src: string): string | undefined {
