@@ -218,16 +218,16 @@ export function deleteCustomPhoto(id: string | number): void {
 export function getOptimizedUrl(src: string, width?: number): string {
   if (!src || src.startsWith('data:') || src.startsWith('blob:')) return src || '';
 
-  // Use VITE_IMAGE_DOMAIN if provided, otherwise fallback to the worker API URL
-  const imgDomain = import.meta.env.VITE_IMAGE_DOMAIN || import.meta.env.VITE_CLOUDFLARE_API_URL || 'http://localhost:8787';
+  const imgDomain = import.meta.env.VITE_IMAGE_DOMAIN;
 
-  // Extract the path from the src if it's an absolute URL
+  // If no Custom Domain with Image Resizing is configured, immediately fallback to the raw un-resized image!
+  if (!imgDomain) return src;
+
   let path = src;
   try {
     const url = new URL(src);
-    path = url.pathname; // Gets "/images/uuid"
+    path = url.pathname;
   } catch {
-    // Already a relative path like "images/portrait.webp"
     if (!path.startsWith('/')) path = '/' + path;
   }
 
@@ -236,11 +236,18 @@ export function getOptimizedUrl(src: string, width?: number): string {
   params.push('format=webp');
 
   const base = imgDomain.replace(/\/$/, '');
-  return `${base}/cdn-cgi/image/${params.join(',')}${path}`;
+
+  // If pulling from another domain, cloudflare usually prefers the absolute URL of the source image.
+  const sourceUrl = src.startsWith('http') ? src : `${window.location.origin}${path}`;
+
+  return `${base}/cdn-cgi/image/${params.join(',')}/${sourceUrl}`;
 }
 
 export function getSrcSet(src: string): string | undefined {
   if (!src || src.startsWith('data:') || src.startsWith('blob:')) return undefined;
+
+  // Do not generate a srcset if we aren't using a resizing service, preventing unnecessary 404s.
+  if (!import.meta.env.VITE_IMAGE_DOMAIN) return undefined;
 
   const widths = [400, 800, 1200, 1600];
   return widths.map(w => `${getOptimizedUrl(src, w)} ${w}w`).join(', ');
