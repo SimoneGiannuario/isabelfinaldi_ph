@@ -218,8 +218,9 @@ export function deleteCustomPhoto(id: string | number): void {
 export function getOptimizedUrl(src: string, width?: number): string {
   if (!src || src.startsWith('data:') || src.startsWith('blob:') || src.startsWith('http')) return src || '';
 
-  const imgDomain = import.meta.env.VITE_IMAGE_DOMAIN;
   const apiUrl = import.meta.env.VITE_CLOUDFLARE_API_URL;
+  // If VITE_IMAGE_DOMAIN is not set, use VITE_CLOUDFLARE_API_URL as the host for resizing
+  const imgDomain = import.meta.env.VITE_IMAGE_DOMAIN || apiUrl;
 
   // If the src is a relative path (e.g. from Nhost/Cloudflare DB like `images/uuid`), 
   // ensure it is prefixed with the Cloudflare Worker URL so it doesn't 404 on the React host.
@@ -230,7 +231,7 @@ export function getOptimizedUrl(src: string, width?: number): string {
     fullSrc = `${cleanApiUrl}${cleanSrc}`;
   }
 
-  // If no Custom Domain with Image Resizing is configured, immediately fallback to the raw un-resized image!
+  // If literally no domains are configured, return the raw src.
   if (!imgDomain) return fullSrc;
 
   let path = fullSrc;
@@ -258,7 +259,8 @@ export function getSrcSet(src: string): string | undefined {
   if (!src || src.startsWith('data:') || src.startsWith('blob:')) return undefined;
 
   // Do not generate a srcset if we aren't using a resizing service, preventing unnecessary 404s.
-  if (!import.meta.env.VITE_IMAGE_DOMAIN) return undefined;
+  const imgDomain = import.meta.env.VITE_IMAGE_DOMAIN || import.meta.env.VITE_CLOUDFLARE_API_URL;
+  if (!imgDomain) return undefined;
 
   const widths = [400, 800, 1200, 1600];
   return widths.map(w => `${getOptimizedUrl(src, w)} ${w}w`).join(', ');
