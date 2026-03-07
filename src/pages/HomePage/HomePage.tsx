@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { useNhostPhotos } from "../../hooks/useNhostPhotos";
 import { useScrollReveal, useLightbox } from "../../hooks/usePortfolio";
 import { useLang } from "../../context/LanguageContext";
-import { getSrcSet } from "../../data/photos";
+import { getSrcSet, getOptimizedUrl } from "../../data/photos";
 import Lightbox from "../../components/Lightbox/Lightbox";
 import "./HomePage.css";
 
@@ -57,13 +57,9 @@ export default function HomePage() {
           <div className="section-divider reveal" />
           <div className="featured-grid">
             {featured.map((photo, index) => {
-              const widths = [320, 480, 640, 960, 1280, 1600];
+              const srcSet = getSrcSet(photo.src);
 
-              const srcSet = widths
-                .map(w => `/api/convert-webp?url=${photo.src}&w=${w} ${w}w`)
-                .join(", ");
-
-              const base = `/api/convert-webp?url=${photo.src}`;
+              const base = getOptimizedUrl(photo.src);
 
               return (<div
                 key={photo.id}

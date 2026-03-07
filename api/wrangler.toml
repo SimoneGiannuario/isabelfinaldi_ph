@@ -16,4 +16,4 @@ bucket_name = "portfolio-photos"
 
 # Add CORS or env variables if needed
 [vars]
-# API_TOKEN = "your-secret-token"
+# API_TOKEN = "Isabel-Photo2026"

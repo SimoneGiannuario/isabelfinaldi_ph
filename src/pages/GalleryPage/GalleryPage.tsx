@@ -2,7 +2,7 @@ import { useState, useMemo, useEffect, type ChangeEvent } from "react";
 import { formatDate } from "../../data/photos";
 import { useNhostPhotos } from "../../hooks/useNhostPhotos";
 import { useLightbox, useVotes } from "../../hooks/usePortfolio";
-import { getSrcSet } from "../../data/photos";
+import { getSrcSet, getOptimizedUrl } from "../../data/photos";
 import { useLang } from "../../context/LanguageContext";
 import Lightbox from "../../components/Lightbox/Lightbox";
 import type { Photo } from "../../types/photo";
@@ -207,13 +207,9 @@ export default function GalleryPage() {
                 const voted = votes.hasVoted(photo.id);
                 const count = votes.getCount(photo);
 
-                const widths = [320, 480, 640, 960, 1280, 1600];
+                const srcSet = getSrcSet(photo.src);
 
-                const srcSet = widths
-                  .map(w => `/api/convert-webp?url=${encodeURIComponent(photo.src)}&w=${w} ${w}w`)
-                  .join(", ");
-
-                const base = `/api/convert-webp?url=${encodeURIComponent(photo.src)}`;
+                const base = getOptimizedUrl(photo.src);
                 return (
                   <div
                     key={photo.id}

@@ -24,13 +24,13 @@ app.use('/*', cors({
 
 // Validate auth on all /admin/* endpoints except /admin/login
 app.use('/admin/*', async (c, next) => {
-  if (c.req.path === '/admin/login') {
+  if (c.req.path === '/admin/login' || c.req.method === 'OPTIONS') {
     return next();
   }
 
   const authHeader = c.req.header('Authorization');
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    return c.json({ error: 'Unauthorized' }, 401);
+    return c.json({ error: `Unauthorized: Missing or invalid Authorization header. Got: ${authHeader || 'null'}` }, 401);
   }
 
   const token = authHeader.split(' ')[1];
@@ -38,10 +38,10 @@ app.use('/admin/*', async (c, next) => {
 
   try {
     // Validate token
-    await verify(token, secret);
+    await verify(token, secret, "HS256");
     await next();
-  } catch (err) {
-    return c.json({ error: 'Invalid or expired token' }, 401);
+  } catch (err: any) {
+    return c.json({ error: `Invalid or expired token: ${err.message || 'Unknown error'}` }, 401);
   }
 })
 

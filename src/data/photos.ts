@@ -215,8 +215,33 @@ export function deleteCustomPhoto(id: string | number): void {
   localStorage.setItem(LS_CUSTOM, JSON.stringify(filtered));
 }
 
+export function getOptimizedUrl(src: string, width?: number): string {
+  if (!src || src.startsWith('data:') || src.startsWith('blob:')) return src || '';
+
+  // Use VITE_IMAGE_DOMAIN if provided, otherwise fallback to the worker API URL
+  const imgDomain = import.meta.env.VITE_IMAGE_DOMAIN || import.meta.env.VITE_CLOUDFLARE_API_URL || 'http://localhost:8787';
+
+  // Extract the path from the src if it's an absolute URL
+  let path = src;
+  try {
+    const url = new URL(src);
+    path = url.pathname; // Gets "/images/uuid"
+  } catch {
+    // Already a relative path like "images/portrait.webp"
+    if (!path.startsWith('/')) path = '/' + path;
+  }
+
+  const params = [];
+  if (width) params.push(`width=${width}`);
+  params.push('format=webp');
+
+  const base = imgDomain.replace(/\/$/, '');
+  return `${base}/cdn-cgi/image/${params.join(',')}${path}`;
+}
+
 export function getSrcSet(src: string): string | undefined {
-  if (!src || src.includes('nhost') || src.startsWith('data:') || !src.endsWith('webp')) return undefined;
-  const base = src.replace(/\.webp$/, '');
-  return `${base}-400w.webp 400w, ${base}-800w.webp 800w, ${base}-1200w.webp 1200w, ${src} 1600w`;
+  if (!src || src.startsWith('data:') || src.startsWith('blob:')) return undefined;
+
+  const widths = [400, 800, 1200, 1600];
+  return widths.map(w => `${getOptimizedUrl(src, w)} ${w}w`).join(', ');
 }
