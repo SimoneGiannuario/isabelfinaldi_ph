@@ -216,16 +216,26 @@ export function deleteCustomPhoto(id: string | number): void {
 }
 
 export function getOptimizedUrl(src: string, width?: number): string {
-  if (!src || src.startsWith('data:') || src.startsWith('blob:')) return src || '';
+  if (!src || src.startsWith('data:') || src.startsWith('blob:') || src.startsWith('http')) return src || '';
 
   const imgDomain = import.meta.env.VITE_IMAGE_DOMAIN;
+  const apiUrl = import.meta.env.VITE_CLOUDFLARE_API_URL;
+
+  // If the src is a relative path (e.g. from Nhost/Cloudflare DB like `images/uuid`), 
+  // ensure it is prefixed with the Cloudflare Worker URL so it doesn't 404 on the React host.
+  let fullSrc = src;
+  if (!src.startsWith('http')) {
+    const cleanApiUrl = apiUrl ? apiUrl.replace(/\/$/, '') : '';
+    const cleanSrc = src.startsWith('/') ? src : `/${src}`;
+    fullSrc = `${cleanApiUrl}${cleanSrc}`;
+  }
 
   // If no Custom Domain with Image Resizing is configured, immediately fallback to the raw un-resized image!
-  if (!imgDomain) return src;
+  if (!imgDomain) return fullSrc;
 
-  let path = src;
+  let path = fullSrc;
   try {
-    const url = new URL(src);
+    const url = new URL(fullSrc);
     path = url.pathname;
   } catch {
     if (!path.startsWith('/')) path = '/' + path;
@@ -238,7 +248,7 @@ export function getOptimizedUrl(src: string, width?: number): string {
   const base = imgDomain.replace(/\/$/, '');
 
   // If pulling from another domain, cloudflare usually prefers the absolute URL of the source image.
-  const sourceUrl = src.startsWith('http') ? src : `${window.location.origin}${path}`;
+  const sourceUrl = fullSrc.startsWith('http') ? fullSrc : `${window.location.origin}${path}`;
 
   return `${base}/cdn-cgi/image/${params.join(',')}/${sourceUrl}`;
 }
