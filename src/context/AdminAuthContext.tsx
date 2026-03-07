@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
-import { nhost } from "../nhost";
+// The base URL for the Cloudflare API
+const API_URL = import.meta.env.VITE_CLOUDFLARE_API_URL || 'http://localhost:8787';
 
 interface AdminAuthContextValue {
   isAuthenticated: boolean | null;
@@ -16,45 +17,40 @@ export function AdminAuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [error, setError] = useState("");
 
-  // On mount, restore session from Nhost localStorage if one exists
+  // On mount, restore session from localStorage if one exists
   useEffect(() => {
-    const session = nhost.getUserSession();
-    setIsAuthenticated(!!session);
+    const token = localStorage.getItem("admin_token");
+    setIsAuthenticated(!!token);
   }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     setError("");
     try {
-      const { body } = await nhost.auth.signInEmailPassword({ email, password });
-      if ((body as Record<string, unknown>)?.session) {
+      const res = await fetch(`${API_URL}/admin/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await res.json();
+
+      if (res.ok && data.token) {
+        localStorage.setItem("admin_token", data.token);
         setIsAuthenticated(true);
         return true;
       }
-      setError("Credenziali non valide. Riprova.");
+
+      setError(data.error || "Credenziali non valide. Riprova.");
       return false;
     } catch (err: unknown) {
-      const error = err as Record<string, unknown> | undefined;
-      const msg =
-        (error?.body as Record<string, unknown>)?.message as string ||
-        (error?.message as string) ||
-        "Errore di accesso. Riprova.";
-      setError(msg);
+      setError("Errore di rete. Riprova.");
       return false;
     }
   };
 
   const logout = async (): Promise<void> => {
-    try {
-      const session = nhost.getUserSession();
-      if (session?.refreshTokenId) {
-        await nhost.auth.signOut({ refreshToken: session.refreshTokenId });
-      }
-    } catch {
-      // best-effort sign-out
-    } finally {
-      nhost.clearSession();
-      setIsAuthenticated(false);
-    }
+    localStorage.removeItem("admin_token");
+    setIsAuthenticated(false);
   };
 
   return (

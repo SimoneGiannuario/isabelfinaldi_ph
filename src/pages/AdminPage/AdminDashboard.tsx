@@ -57,7 +57,7 @@ export default function AdminDashboard() {
   const handleDelete = async (photo: Photo) => {
     setSaving(true);
     try {
-      await deleteNhostPhoto(photo.id as string, photo.storageId!);
+      await deleteNhostPhoto(photo.id as string);
       await refresh();
     } catch (err) {
       setSaveError((err as Error).message ?? "Errore nella cancellazione.");
