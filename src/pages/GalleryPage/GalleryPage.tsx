@@ -209,7 +209,7 @@ export default function GalleryPage() {
 
                 const srcSet = getSrcSet(photo.src);
 
-                const base = getOptimizedUrl(photo.src);
+                const base = getOptimizedUrl(photo.src, 960);
                 return (
                   <div
                     key={photo.id}
@@ -217,7 +217,7 @@ export default function GalleryPage() {
                     onClick={() => lightbox.open(index, filtered)}
                   >
                     <img
-                      src={`${base}&w=960`}
+                      src={base}
                       srcSet={srcSet}
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       alt={photo.title} loading="lazy" />
