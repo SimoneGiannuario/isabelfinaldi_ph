@@ -56,6 +56,7 @@ export interface GalleryTranslations {
   title2: string;
   lead: string;
   searchLabel: string;
+  filtersLabel: string;
   searchPlaceholder: string;
   categoryLabel: string;
   allCategories: string;

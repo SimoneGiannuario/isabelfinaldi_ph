@@ -32,6 +32,7 @@ export default function GalleryPage() {
     search: "",
   });
   const [sortBy, setSortBy] = useState("votes");
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -119,7 +120,16 @@ export default function GalleryPage() {
       {/* FILTER BAR */}
       <div className="filter-bar">
         <div className="container">
-          <div className="filter-controls">
+          <button
+            className="filter-toggle"
+            onClick={() => setFiltersOpen((o) => !o)}
+            aria-expanded={filtersOpen}
+            aria-controls="filter-controls"
+          >
+            <span>{filtersOpen ? '▲' : '▼'} {t.gallery.filtersLabel || 'Filtri'}</span>
+            {activeTags.length > 0 && <span className="filter-badge">{activeTags.length}</span>}
+          </button>
+          <div className={`filter-controls${filtersOpen ? ' filter-controls--open' : ''}`} id="filter-controls">
             <div className="filter-group">
               <label htmlFor="filter-search">{t.gallery.searchLabel}</label>
               <input

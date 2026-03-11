@@ -162,13 +162,14 @@
   left: 0;
   width: 100%;
   height: 100vh;
-  background: rgba(14, 14, 14, 0.97);
+  /* background: rgba(14, 14, 14, 0.97); */
   backdrop-filter: blur(30px);
   z-index: 999;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: var(--space-xl);
+  background: var(--color-bg);
 }
 
 .mobile-menu.active {
@@ -184,7 +185,7 @@
 }
 
 .mobile-menu a:hover {
-  color: var(--color-accent);
+  color: var(--color-surface);
 }
 
 @media (max-width: 768px) {
