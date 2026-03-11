@@ -18,8 +18,8 @@ export const translations: Translations = {
     // Hero
     hero: {
       eyebrow: "Portfolio Fotografico",
-      title1: "Isabel",
-      title2: "Finaldi",
+      title1: "Nai",
+      title2: "tiry",
       description: "Catturando emozioni, luce e storie attraverso l'obiettivo. Basata in Italia, disponibile in tutto il mondo.",
       cta: "Esplora i Miei Lavori →",
       scroll: "Scorri",
@@ -61,7 +61,7 @@ export const translations: Translations = {
 
     // Footer
     footer: {
-      rights: "© 2026 Isabel Finaldi Photography. Tutti i diritti riservati.",
+      rights: "© 2026 Naitiry. Tutti i diritti riservati.",
     },
 
     // Gallery page
@@ -106,8 +106,8 @@ export const translations: Translations = {
 
     hero: {
       eyebrow: "Photography Portfolio",
-      title1: "Isabel",
-      title2: "Finaldi",
+      title1: "Nai",
+      title2: "tiry",
       description: "Capturing emotions, light, and stories through the lens. Based in Italy, available worldwide.",
       cta: "Explore My Work →",
       scroll: "Scroll",
@@ -145,7 +145,7 @@ export const translations: Translations = {
     },
 
     footer: {
-      rights: "© 2026 Isabel Finaldi Photography. All rights reserved.",
+      rights: "© 2026 Naitiry. All rights reserved.",
     },
 
     gallery: {

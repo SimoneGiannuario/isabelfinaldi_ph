@@ -12,15 +12,21 @@
 }
 
 .footer .nav-logo {
-  font-family: var(--font-heading);
-  font-size: 1.4rem;
-  font-weight: 600;
-  color: var(--color-text);
+  display: inline-flex;
+  align-items: center;
   text-decoration: none;
-  display: inline-block;
   margin-bottom: var(--space-sm);
 }
 
-.footer .nav-logo span {
-  color: var(--color-accent);
+.footer .nav-logo-img {
+  height: 38px;
+  width: auto;
+  display: block;
+  filter: brightness(0) invert(1);
+  opacity: 0.85;
+  transition: opacity var(--transition-fast);
+}
+
+.footer .nav-logo:hover .nav-logo-img {
+  opacity: 1;
 }

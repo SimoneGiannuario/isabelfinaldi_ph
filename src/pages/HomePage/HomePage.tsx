@@ -16,7 +16,7 @@ export default function HomePage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = "Isabel Finaldi — Fotografa | Portfolio";
+    document.title = "Naitiry — Fotografa | Portfolio";
   }, []);
 
   return (
@@ -34,7 +34,7 @@ export default function HomePage() {
         <div className="hero-content">
           <p className="hero-eyebrow">{t.hero.eyebrow}</p>
           <h1 className="hero-title">
-            {t.hero.title1} <em>{t.hero.title2}</em>
+            {t.hero.title1}<em>{t.hero.title2}</em>
           </h1>
           <p className="hero-description">{t.hero.description}</p>
           <Link to="/gallery" className="hero-cta">

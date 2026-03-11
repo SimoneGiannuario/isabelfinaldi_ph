@@ -9,14 +9,17 @@
   display: flex;
   align-items: center;
   padding: 0 var(--space-xl);
+  background-color: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   transition: background-color var(--transition-medium), box-shadow var(--transition-medium);
 }
 
 .navbar.scrolled {
-  background-color: rgba(14, 14, 14, 0.95);
+  background-color: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 1px 0 var(--color-border);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
 }
 
 .navbar .container {
@@ -26,16 +29,23 @@
 }
 
 .nav-logo {
-  font-family: var(--font-heading);
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: var(--color-text);
-  letter-spacing: 0.02em;
+  display: flex;
+  align-items: center;
   text-decoration: none;
 }
 
-.nav-logo span {
-  color: var(--color-accent);
+.nav-logo-img {
+  height: 78px;
+  width: auto;
+  display: block;
+
+  @media (max-width: 768px) {
+    height: 65px;
+  }
+}
+
+.nav-logo:hover .nav-logo-img {
+  opacity: 0.8;
 }
 
 .nav-links {
@@ -47,7 +57,7 @@
 
 .nav-links a,
 .nav-links .active {
-  color: var(--color-text-muted);
+  color: #444;
   font-size: 0.875rem;
   font-weight: 400;
   letter-spacing: 0.08em;
@@ -70,7 +80,7 @@
 
 .nav-links a:hover,
 .nav-links a.active {
-  color: var(--color-text);
+  color: #111;
 }
 
 .nav-links a:hover::after,
@@ -100,7 +110,7 @@
   display: block;
   width: 25px;
   height: 2px;
-  background: var(--color-text);
+  background: #333;
   transition: all var(--transition-fast);
 }
 
@@ -120,9 +130,9 @@
 .lang-toggle {
   padding: 5px 12px;
   background: transparent;
-  border: 1px solid rgba(201, 169, 110, 0.4);
+  border: 1px solid rgba(100, 80, 50, 0.35);
   border-radius: 100px;
-  color: var(--color-accent);
+  color: #5a4725;
   font-family: var(--font-body);
   font-size: 0.72rem;
   font-weight: 600;
@@ -132,8 +142,8 @@
 }
 
 .lang-toggle:hover {
-  background: rgba(201, 169, 110, 0.15);
-  border-color: var(--color-accent);
+  background: rgba(100, 80, 50, 0.1);
+  border-color: #5a4725;
 }
 
 .lang-toggle--mobile {
