@@ -77,6 +77,7 @@ export interface GalleryTranslations {
   vote: string;
   voted: string;
   voteCount: (n: number) => string;
+  categories: Record<string, string>;
 }
 
 export interface TranslationSet {

@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { formatDate, getSrcSet } from "../../data/photos";
+import { useLang } from "../../context/LanguageContext";
 import type { Photo } from "../../types/photo";
 import "./Lightbox.css";
 
@@ -15,6 +16,7 @@ interface LightboxProps {
 }
 
 export default function Lightbox({ photo, onClose, onPrev, onNext, currentIndex, totalPhotos }: LightboxProps) {
+  const { t } = useLang();
   const closeRef = useRef<HTMLButtonElement>(null);
 
   // Auto-focus close button when lightbox opens
@@ -47,7 +49,7 @@ export default function Lightbox({ photo, onClose, onPrev, onNext, currentIndex,
 
   if (!photo) return null;
 
-  const metaParts: string[] = [photo.category, photo.shootingName];
+  const metaParts: string[] = [t.gallery.categories[photo.category] || photo.category, photo.shootingName];
   if (photo.photomodel) {
     metaParts.push(
       Array.isArray(photo.photomodel) ? photo.photomodel.join(", ") : photo.photomodel

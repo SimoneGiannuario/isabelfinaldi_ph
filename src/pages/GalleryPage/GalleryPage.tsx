@@ -89,7 +89,7 @@ export default function GalleryPage() {
     .filter(([, v]) => v !== "")
     .map(([k, v]) => ({
       key: k,
-      label: k === "search" ? `"${v}"` : v,
+      label: k === "search" ? `"${v}"` : k === "category" ? (t.gallery.categories[v] || v) : v,
     }));
 
   const setFilter = (key: keyof Filters, value: string) => setFilters((prev) => ({ ...prev, [key]: value }));
@@ -134,7 +134,7 @@ export default function GalleryPage() {
               <label htmlFor="filter-category">{t.gallery.categoryLabel}</label>
               <select id="filter-category" value={filters.category} onChange={(e: ChangeEvent<HTMLSelectElement>) => setFilter("category", e.target.value)}>
                 <option value="">{t.gallery.allCategories}</option>
-                {categories.map((c) => <option key={c} value={c}>{c}</option>)}
+                {categories.map((c) => <option key={c} value={c}>{t.gallery.categories[c] || c}</option>)}
               </select>
             </div>
             <div className="filter-group">
@@ -224,7 +224,7 @@ export default function GalleryPage() {
                     <div className="gallery-item-overlay">
                       <h4 className="gallery-item-title">{photo.title}</h4>
                       <div className="gallery-item-details">
-                        <span className="tag">{photo.category}</span>
+                        <span className="tag">{t.gallery.categories[photo.category] || photo.category}</span>
                         {photo.photomodel && (
                           <span className="tag model-tag">📷 {photo.photomodel}</span>
                         )}

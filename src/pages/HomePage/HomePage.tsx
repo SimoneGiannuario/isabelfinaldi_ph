@@ -74,7 +74,7 @@ export default function HomePage() {
                 <div className="photo-card-overlay">
                   <h3 className="photo-card-title">{photo.title}</h3>
                   <div className="photo-card-meta">
-                    <span>{photo.category}</span>
+                    <span>{t.gallery.categories[photo.category] || photo.category}</span>
                     <span>{photo.shootingName}</span>
                     <span className="votes">♥ {photo.votes}</span>
                   </div>

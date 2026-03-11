@@ -17,7 +17,7 @@
   position: sticky;
   top: var(--nav-height);
   z-index: 100;
-  background: rgba(14, 14, 14, 0.95);
+  background: transparent;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   padding: var(--space-lg) 0;
@@ -70,10 +70,10 @@
 
 .filter-reset {
   padding: var(--space-sm) var(--space-lg);
-  background: transparent;
+  background: var(--color-text-muted);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  color: var(--color-text-muted);
+  color: #f5f0eb;
   font-family: var(--font-body);
   font-size: 0.8rem;
   cursor: pointer;
@@ -84,8 +84,7 @@
 }
 
 .filter-reset:hover {
-  border-color: var(--color-accent);
-  color: var(--color-accent);
+  border-color: #dbc088;
 }
 
 /* Active filter tags */
@@ -209,6 +208,7 @@
   font-family: var(--font-heading);
   font-size: 1.1rem;
   margin-bottom: 4px;
+  color: #f5f0eb;
 }
 
 .gallery-item-details {
@@ -216,7 +216,7 @@
   flex-wrap: wrap;
   gap: var(--space-sm);
   font-size: 0.75rem;
-  color: var(--color-text-muted);
+  color: #f5f0eb;
 }
 
 .gallery-item-details .tag {
@@ -226,7 +226,7 @@
 }
 
 .gallery-item-details .model-tag {
-  color: var(--color-accent);
+  color: #f5f0eb;
 }
 
 /* ===== VOTE BUTTON ===== */
@@ -238,7 +238,6 @@
   align-items: center;
   gap: 5px;
   padding: 6px 10px;
-  background: rgba(14, 14, 14, 0.7);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 100px;
@@ -253,7 +252,7 @@
 }
 
 .vote-btn:hover:not(:disabled) {
-  background: rgba(220, 50, 70, 0.25);
+  /* background: rgba(220, 50, 70, 0.25); */
   border-color: rgba(220, 50, 70, 0.5);
   transform: scale(1.08);
 }
@@ -288,6 +287,7 @@
   font-weight: 600;
   min-width: 18px;
   text-align: center;
+  color: #f5f0eb;
 }
 
 /* Pop animation when vote is cast */

@@ -42,7 +42,7 @@
   font-size: 0.8rem;
   letter-spacing: 0.3em;
   text-transform: uppercase;
-  color: var(--color-accent);
+  color: #dbc088;
   margin-bottom: var(--space-lg);
   animation: fadeInUp 1s ease forwards 0.3s;
   opacity: 0;
@@ -57,16 +57,17 @@
   margin-bottom: var(--space-lg);
   opacity: 0;
   animation: fadeInUp 1s ease forwards 0.5s;
+  color: #f5f0eb;
 }
 
 .hero-title em {
   font-style: italic;
-  color: var(--color-accent);
+  color: #dbc088;
 }
 
 .hero-description {
   font-size: 1.1rem;
-  color: var(--color-text-muted);
+  color: #b5b0ab;
   font-weight: 300;
   max-width: 500px;
   margin: 0 auto var(--space-2xl);
@@ -79,7 +80,7 @@
   align-items: center;
   gap: var(--space-sm);
   padding: var(--space-md) var(--space-2xl);
-  background: transparent;
+  background: var(--color-bg);
   color: var(--color-text);
   border: 1px solid var(--color-accent);
   font-size: 0.85rem;
@@ -94,8 +95,8 @@
 }
 
 .hero-cta:hover {
-  background: var(--color-accent);
-  color: var(--color-bg);
+  background: var(--color-surface);
+  color: var(--color-accent-hover);
 }
 
 .hero-scroll-indicator {
@@ -226,6 +227,7 @@
 }
 
 .photo-card-title {
+  color: #f5f0eb;
   font-family: var(--font-heading);
   font-size: 1.3rem;
   margin-bottom: var(--space-xs);
@@ -233,14 +235,14 @@
 
 .photo-card-meta {
   font-size: 0.8rem;
-  color: var(--color-text-muted);
+  color: #f5f0eb;
   display: flex;
   align-items: center;
   gap: var(--space-md);
 }
 
 .photo-card-meta .votes {
-  color: var(--color-accent);
+  color: #f5f0eb;
 }
 
 /* ===== ABOUT ===== */

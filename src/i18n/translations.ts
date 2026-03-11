@@ -92,6 +92,13 @@ export const translations: Translations = {
       vote: "Vota",
       voted: "Già votato",
       voteCount: (n: number) => `${n} voti`,
+      categories: {
+        Portrait: "Ritratto",
+        Landscape: "Paesaggio",
+        Street: "Street",
+        Events: "Eventi",
+        Creative: "Creativo",
+      },
     },
   },
 
@@ -175,6 +182,13 @@ export const translations: Translations = {
       vote: "Vote",
       voted: "Already voted",
       voteCount: (n: number) => `${n} votes`,
+      categories: {
+        Portrait: "Portrait",
+        Landscape: "Landscape",
+        Street: "Street",
+        Events: "Events",
+        Creative: "Creative",
+      },
     },
   },
 };
