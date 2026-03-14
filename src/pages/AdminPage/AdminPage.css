@@ -325,9 +325,9 @@
 }
 
 .admin-btn--primary {
-  background: var(--adm-accent);
+  background: var(--adm-bg);
   border-color: var(--adm-accent);
-  color: #0a0a0a;
+  color: var(--adm-text);
 }
 
 .admin-btn--primary:hover {
