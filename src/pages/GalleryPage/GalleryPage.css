@@ -287,7 +287,7 @@
   font-weight: 600;
   min-width: 18px;
   text-align: center;
-  color: #fefaf9;
+  color: var(--color-text);
 }
 
 /* Pop animation when vote is cast */

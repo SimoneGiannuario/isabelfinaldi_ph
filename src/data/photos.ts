@@ -216,10 +216,21 @@ export function deleteCustomPhoto(id: string | number): void {
 }
 
 export function getOptimizedUrl(src: string, width?: number): string {
-  if (!src || src.startsWith('data:') || src.startsWith('blob:') || src.startsWith('http')) return src || '';
+  if (!src || src.startsWith('data:') || src.startsWith('blob:')) return src || '';
 
   const apiUrl = import.meta.env.VITE_CLOUDFLARE_API_URL;
   const imgDomain = import.meta.env.VITE_IMAGE_DOMAIN;
+
+  // We should ONLY resize images that come from the backend Worker API.
+  // Static assets from the frontend (public folder, etc) should just be returned as-is
+  // so we don't try to resize them using Cloudflare (unless they are hosted on a CF domain, but let's be safe).
+  
+  // If it's an absolute URL, check if it belongs to our worker
+  if (src.startsWith('http')) {
+    if (apiUrl && !src.startsWith(apiUrl)) {
+      return src; 
+    }
+  }
 
   // If the src is a relative path (e.g. from Nhost/Cloudflare DB like `images/uuid`), 
   // ensure it is prefixed with the Cloudflare Worker URL so it doesn't 404 on the React host.
@@ -249,13 +260,21 @@ export function getOptimizedUrl(src: string, width?: number): string {
 
   const base = imgDomain.replace(/\/$/, '');
 
-  const sourceUrlPath = path.startsWith('/') ? path : `/${path}`;
-
-  return `${base}/cdn-cgi/image/${params.join(',')}${sourceUrlPath}`;
+  return `${base}/cdn-cgi/image/${params.join(',')}/${fullSrc.replace(/^https?:\/\//, 'https://')}`;
 }
 
 export function getSrcSet(src: string): string | undefined {
   if (!src || src.startsWith('data:') || src.startsWith('blob:')) return undefined;
+
+  const apiUrl = import.meta.env.VITE_CLOUDFLARE_API_URL;
+  
+  // Skip srcset if it's an absolute URL NOT belonging to our Cloudflare Worker 
+  // (e.g., local/public folder static assets)
+  if (src.startsWith('http')) {
+    if (apiUrl && !src.startsWith(apiUrl)) {
+      return undefined;
+    }
+  }
 
   // Do not generate a srcset if we aren't using a resizing service, preventing unnecessary 404s.
   if (!import.meta.env.VITE_IMAGE_DOMAIN) return undefined;
