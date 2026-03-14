@@ -121,6 +121,12 @@ app.get('/images/:id', async (c) => {
   const headers = new Headers()
   object.writeHttpMetadata(headers)
   headers.set('etag', object.httpEtag)
+  
+  // Explicitly ensure Content-Type is set so Cloudflare Image Resizing works
+  // R2 usually sets this if it was provided on upload, but let's be explicit just in case
+  const contentType = object.httpMetadata?.contentType || 'image/jpeg'
+  headers.set('Content-Type', contentType)
+  headers.set('Cache-Control', 'public, max-age=31536000')
 
   return new Response(object.body, { headers })
 })

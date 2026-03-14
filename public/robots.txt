@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://simonegiannuario.github.io/isabelfinaldi_ph/sitemap.xml
+Sitemap: https://naitiry.com/sitemap.xml
