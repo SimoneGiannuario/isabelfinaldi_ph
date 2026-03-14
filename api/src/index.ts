@@ -14,7 +14,7 @@ const app = new Hono<{ Bindings: Bindings }>()
 
 // Handle CORS
 app.use('/*', cors({
-  origin: ['http://localhost:5173', 'https://isabelfinaldi-ph.vercel.app', 'https://naitiry.vercel.app'], // Replace with frontend URL
+  origin: ['http://localhost:5173', 'https://isabelfinaldi-ph.vercel.app', 'https://naitiry.vercel.app', 'https://naitiry.com', 'https://www.naitiry.com'], // Replace with frontend URL
   allowHeaders: ['X-Custom-Header', 'Upgrade-Insecure-Requests', 'Content-Type', 'Authorization'],
   allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
   exposeHeaders: ['Content-Length', 'x-custom-header'],
