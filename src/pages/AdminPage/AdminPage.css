@@ -394,6 +394,8 @@
 .admin-field select:focus,
 .admin-field textarea:focus {
   border-color: var(--adm-accent);
+  outline: 2px solid var(--adm-accent);
+  outline-offset: 2px;
 }
 
 .admin-field select option {
