@@ -25,8 +25,8 @@ export default function HomePage() {
       <section className="hero" id="hero">
         <div className="hero-bg">
           <img
-            src={`${import.meta.env.BASE_URL}src/assets/images/tower-bridge.jpg`}
-            srcSet={getSrcSet(`${import.meta.env.BASE_URL}src/assets/images/tower-bridge.jpg`)}
+            src={`${import.meta.env.BASE_URL}images/tower-bridge.jpg`}
+            srcSet={getSrcSet(`${import.meta.env.BASE_URL}images/tower-bridge.jpg`)}
             sizes="100vw"
             alt="Hero background" fetchPriority="high" loading="eager" />
         </div>
