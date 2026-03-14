@@ -250,6 +250,12 @@ export function getOptimizedUrl(src: string, width?: number): string {
   try {
     const url = new URL(fullSrc);
     path = url.pathname;
+    
+    // Make sure we substitute the old .workers.dev domain with the current environment API url 
+    // Otherwise Cloudflare blocks the cross-domain request 
+    if (apiUrl && url.origin !== new URL(apiUrl).origin) {
+        fullSrc = `${apiUrl.replace(/\/$/, '')}${path}`;
+    }
   } catch {
     if (!path.startsWith('/')) path = '/' + path;
   }
