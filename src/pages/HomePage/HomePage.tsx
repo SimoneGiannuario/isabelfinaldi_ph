@@ -16,7 +16,7 @@ export default function HomePage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = "Naitiry — Fotografa | Portfolio";
+    document.title = "Naitiry — Fotografa a Foggia | Portfolio Professionale";
   }, []);
 
   return (
@@ -25,8 +25,8 @@ export default function HomePage() {
       <section className="hero" id="hero">
         <div className="hero-bg">
           <img
-            src={`${import.meta.env.BASE_URL}images/landscape_sunset.webp`}
-            srcSet={getSrcSet(`${import.meta.env.BASE_URL}images/landscape_sunset.webp`)}
+            src={`${import.meta.env.BASE_URL}src/assets/images/tower-bridge.jpg`}
+            srcSet={getSrcSet(`${import.meta.env.BASE_URL}src/assets/images/tower-bridge.jpg`)}
             sizes="100vw"
             alt="Hero background" fetchPriority="high" loading="eager" />
         </div>
@@ -34,7 +34,7 @@ export default function HomePage() {
         <div className="hero-content">
           <p className="hero-eyebrow">{t.hero.eyebrow}</p>
           <h1 className="hero-title">
-            {t.hero.title1}<em>{t.hero.title2}</em>
+            {t.hero.title1}
           </h1>
           <p className="hero-description">{t.hero.description}</p>
           <Link to="/gallery" className="hero-cta">
@@ -134,28 +134,6 @@ export default function HomePage() {
       <section className="section" id="contact">
         <div className="container">
           <div className="contact-wrapper">
-            <div className="contact-info">
-              <p className="section-subtitle reveal">{t.contact.subtitle}</p>
-              <h2 className="section-title reveal">
-                {t.contact.title1}<br /><em>{t.contact.title2}</em>
-              </h2>
-              <div className="section-divider reveal" />
-              <p className="reveal">{t.contact.paragraph}</p>
-              <div className="contact-details reveal">
-                <a href="mailto:hello@isabelfinaldi.com">
-                  <span className="icon">✉</span> hello@isabelfinaldi.com
-                </a>
-                <a href="tel:+393451234567">
-                  <span className="icon">☏</span> +39 345 123 4567
-                </a>
-                <span className="contact-location">
-                  <span className="icon">◎</span> {t.contact.location}
-                </span>
-              </div>
-              <div className="social-links reveal">
-                <a href="#" aria-label="Instagram">IG</a>
-              </div>
-            </div>
             <form
               className="contact-form reveal"
               onSubmit={(e) => {
@@ -183,6 +161,28 @@ export default function HomePage() {
                 {t.contact.sendButton}
               </button>
             </form>
+            <div className="contact-info">
+              <p className="section-subtitle reveal">{t.contact.subtitle}</p>
+              <h2 className="section-title reveal">
+                {t.contact.title1}<br /><em>{t.contact.title2}</em>
+              </h2>
+              <div className="section-divider reveal" />
+              <p className="reveal">{t.contact.paragraph}</p>
+              <div className="contact-details reveal">
+                <a href="mailto:hello@isabelfinaldi.com">
+                  <span className="icon">✉</span> hello@isabelfinaldi.com
+                </a>
+                <a href="tel:+393451234567">
+                  <span className="icon">☏</span> +39 345 123 4567
+                </a>
+                <span className="contact-location">
+                  <span className="icon">◎</span> {t.contact.location}
+                </span>
+              </div>
+              <div className="social-links reveal">
+                <a href="#" aria-label="Instagram">IG</a>
+              </div>
+            </div>
           </div>
         </div>
       </section>

@@ -18,8 +18,8 @@ export const translations: Translations = {
     // Hero
     hero: {
       eyebrow: "Portfolio Fotografico",
-      title1: "Nai",
-      title2: "tiry",
+      title1: "Naitiry",
+      title2: "",
       description: "Catturando emozioni, luce e storie attraverso l'obiettivo. Basata in Italia, disponibile in tutto il mondo.",
       cta: "Esplora i Miei Lavori →",
       scroll: "Scorri",
@@ -114,8 +114,8 @@ export const translations: Translations = {
 
     hero: {
       eyebrow: "Photography Portfolio",
-      title1: "Nai",
-      title2: "tiry",
+      title1: "Naitiry",
+      title2: "",
       description: "Capturing emotions, light, and stories through the lens. Based in Italy, available worldwide.",
       cta: "Explore My Work →",
       scroll: "Scroll",

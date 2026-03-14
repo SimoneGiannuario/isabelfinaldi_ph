@@ -73,7 +73,7 @@
   background: var(--color-text-muted);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
-  color: #f5f0eb;
+  color: #fefaf9;
   font-family: var(--font-body);
   font-size: 0.8rem;
   cursor: pointer;
@@ -208,7 +208,7 @@
   font-family: var(--font-heading);
   font-size: 1.1rem;
   margin-bottom: 4px;
-  color: #f5f0eb;
+  color: #fefaf9;
 }
 
 .gallery-item-details {
@@ -216,7 +216,7 @@
   flex-wrap: wrap;
   gap: var(--space-sm);
   font-size: 0.75rem;
-  color: #f5f0eb;
+  color: #fefaf9;
 }
 
 .gallery-item-details .tag {
@@ -226,7 +226,7 @@
 }
 
 .gallery-item-details .model-tag {
-  color: #f5f0eb;
+  color: #fefaf9;
 }
 
 /* ===== VOTE BUTTON ===== */
@@ -287,7 +287,7 @@
   font-weight: 600;
   min-width: 18px;
   text-align: center;
-  color: #f5f0eb;
+  color: #fefaf9;
 }
 
 /* Pop animation when vote is cast */
@@ -330,7 +330,8 @@
 
 /* ===== FILTER TOGGLE (mobile accordion) ===== */
 .filter-toggle {
-  display: none;             /* hidden on desktop */
+  display: none;
+  /* hidden on desktop */
 }
 
 /* ===== RESPONSIVE ===== */
@@ -391,7 +392,8 @@
   }
 
   .filter-controls--open {
-    max-height: 600px;        /* large enough to fit all filters */
+    max-height: 600px;
+    /* large enough to fit all filters */
     opacity: 1;
     margin-top: var(--space-md);
   }

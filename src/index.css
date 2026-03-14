@@ -2,6 +2,22 @@
    Global Design System — Isabel Finaldi Photography
    ============================================================ */
 
+@font-face {
+  font-family: 'WindSong';
+  src: url('./assets/fonts/WindSong-Regular.ttf') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'WindSong';
+  src: url('./assets/fonts/WindSong-Medium.ttf') format('truetype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* Fonts are loaded via <link> in index.html for better performance */
 
 /* ---------- CSS Custom Properties ---------- */
@@ -10,11 +26,11 @@
   /*  --color-bg-secondary: #161616; */
   /*  --color-bg-card: #1a1a1a; */
   /*  --color-surface: #222222; */
-  --color-bg: #f5f0eb;
-  --color-bg-secondary: #f5f0eb;
-  --color-bg-card: #f5f0eb;
-  --color-surface: #dbc088;
-  /* --color-text: #f5f0eb; */
+  --color-bg: #fefaf9;
+  --color-bg-secondary: #fefaf9;
+  --color-bg-card: #fefaf9;
+  --color-surface: #b5b0ab;
+  /* --color-text: #fefaf9; */
   /* --color-text-muted: #b5b0ab; */
   /* --color-accent: #c9a96e; */
   /* --color-accent-hover: #dbc088; */
@@ -317,7 +333,7 @@ body.screenshot-guard::after {
     content: "© Isabel Finaldi Photography — Tutti i diritti riservati";
     display: block;
     padding: var(--space-xl);
-    background: #f5f0eb;
+    background: #fefaf9;
     color: #0e0e0e;
     font-style: italic;
     text-align: center;
