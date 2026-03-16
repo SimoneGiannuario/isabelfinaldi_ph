@@ -2,23 +2,7 @@
    Global Design System — Isabel Finaldi Photography
    ============================================================ */
 
-@font-face {
-  font-family: 'WindSong';
-  src: url('./assets/fonts/WindSong-Regular.ttf') format('truetype');
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: 'WindSong';
-  src: url('./assets/fonts/WindSong-Medium.ttf') format('truetype');
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-/* Fonts are loaded via <link> in index.html for better performance */
+/* Fonts are loaded via <link> in index.html and @fontsource imports in main.tsx for better performance and compatibility */
 
 /* ---------- CSS Custom Properties ---------- */
 :root {

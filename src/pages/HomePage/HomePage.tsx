@@ -98,8 +98,8 @@ export default function HomePage() {
           <div className="about-grid">
             <div className="about-image reveal">
               <img
-                src={`${import.meta.env.BASE_URL}images/portrait_golden_hour.webp`}
-                srcSet={getSrcSet(`${import.meta.env.BASE_URL}images/portrait_golden_hour.webp`)}
+                src={`${import.meta.env.BASE_URL}images/Isabel-web.jpeg`}
+                srcSet={getSrcSet(`${import.meta.env.BASE_URL}images/Isabel-web.jpeg`)}
                 sizes="(max-width: 768px) 100vw, 50vw"
                 alt="Isabel Finaldi" />
             </div>
