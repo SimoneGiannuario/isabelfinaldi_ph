@@ -9,8 +9,6 @@ import "@fontsource/playfair-display/400-italic.css";
 import "@fontsource/playfair-display/500.css";
 import "@fontsource/playfair-display/600.css";
 import "@fontsource/playfair-display/700.css";
-import "@fontsource/windsong/400.css";
-import "@fontsource/windsong/500.css";
 import "./index.css";
 import App from "./App";
 import { SpeedInsights } from "@vercel/speed-insights/react"
