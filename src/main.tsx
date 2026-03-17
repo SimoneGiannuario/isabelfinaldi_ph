@@ -12,10 +12,13 @@ import "@fontsource/playfair-display/700.css";
 import "./index.css";
 import App from "./App";
 import { SpeedInsights } from "@vercel/speed-insights/react"
+import { HelmetProvider } from "react-helmet-async";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
-    <SpeedInsights />
+    <HelmetProvider>
+      <App />
+      <SpeedInsights />
+    </HelmetProvider>
   </StrictMode>
 );

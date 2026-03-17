@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
+import SEO from "../../components/SEO/SEO";
 import { useLang } from "../../context/LanguageContext";
 import "./NotFoundPage.css";
 
@@ -7,42 +8,20 @@ export default function NotFoundPage() {
   const { lang } = useLang();
 
   useEffect(() => {
-    // 1. Inject noindex meta tag for SEO
-    let meta = document.querySelector('meta[name="robots"]') as HTMLMetaElement;
-    let created = false;
-    let originalContent = "";
-
-    if (!meta) {
-      meta = document.createElement("meta");
-      meta.name = "robots";
-      document.head.appendChild(meta);
-      created = true;
-    } else {
-      originalContent = meta.content;
-    }
-
-    meta.content = "noindex, nofollow";
-
-    // 2. Set page title
-    const originalTitle = document.title;
-    document.title =
-      lang === "it"
-        ? "Pagina non trovata | Naitiry"
-        : "Page Not Found | Naitiry";
-
-    return () => {
-      // Cleanup on unmount
-      if (created) {
-        document.head.removeChild(meta);
-      } else {
-        meta.content = originalContent;
-      }
-      document.title = originalTitle;
-    };
+    // Scroll to top on mount
+    window.scrollTo(0, 0);
   }, [lang]);
 
+  const title = lang === "it" ? "Pagina non trovata | Naitiry" : "Page Not Found | Naitiry";
+
   return (
-    <div className="not-found-container reveal revealed">
+    <>
+      <SEO 
+        title={title}
+        description="Errore 404 - La pagina non esiste o è stata rimossa."
+        noindex={true}
+      />
+      <div className="not-found-container reveal revealed">
       <div className="not-found-content">
         <h1 className="not-found-title">404</h1>
         <p className="not-found-text">
@@ -55,5 +34,6 @@ export default function NotFoundPage() {
         </Link>
       </div>
     </div>
+    </>
   );
 }

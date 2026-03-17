@@ -5,6 +5,7 @@ import { useScrollReveal, useLightbox } from "../../hooks/usePortfolio";
 import { useLang } from "../../context/LanguageContext";
 import { getSrcSet, getOptimizedUrl } from "../../data/photos";
 import Lightbox from "../../components/Lightbox/Lightbox";
+import SEO from "../../components/SEO/SEO";
 import "./HomePage.css";
 
 export default function HomePage() {
@@ -16,11 +17,39 @@ export default function HomePage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = "Naitiry — Fotografa a Foggia | Portfolio Professionale";
   }, []);
+
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    "name": "Naitiry - Isabel Finaldi Photography",
+    "image": "https://naitiry.com/images/landscape_sunset.webp",
+    "description": "Portfolio fotografico professionale di Naitiry, fotografa a Foggia. Ritratti, paesaggi, street photography, eventi e progetti creativi.",
+    "url": "https://naitiry.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Foggia",
+      "addressRegion": "Puglia",
+      "addressCountry": "IT"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": "41.4623",
+      "longitude": "15.5447"
+    },
+    "priceRange": "$$"
+  };
 
   return (
     <>
+      <SEO 
+        title="Naitiry — Fotografa a Foggia | Portfolio Professionale"
+        description="Portfolio fotografico professionale di Naitiry. Ritratti, paesaggi, street photography, eventi e progetti creativi disponibili in tutta la provincia di Foggia."
+      />
+      <script type="application/ld+json">
+        {JSON.stringify(structuredData)}
+      </script>
+
       {/* HERO */}
       <section className="hero" id="hero">
         <div className="hero-bg">

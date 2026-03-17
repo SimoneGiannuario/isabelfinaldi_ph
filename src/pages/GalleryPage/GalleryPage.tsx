@@ -5,6 +5,7 @@ import { useLightbox, useVotes } from "../../hooks/usePortfolio";
 import { getSrcSet, getOptimizedUrl } from "../../data/photos";
 import { useLang } from "../../context/LanguageContext";
 import Lightbox from "../../components/Lightbox/Lightbox";
+import SEO from "../../components/SEO/SEO";
 import type { Photo } from "../../types/photo";
 import "./GalleryPage.css";
 
@@ -36,7 +37,6 @@ export default function GalleryPage() {
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    document.title = "Galleria — Isabel Finaldi Photography";
   }, []);
 
   const unique = (key: keyof Photo): string[] => {
@@ -107,6 +107,10 @@ export default function GalleryPage() {
 
   return (
     <>
+      <SEO 
+        title="Galleria — Isabel Finaldi Photography"
+        description="Esplora il portfolio fotografico di Isabel Finaldi. Sfoglia ritratti, paesaggi, matrimoni e progetti creativi."
+      />
       {/* HEADER */}
       <section className="gallery-header">
         <div className="container">
