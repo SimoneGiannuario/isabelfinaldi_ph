@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useNhostPhotos } from "../../hooks/useNhostPhotos";
 import { useScrollReveal, useLightbox } from "../../hooks/usePortfolio";
@@ -14,6 +14,16 @@ export default function HomePage() {
   const featured = useMemo(() => allPhotos.filter((p) => p.featured).sort((a, b) => b.votes - a.votes), [allPhotos]);
   const lightbox = useLightbox(featured);
   useScrollReveal();
+
+  const [currentAboutImage, setCurrentAboutImage] = useState(0);
+  const aboutImages = ['Isabel-web.jpeg', 'Isabel-web1.jpeg', 'Isabel-web2.jpeg'];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentAboutImage((prev) => (prev + 1) % aboutImages.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [aboutImages.length]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -126,11 +136,16 @@ export default function HomePage() {
         <div className="container">
           <div className="about-grid">
             <div className="about-image reveal">
-              <img
-                src={`${import.meta.env.BASE_URL}images/Isabel-web.jpeg`}
-                srcSet={getSrcSet(`${import.meta.env.BASE_URL}images/Isabel-web.jpeg`)}
-                sizes="(max-width: 768px) 100vw, 50vw"
-                alt="Isabel Finaldi" />
+              {aboutImages.map((img, index) => (
+                <img
+                  key={img}
+                  src={`${import.meta.env.BASE_URL}images/${img}`}
+                  srcSet={getSrcSet(`${import.meta.env.BASE_URL}images/${img}`)}
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                  alt={`Isabel Finaldi ${index + 1}`}
+                  className={index === currentAboutImage ? 'active' : ''}
+                />
+              ))}
             </div>
             <div className="about-text">
               <p className="section-subtitle reveal">{t.about.subtitle}</p>
