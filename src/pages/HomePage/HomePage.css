@@ -280,6 +280,10 @@
   transition: opacity 1s ease-in-out;
 }
 
+.about-image img:first-child {
+  position: relative;
+}
+
 .about-image img.active {
   opacity: 1;
 }
