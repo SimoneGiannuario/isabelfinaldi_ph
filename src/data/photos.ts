@@ -224,11 +224,11 @@ export function getOptimizedUrl(src: string, width?: number): string {
   // We should ONLY resize images that come from the backend Worker API.
   // Static assets from the frontend (public folder, etc) should just be returned as-is
   // so we don't try to resize them using Cloudflare (unless they are hosted on a CF domain, but let's be safe).
-  
+
   // If it's an absolute URL, check if it belongs to our worker
   if (src.startsWith('http')) {
     if (apiUrl && !src.startsWith(apiUrl)) {
-      return src; 
+      return src;
     }
   }
 
@@ -250,18 +250,18 @@ export function getOptimizedUrl(src: string, width?: number): string {
   try {
     const url = new URL(fullSrc);
     path = url.pathname;
-    
+
     // Make sure we substitute the old .workers.dev domain with the current environment API url 
     // Otherwise Cloudflare blocks the cross-domain request 
     if (apiUrl && url.origin !== new URL(apiUrl).origin) {
-        fullSrc = `${apiUrl.replace(/\/$/, '')}${path}`;
+      fullSrc = `${apiUrl.replace(/\/$/, '')}${path}`;
     }
   } catch {
     if (!path.startsWith('/')) path = '/' + path;
   }
 
   const params = [];
-  if (width) params.push(`width=${width}`);
+  if (width) params.push(`width=${width}, quality=80`);
   params.push('format=webp');
 
   const base = imgDomain.replace(/\/$/, '');
@@ -273,7 +273,7 @@ export function getSrcSet(src: string): string | undefined {
   if (!src || src.startsWith('data:') || src.startsWith('blob:')) return undefined;
 
   const apiUrl = import.meta.env.VITE_CLOUDFLARE_API_URL;
-  
+
   // Skip srcset if it's an absolute URL NOT belonging to our Cloudflare Worker 
   // (e.g., local/public folder static assets)
   if (src.startsWith('http')) {
