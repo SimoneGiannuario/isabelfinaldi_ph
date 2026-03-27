@@ -161,15 +161,15 @@ export default function HomePage() {
               <p className="reveal">{t.about.paragraph2}</p>
               <div className="about-stats reveal">
                 <div className="stat-item">
-                  <h4>150+</h4>
+                  <h3>150+</h3>
                   <p>{t.about.stat1Label}</p>
                 </div>
                 <div className="stat-item">
-                  <h4>3</h4>
+                  <h3>3</h3>
                   <p>{t.about.stat2Label}</p>
                 </div>
                 <div className="stat-item">
-                  <h4>50+</h4>
+                  <h3>50+</h3>
                   <p>{t.about.stat3Label}</p>
                 </div>
               </div>
