@@ -186,9 +186,9 @@ export default function HomePage() {
               <div className="section-divider reveal" />
               <p className="reveal">{t.contact.paragraph}</p>
               <div className="contact-details reveal">
-                {/* <a href="mailto:hello@isabelfinaldi.com">
-                  <span className="icon">✉</span> hello@isabelfinaldi.com
-                </a> */}
+                <a href="mailto:naitiry.ph@gmail.com">
+                  <span className="icon">✉</span> naitiry.ph@gmail.com
+                </a>
                 <a href="tel:+393514791225">
                   <span className="icon">☏</span> +39 351 479 1225
                 </a>
