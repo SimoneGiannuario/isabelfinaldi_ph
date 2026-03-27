@@ -262,6 +262,7 @@ export function getOptimizedUrl(src: string, width?: number): string {
 
   const params = [];
   if (width) params.push(`width=${width}`);
+  params.push(`quality=80`);
   params.push('format=webp');
 
   const base = imgDomain.replace(/\/$/, '');
