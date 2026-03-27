@@ -29,16 +29,23 @@
   <meta name="twitter:description"
     content="Portfolio fotografico professionale: ritratti, paesaggi, street, eventi e creatività. Fotografa a Foggia." />
 
+  <!-- Preload LCP Logo image -->
+  <link rel="preload" as="image" href="/images/logo1.webp" fetchpriority="high" />
 
-  <!-- Preload hero image for optimal LCP -->
-  <link rel="preload" as="image" href="/images/landscape_sunset.webp"
-    imagesrcset="/images/landscape_sunset-400w.webp 400w, /images/landscape_sunset-800w.webp 800w, /images/landscape_sunset-1200w.webp 1200w, /images/landscape_sunset.webp 1600w"
-    imagesizes="100vw" fetchpriority="high" />
 
   <!-- Favicon -->
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>" />
   <!-- Inline styles for instant First Contentful Paint -->
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YP2XJGF1FZ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-YP2XJGF1FZ');
+  </script>
 
 
   <style>
@@ -112,15 +119,6 @@
     }
   </style>
 </head>
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-YP2XJGF1FZ"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag() { dataLayer.push(arguments); }
-  gtag('js', new Date());
-
-  gtag('config', 'G-YP2XJGF1FZ');
-</script>
 
 <body>
   <div id="root">

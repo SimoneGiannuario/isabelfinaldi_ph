@@ -1,7 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { useLang } from "../../context/LanguageContext";
-import logoImg from "../../assets/images/logo1.webp";
 import "./Navbar.css";
 
 export default function Navbar() {
@@ -73,7 +72,7 @@ export default function Navbar() {
       >
         <div className="container">
           <Link to="/" className="nav-logo" onClick={closeMenu}>
-            <img src={logoImg} alt="Isabel Finaldi" className="nav-logo-img" />
+            <img src={`${import.meta.env.BASE_URL}images/logo1.webp`} alt="Isabel Finaldi" className="nav-logo-img" fetchPriority="high" />
           </Link>
           <ul className="nav-links" role="list">
             <li><NavLink to="/" end>{t.nav.home}</NavLink></li>
