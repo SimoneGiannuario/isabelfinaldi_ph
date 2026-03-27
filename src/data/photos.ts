@@ -286,6 +286,6 @@ export function getSrcSet(src: string): string | undefined {
   // Do not generate a srcset if we aren't using a resizing service, preventing unnecessary 404s.
   if (!import.meta.env.VITE_IMAGE_DOMAIN) return undefined;
 
-  const widths = [400, 600, 800, 1000, 1200, 1440, 1600];
+  const widths = [400, 600, 650, 700, 800, 1000, 1200, 1440, 1600];
   return widths.map(w => `${getOptimizedUrl(src, w)} ${w}w`).join(', ');
 }
