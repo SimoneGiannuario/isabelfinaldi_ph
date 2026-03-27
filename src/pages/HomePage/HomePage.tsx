@@ -108,7 +108,7 @@ export default function HomePage() {
                 <img
                   src={`${base}`}
                   srcSet={srcSet}
-                  sizes="(max-width: 600px) 100vw, 50vw"
+                  sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   alt={photo.title} loading="lazy" />
                 <div className="photo-card-overlay">
                   <h3 className="photo-card-title">{photo.title}</h3>
@@ -143,7 +143,7 @@ export default function HomePage() {
                     key={img}
                     src={getOptimizedUrl(imgPath, 600)}
                     srcSet={getSrcSet(imgPath)}
-                    sizes="(max-width: 768px) 100vw, 50vw"
+                    sizes="(max-width: 768px) 400px, 50vw"
                     alt={`Isabel Finaldi ${index + 1}`}
                     className={index === currentAboutImage ? 'active' : ''}
                     loading={index === 0 ? "eager" : "lazy"}
