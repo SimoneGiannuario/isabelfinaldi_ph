@@ -141,7 +141,7 @@ export default function HomePage() {
                 return (
                   <img
                     key={img}
-                    src={getOptimizedUrl(imgPath, 800)}
+                    src={getOptimizedUrl(imgPath, 600)}
                     srcSet={getSrcSet(imgPath)}
                     sizes="(max-width: 768px) 100vw, 50vw"
                     alt={`Isabel Finaldi ${index + 1}`}
