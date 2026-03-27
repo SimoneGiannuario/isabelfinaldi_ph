@@ -64,7 +64,7 @@ export default function HomePage() {
       <section className="hero" id="hero">
         <div className="hero-bg">
           <img
-            src={`${import.meta.env.BASE_URL}images/tower-bridge.jpg`}
+            src={getOptimizedUrl(`${import.meta.env.BASE_URL}images/tower-bridge.jpg`, 1440)}
             srcSet={getSrcSet(`${import.meta.env.BASE_URL}images/tower-bridge.jpg`)}
             sizes="100vw"
             alt="Hero background" fetchPriority="high" loading="eager" />
@@ -136,16 +136,20 @@ export default function HomePage() {
         <div className="container">
           <div className="about-grid">
             <div className="about-image reveal">
-              {aboutImages.map((img, index) => (
-                <img
-                  key={img}
-                  src={`${import.meta.env.BASE_URL}images/${img}`}
-                  srcSet={getSrcSet(`${import.meta.env.BASE_URL}images/${img}`)}
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                  alt={`Isabel Finaldi ${index + 1}`}
-                  className={index === currentAboutImage ? 'active' : ''}
-                />
-              ))}
+              {aboutImages.map((img, index) => {
+                const imgPath = `${import.meta.env.BASE_URL}images/${img}`;
+                return (
+                  <img
+                    key={img}
+                    src={getOptimizedUrl(imgPath, 800)}
+                    srcSet={getSrcSet(imgPath)}
+                    sizes="(max-width: 768px) 100vw, 50vw"
+                    alt={`Isabel Finaldi ${index + 1}`}
+                    className={index === currentAboutImage ? 'active' : ''}
+                    loading={index === 0 ? "eager" : "lazy"}
+                  />
+                );
+              })}
             </div>
             <div className="about-text">
               <p className="section-subtitle reveal">{t.about.subtitle}</p>

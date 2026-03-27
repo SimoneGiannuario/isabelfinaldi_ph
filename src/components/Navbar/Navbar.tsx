@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { NavLink, Link } from "react-router-dom";
 import { useLang } from "../../context/LanguageContext";
-import logoImg from "../../assets/images/logo1.png";
+import logoImg from "../../assets/images/logo1.webp";
 import "./Navbar.css";
 
 export default function Navbar() {
