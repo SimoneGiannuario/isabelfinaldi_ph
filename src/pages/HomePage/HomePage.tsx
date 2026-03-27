@@ -66,7 +66,7 @@ export default function HomePage() {
           <img
             src={getOptimizedUrl(`${import.meta.env.BASE_URL}images/tower-bridge.jpg`, 1440)}
             srcSet={getSrcSet(`${import.meta.env.BASE_URL}images/tower-bridge.jpg`)}
-            sizes="100vw"
+            sizes="(max-width: 768px) 100vw, 100vw"
             alt="Hero background" fetchPriority="high" loading="eager" />
         </div>
         <div className="hero-overlay" />
@@ -143,7 +143,7 @@ export default function HomePage() {
                     key={img}
                     src={getOptimizedUrl(imgPath, 600)}
                     srcSet={getSrcSet(imgPath)}
-                    sizes="(max-width: 600px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    sizes="(max-width: 448px) calc(100vw - 48px), (max-width: 768px) 400px, 50vw"
                     alt={`Isabel Finaldi ${index + 1}`}
                     className={index === currentAboutImage ? 'active' : ''}
                     loading={index === 0 ? "eager" : "lazy"}
