@@ -10,6 +10,7 @@ import "./App.css";
 
 // Lazy-loaded routes — only downloaded when navigated to
 const GalleryPage = lazy(() => import("./pages/GalleryPage/GalleryPage"));
+const PricelistPage = lazy(() => import("./pages/PricelistPage/PricelistPage"));
 const AdminPage = lazy(() => import("./pages/AdminPage/AdminPage"));
 const NotFoundPage = lazy(() => import("./pages/NotFoundPage/NotFoundPage"));
 
@@ -69,6 +70,7 @@ function App() {
                     <Routes>
                       <Route path="/" element={<HomePage />} />
                       <Route path="/gallery" element={<GalleryPage />} />
+                      <Route path="/pricelist" element={<PricelistPage />} />
                       <Route path="*" element={<NotFoundPage />} />
                     </Routes>
                   </Suspense>

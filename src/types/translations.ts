@@ -4,6 +4,7 @@ export interface NavTranslations {
   about: string;
   contact: string;
   gallery: string;
+  pricelist: string;
 }
 
 export interface HeroTranslations {

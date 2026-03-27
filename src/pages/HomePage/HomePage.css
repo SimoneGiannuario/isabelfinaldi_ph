@@ -295,7 +295,7 @@
   left: var(--space-lg);
   right: calc(-1 * var(--space-lg));
   bottom: calc(-1 * var(--space-lg));
-  border: 1px solid var(--color-accent);
+  /* border: 1px solid var(--color-accent); */
   border-radius: var(--radius-lg);
   z-index: -1;
 }

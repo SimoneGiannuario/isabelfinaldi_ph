@@ -81,6 +81,7 @@ export default function Navbar() {
             <li><a href="/#about" onClick={closeMenu}>{t.nav.about}</a></li>
             <li><a href="/#contact" onClick={closeMenu}>{t.nav.contact}</a></li>
             <li><NavLink to="/gallery">{t.nav.gallery}</NavLink></li>
+            <li><NavLink to="/pricelist">{t.nav.pricelist}</NavLink></li>
           </ul>
           <div className="nav-right">
             <button
@@ -120,6 +121,7 @@ export default function Navbar() {
         <a href="/#about" onClick={closeMenu}>{t.nav.about}</a>
         <a href="/#contact" onClick={closeMenu}>{t.nav.contact}</a>
         <Link to="/gallery" onClick={closeMenu}>{t.nav.gallery}</Link>
+        <Link to="/pricelist" onClick={closeMenu}>{t.nav.pricelist}</Link>
         <button className="lang-toggle lang-toggle--mobile" onClick={toggle}>
           {lang === "it" ? "🇬🇧 English" : "🇮🇹 Italiano"}
         </button>

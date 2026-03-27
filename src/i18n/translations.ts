@@ -13,6 +13,7 @@ export const translations: Translations = {
       about: "Chi Sono",
       contact: "Contatti",
       gallery: "Galleria",
+      pricelist: "Listino Prezzi",
     },
 
     // Hero
@@ -110,6 +111,7 @@ export const translations: Translations = {
       about: "About",
       contact: "Contact",
       gallery: "Gallery",
+      pricelist: "Pricelist",
     },
 
     hero: {

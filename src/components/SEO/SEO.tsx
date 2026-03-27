@@ -16,7 +16,7 @@ export default function SEO({
   description,
   type = "website",
   name = "Isabel Finaldi Photography",
-  image = "/images/landscape_sunset.webp",
+  image = "/images/tower-bridge.jpg",
   url,
   noindex = false,
 }: SEOProps) {

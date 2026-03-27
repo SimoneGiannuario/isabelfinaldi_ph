@@ -33,7 +33,7 @@ export default function HomePage() {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
     "name": "Naitiry - Isabel Finaldi Photography",
-    "image": "https://naitiry.com/images/landscape_sunset.webp",
+    "image": "https://naitiry.com/images/tower-bridge.jpg",
     "description": "Portfolio fotografico professionale di Naitiry, fotografa a Foggia. Ritratti, paesaggi, street photography, eventi e progetti creativi.",
     "url": "https://naitiry.com",
     "address": {
@@ -52,7 +52,7 @@ export default function HomePage() {
 
   return (
     <>
-      <SEO 
+      <SEO
         title="Naitiry — Fotografa a Foggia | Portfolio Professionale"
         description="Portfolio fotografico professionale di Naitiry. Ritratti, paesaggi, street photography, eventi e progetti creativi disponibili in tutta la provincia di Foggia."
       />
@@ -178,33 +178,6 @@ export default function HomePage() {
       <section className="section" id="contact">
         <div className="container">
           <div className="contact-wrapper">
-            <form
-              className="contact-form reveal"
-              onSubmit={(e) => {
-                e.preventDefault();
-                alert("Message sent! (Demo)");
-              }}
-            >
-              <div className="form-group">
-                <label htmlFor="contact-name" className="sr-only">{t.contact.namePlaceholder}</label>
-                <input type="text" placeholder={t.contact.namePlaceholder} required id="contact-name" />
-              </div>
-              <div className="form-group">
-                <label htmlFor="contact-email" className="sr-only">{t.contact.emailPlaceholder}</label>
-                <input type="email" placeholder={t.contact.emailPlaceholder} required id="contact-email" />
-              </div>
-              <div className="form-group">
-                <label htmlFor="contact-subject" className="sr-only">{t.contact.subjectPlaceholder}</label>
-                <input type="text" placeholder={t.contact.subjectPlaceholder} id="contact-subject" />
-              </div>
-              <div className="form-group">
-                <label htmlFor="contact-message" className="sr-only">{t.contact.messagePlaceholder}</label>
-                <textarea placeholder={t.contact.messagePlaceholder} required id="contact-message" />
-              </div>
-              <button type="submit" className="btn-submit" id="contact-submit">
-                {t.contact.sendButton}
-              </button>
-            </form>
             <div className="contact-info">
               <p className="section-subtitle reveal">{t.contact.subtitle}</p>
               <h2 className="section-title reveal">
@@ -213,11 +186,11 @@ export default function HomePage() {
               <div className="section-divider reveal" />
               <p className="reveal">{t.contact.paragraph}</p>
               <div className="contact-details reveal">
-                <a href="mailto:hello@isabelfinaldi.com">
+                {/* <a href="mailto:hello@isabelfinaldi.com">
                   <span className="icon">✉</span> hello@isabelfinaldi.com
-                </a>
-                <a href="tel:+393451234567">
-                  <span className="icon">☏</span> +39 345 123 4567
+                </a> */}
+                <a href="tel:+393514791225">
+                  <span className="icon">☏</span> +39 351 479 1225
                 </a>
                 <span className="contact-location">
                   <span className="icon">◎</span> {t.contact.location}
@@ -225,6 +198,7 @@ export default function HomePage() {
               </div>
               <div className="social-links reveal">
                 <a href="#" aria-label="Instagram">IG</a>
+                <a href="https://wa.me/393514791225" aria-label="Whatsapp">WA</a>
               </div>
             </div>
           </div>
