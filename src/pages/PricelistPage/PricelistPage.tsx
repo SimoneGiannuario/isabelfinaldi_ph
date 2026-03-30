@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import { useLang } from "../../context/LanguageContext";
 import SEO from "../../components/SEO/SEO";
+import { getOptimizedUrl, getSrcSet } from "../../data/photos";
+import useEmblaCarousel from "embla-carousel-react";
 import "./PricelistPage.css";
 
 const pricingData = {
@@ -8,6 +10,7 @@ const pricingData = {
     {
       title: "Inviti personalizzati",
       price: "Da 10€",
+      image: "images/inviti.jpeg",
       description: "Rendi unico il tuo evento fin dal primo dettaglio con inviti digitali personalizzati, curati nello stile e nel design. Perfetti per compleanni, feste ed eventi speciali. Pratici, raffinati e pronti da condividere in pochi istanti.",
       features: [
         "Invito digitale personalizzato",
@@ -21,6 +24,7 @@ const pricingData = {
     {
       title: "Fotolibri per eventi",
       price: "Da 60€",
+      image: "images/fotolibro.jpeg",
       description: "Oltre agli scatti, realizzo fotolibri personalizzati per custodire i ricordi più belli dei tuoi eventi: compleanni, diciottesimi, cerimonie e occasioni uniche. Ogni dettaglio è curato con eleganza, per trasformare le tue fotografie in una storia da sfogliare, rivivere e condividere nel tempo.",
       features: [
         "Fotolibro personalizzato",
@@ -29,11 +33,12 @@ const pricingData = {
         "Ricordi sempre a portata di libro",
         "Consegna rapida"
       ],
-      popular: true,
+      popular: false,
     },
     {
       title: "Eventi",
       price: "Da 150€",
+      image: "images/shooting.jpeg",
       description: "Ci sono momenti che passano in un attimo... ma restano per sempre nel cuore. Battesimi, comunioni, compleanni: emozioni vere, sorrisi spontanei, ricordi preziosi. Io sarò lì per raccontarli, così potrai riviverli ogni volta che vorrai.",
       features: [
         "Copertura completa",
@@ -45,6 +50,20 @@ const pricingData = {
         "Possibilità di aggiungere stampe",
         "Possibilità di avere un link dedicato per la condivisione con amici e parenti"
       ],
+      popular: true,
+    },
+    {
+      title: "Biglietti da visita",
+      price: "Da 10€",
+      image: "images/biglietti-visita.jpeg",
+      description: "Progettazione e stampa di biglietti da visita personalizzati, curati nello stile e nel design. Perfetti per compleanni, feste ed eventi speciali ed altre occasioni. Pratici, raffinati e pronti da condividere in pochi istanti.",
+      features: [
+        "Biglietto da visita personalizzato",
+        "Design curato e raffinato",
+        "Perfetti per compleanni, feste ed eventi speciali",
+        "Pratici, raffinati e pronti da condividere in pochi istanti",
+        "Consegna rapida"
+      ],
       popular: false,
     }
   ],
@@ -52,6 +71,7 @@ const pricingData = {
     {
       title: "Custom Invitations",
       price: "From 10€",
+      image: "images/inviti.jpeg",
       description: "Make your event unique from the very first detail with custom digital invitations, carefully styled and designed. Perfect for birthdays, parties, and special events. Practical, refined, and ready to share in moments.",
       features: [
         "Custom digital invitation",
@@ -65,6 +85,7 @@ const pricingData = {
     {
       title: "Event Photobooks",
       price: "From 60€",
+      image: "images/fotolibro.jpeg",
       description: "In addition to photos, I create custom photobooks to preserve the most beautiful memories of your events: birthdays, 18ths, ceremonies, and unique occasions. Every detail is elegantly curated to turn your photographs into a story to leaf through, relive, and share over time.",
       features: [
         "Custom photobook",
@@ -78,6 +99,7 @@ const pricingData = {
     {
       title: "Events",
       price: "From 150€",
+      image: "images/shooting.jpeg",
       description: "There are moments that pass in an instant... but remain in the heart forever. Baptisms, communions, birthdays: true emotions, spontaneous smiles, precious memories. I will be there to capture them, so you can relive them whenever you want.",
       features: [
         "Full coverage",
@@ -90,6 +112,20 @@ const pricingData = {
         "Option to have a dedicated link to share with friends and family"
       ],
       popular: false,
+    },
+    {
+      title: "Business Cards",
+      price: "From 10€",
+      image: "images/biglietti-visita.jpeg",
+      description: "Design and printing of custom business cards, carefully styled and designed. Perfect for birthdays, parties, special events, and other occasions. Practical, refined, and ready to share in moments.",
+      features: [
+        "Custom business card",
+        "Careful and refined design",
+        "Perfect for birthdays, parties, and special events",
+        "Practical, refined, and ready to share in moments",
+        "Fast delivery"
+      ],
+      popular: false,
     }
   ]
 };
@@ -97,6 +133,18 @@ const pricingData = {
 export default function PricelistPage() {
   const { lang, t } = useLang();
   const data = pricingData[lang];
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    loop: true,
+    align: "start"
+  });
+
+  const scrollPrev = () => {
+    if (emblaApi) emblaApi.scrollPrev();
+  };
+
+  const scrollNext = () => {
+    if (emblaApi) emblaApi.scrollNext();
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -126,52 +174,78 @@ export default function PricelistPage() {
 
       {/* PRICING GRID */}
       <section className="section pricelist-cards-section">
-        <div className="container">
-          <div className="pricelist-grid">
-            {data.map((pack, index) => (
-              <div key={index} className={`pricing-card ${pack.popular ? 'pricing-card--popular' : ''}`}>
-                {pack.popular && (
-                  <div className="pricing-badge">
-                    {lang === 'it' ? 'Più Richiesto' : 'Most Popular'}
+        <div className="container pricelist-carousel-wrapper">
+          <div className="embla" ref={emblaRef}>
+            <div className="embla__container" style={{ display: 'flex' }}>
+              {data.map((pack, index) => (
+                <div key={index} className="embla__slide" style={{ flex: '0 0 var(--slide-size)', minWidth: 0, paddingLeft: '1rem' }}>
+                  <div className={`pricing-card ${pack.popular ? 'pricing-card--popular' : ''}`}>
+                    {pack.popular && (
+                      <div className="pricing-badge">
+                        {lang === 'it' ? 'Più Richiesto' : 'Most Popular'}
+                      </div>
+                    )}
+
+                    <div className="pricing-card-header">
+                      <h3 className="pricing-title">{pack.title}</h3>
+                      <div className="pricing-price">{pack.price}</div>
+                      {pack.image && (
+                        <div className="pricing-image">
+                          <img
+                            src={getOptimizedUrl(`${import.meta.env.BASE_URL}${pack.image}`, 600)}
+                            srcSet={getSrcSet(`${import.meta.env.BASE_URL}${pack.image}`)}
+                            sizes="(max-width: 768px) 100vw, 400px"
+                            alt={pack.title}
+                            loading="lazy"
+                          />
+                        </div>
+                      )}
+                      <p className="pricing-description">{pack.description}</p>
+                    </div>
+
+                    <div className="pricing-card-body">
+                      <ul className="pricing-features">
+                        {pack.features.map((feature, i) => (
+                          <li key={i}>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                              <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            {feature}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="pricing-card-footer">
+                      <a
+                        href={`https://wa.me/393514791225?text=${encodeURIComponent(
+                          lang === 'it'
+                            ? 'Ciao, vorrei avere maggiori informazioni riguardo il pacchetto "' + pack.title + '"'
+                            : 'Hello, I would like more information about the "' + pack.title + '" package'
+                        )}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={`btn ${pack.popular ? 'btn-primary' : 'btn-outline'}`}
+                      >
+                        {lang === 'it' ? 'Richiedi Info' : 'Request Info'}
+                      </a>
+                    </div>
                   </div>
-                )}
-
-                <div className="pricing-card-header">
-                  <h3 className="pricing-title">{pack.title}</h3>
-                  <div className="pricing-price">{pack.price}</div>
-                  <p className="pricing-description">{pack.description}</p>
                 </div>
-
-                <div className="pricing-card-body">
-                  <ul className="pricing-features">
-                    {pack.features.map((feature, i) => (
-                      <li key={i}>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                          <polyline points="20 6 9 17 4 12"></polyline>
-                        </svg>
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="pricing-card-footer">
-                  <a
-                    href={`https://wa.me/393514791225?text=${encodeURIComponent(
-                      lang === 'it'
-                        ? 'Ciao, vorrei avere maggiori informazioni riguardo il pacchetto "' + pack.title + '"'
-                        : 'Hello, I would like more information about the "' + pack.title + '" package'
-                    )}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={`btn ${pack.popular ? 'btn-primary' : 'btn-outline'}`}
-                  >
-                    {lang === 'it' ? 'Richiedi Info' : 'Request Info'}
-                  </a>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
+          {/* Navigation Buttons */}
+          <button className="embla__prev" onClick={scrollPrev} aria-label="Previous slide">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <button className="embla__next" onClick={scrollNext} aria-label="Next slide">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
 
           <div className="pricelist-custom">
             <h3>{lang === 'it' ? 'Cerchi qualcosa di diverso?' : 'Looking for something different?'}</h3>

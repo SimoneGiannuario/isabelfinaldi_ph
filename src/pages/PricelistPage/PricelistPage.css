@@ -21,27 +21,123 @@
 .pricelist-cards-section {
   background-color: var(--color-bg);
   padding-bottom: var(--space-2xl);
-}
-
-.pricelist-grid {
-  display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  gap: var(--space-lg);
-  margin-top: var(--space-lg);
-  margin-bottom: var(--space-2xl);
+  --slide-spacing: 1rem;
+  --slide-size: 100%;
 }
 
 @media (min-width: 768px) {
-  .pricelist-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .pricelist-cards-section {
+    --slide-size: 50%;
   }
 }
 
 @media (min-width: 1024px) {
-  .pricelist-grid {
-    grid-template-columns: repeat(3, 1fr);
-    align-items: center; /* Center them so the popular one can pop out */
+  .pricelist-cards-section {
+    --slide-size: 33.333333%;
   }
+}
+
+.pricelist-carousel-wrapper {
+  position: relative;
+  padding: 0 var(--space-md);
+}
+
+@media (min-width: 768px) {
+  .pricelist-carousel-wrapper {
+    padding: 0 3rem;
+  }
+}
+
+.embla {
+  max-width: 100%;
+  margin: -2.5rem -2rem;
+  padding: 2.5rem 2rem;
+  overflow: hidden;
+  --slide-spacing: 1rem;
+}
+
+@media (max-width: 1023px) {
+  .embla {
+    margin: -2.5rem auto;
+    padding: 2.5rem auto;
+  }
+}
+
+.embla__container {
+  backface-visibility: hidden;
+  display: flex;
+  touch-action: pan-y;
+  margin-left: calc(var(--slide-spacing) * -1);
+}
+
+.embla__slide {
+  flex: 0 0 var(--slide-size);
+  min-width: 0;
+  padding-left: var(--slide-spacing);
+}
+
+.embla__prev,
+.embla__next {
+  outline: 0;
+  cursor: pointer;
+  background-color: transparent;
+  touch-action: manipulation;
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  width: 2.5rem;
+  height: 2.5rem;
+  justify-content: center;
+  align-items: center;
+  fill: var(--color-text);
+  padding: 0;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  background-color: var(--color-bg-card);
+  display: flex;
+  color: var(--color-text);
+  transition: all 0.3s ease;
+}
+
+@media (min-width: 768px) {
+
+  .embla__prev,
+  .embla__next {
+    width: 3rem;
+    height: 3rem;
+  }
+}
+
+.embla__prev:hover,
+.embla__next:hover {
+  background-color: var(--color-accent);
+  color: var(--color-bg);
+}
+
+.embla__prev {
+  left: 0;
+}
+
+.embla__next {
+  right: 0;
+}
+
+@media (min-width: 768px) {
+  .embla__prev {
+    left: -0.5rem;
+  }
+
+  .embla__next {
+    right: -0.5rem;
+  }
+}
+
+.embla__prev svg,
+.embla__next svg {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 /* INDIVIDUAL PRICING CARD */
@@ -59,7 +155,8 @@
 
 .pricing-card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* light shadow, assuming standard mode */
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  /* light shadow, assuming standard mode */
 }
 
 /* Override hover effect for dark themes (adjusting shadow for visibility or disabling it) */
@@ -72,14 +169,17 @@
 .pricing-card--popular {
   border: 2px solid var(--color-accent);
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-  transform: scale(1.03); /* Pops out slightly on large screens */
+  transform: scale(1.03);
+  /* Pops out slightly on large screens */
   z-index: 2;
 }
 
 @media (max-width: 1023px) {
   .pricing-card--popular {
-    transform: none; /* Disable scaling on smaller screens */
+    transform: none;
+    /* Disable scaling on smaller screens */
   }
+
   .pricing-card {
     height: auto;
   }
@@ -91,9 +191,10 @@
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: var(--color-accent);
-  color: var(--color-surface); /* Assuming surface is white/light and accent is dark, or vice versa, needs a proper contrast */
+  color: var(--color-surface);
+  /* Assuming surface is white/light and accent is dark, or vice versa, needs a proper contrast */
   /* Fallback constraint on color just in case accent is dark: */
-  color: #fff; 
+  color: #fff;
   padding: 0.35rem 1rem;
   border-radius: var(--radius-full);
   font-size: var(--text-xs);
@@ -124,6 +225,26 @@
   font-weight: 300;
   color: var(--color-accent);
   margin-bottom: var(--space-sm);
+}
+
+.pricing-image {
+  margin-bottom: var(--space-md);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  aspect-ratio: 3 / 2;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.pricing-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.pricing-card:hover .pricing-image img {
+  transform: scale(1.05);
 }
 
 .pricing-description {
