@@ -1,7 +1,6 @@
 export interface Photo {
   id: number | string;
   src: string;
-  title: string;
   category: string;
   shootingName: string;
   photomodel: string | string[] | null;

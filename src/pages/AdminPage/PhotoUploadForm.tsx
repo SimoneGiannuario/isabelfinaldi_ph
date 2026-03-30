@@ -4,7 +4,6 @@ import type { Photo } from "../../types/photo";
 import type { PhotoUploadMeta } from "../../data/nhostPhotos";
 
 interface FormData {
-  title: string;
   category: string;
   shootingName: string;
   photomodel: string;
@@ -14,7 +13,6 @@ interface FormData {
 }
 
 const EMPTY_FORM: FormData = {
-  title: "",
   category: "Portrait",
   shootingName: "",
   photomodel: "",
@@ -35,7 +33,6 @@ interface PhotoUploadFormProps {
   onCancel: () => void;
   saving: boolean | string;
   saveError: string;
-  existingTitles?: string[];
   existingShootingNames?: string[];
   existingPhotomodels?: string[];
 }
@@ -47,7 +44,6 @@ interface PhotoUploadFormProps {
  */
 export default function PhotoUploadForm({
   photo, onSave, onCancel, saving, saveError,
-  existingTitles = [],
   existingShootingNames = [],
   existingPhotomodels = []
 }: PhotoUploadFormProps) {
@@ -55,7 +51,6 @@ export default function PhotoUploadForm({
 
   // Nhost now returns an array for photomodels, but we want the user to type a comma string
   const initialPhoto: FormData = isEdit ? {
-    title: photo.title,
     category: photo.category,
     shootingName: photo.shootingName,
     photomodel: Array.isArray(photo.photomodel) ? photo.photomodel.join(', ') : (photo.photomodel || ""),
@@ -86,10 +81,6 @@ export default function PhotoUploadForm({
   const [showTitleSuggestions, setShowTitleSuggestions] = useState(false);
   const [showShootingSuggestions, setShowShootingSuggestions] = useState(false);
 
-  // Compute available title suggestions
-  const availableTitleSuggestions = existingTitles.filter(t =>
-    t.toLowerCase().includes((currentForm.title || "").toLowerCase()) && t !== currentForm.title
-  );
 
   // Compute available shooting suggestions
   const availableShootingSuggestions = existingShootingNames.filter(s =>
@@ -155,15 +146,6 @@ export default function PhotoUploadForm({
     e.preventDefault();
     if (!isEdit && items.length === 0) { setError("Carica almeno un'immagine prima di salvare."); return; }
 
-    // Validate all forms before saving
-    for (let i = 0; i < items.length; i++) {
-      if (!items[i].form.title.trim()) {
-        setCurrentIndex(i); // jump to the invalid form
-        setError("Il titolo è obbligatorio per tutte le foto.");
-        return;
-      }
-    }
-
     if (isEdit) {
       onSave({ ...items[0].form });
     } else {
@@ -228,41 +210,6 @@ export default function PhotoUploadForm({
           {/* Metadata fields */}
           {items.length > 0 && (
             <div className="upload-fields">
-              <div className="admin-field" style={{ position: 'relative' }}>
-                <label>Titolo (Foto {currentIndex + 1} di {items.length}) *</label>
-                <input
-                  value={currentForm.title}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) => {
-                    setFormKey("title", e.target.value);
-                    setShowTitleSuggestions(true);
-                  }}
-                  onFocus={() => setShowTitleSuggestions(true)}
-                  onBlur={() => setTimeout(() => setShowTitleSuggestions(false), 200)}
-                  placeholder="Es. Luce d'Estate"
-                  required
-                />
-                {showTitleSuggestions && availableTitleSuggestions.length > 0 && (
-                  <div style={{
-                    position: 'absolute', top: '100%', left: 0, right: 0,
-                    background: 'var(--adm-surface)', border: '1px solid var(--adm-border)',
-                    zIndex: 10, borderRadius: '4px', marginTop: '4px',
-                    maxHeight: '150px', overflowY: 'auto', boxShadow: '0 4px 6px rgba(0,0,0,0.1)'
-                  }}>
-                    {availableTitleSuggestions.map(t => (
-                      <div
-                        key={t}
-                        onClick={() => {
-                          setFormKey("title", t);
-                          setShowTitleSuggestions(false);
-                        }}
-                        style={{ padding: '8px 12px', cursor: 'pointer', borderBottom: '1px solid var(--adm-border)' }}
-                      >
-                        {t}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
               <div className="admin-field">
                 <label>Categoria *</label>
                 <select value={currentForm.category} onChange={(e: ChangeEvent<HTMLSelectElement>) => setFormKey("category", e.target.value)}>

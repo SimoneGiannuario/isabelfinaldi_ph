@@ -7,7 +7,6 @@ export const PHOTOS: Photo[] = [
   {
     id: 1,
     src: "images/portrait_golden_hour.webp",
-    title: "Luce Dorata",
     category: "Portrait",
     shootingName: "Golden Hour Session",
     photomodel: "Giulia Marchetti",
@@ -18,7 +17,6 @@ export const PHOTOS: Photo[] = [
   {
     id: 2,
     src: "images/portrait_studio_bw.webp",
-    title: "Ombre & Luce",
     category: "Portrait",
     shootingName: "Studio Noir",
     photomodel: "Marco Bellini",
@@ -29,7 +27,6 @@ export const PHOTOS: Photo[] = [
   {
     id: 3,
     src: "images/landscape_sunset.webp",
-    title: "Tramonto Toscano",
     category: "Landscape",
     shootingName: "Tuscan Hills",
     photomodel: null,
@@ -40,7 +37,6 @@ export const PHOTOS: Photo[] = [
   {
     id: 4,
     src: "images/street_night.webp",
-    title: "Riflessi Urbani",
     category: "Street",
     shootingName: "Urban Vibes",
     photomodel: null,
@@ -51,7 +47,6 @@ export const PHOTOS: Photo[] = [
   {
     id: 5,
     src: "images/event_wedding.webp",
-    title: "Promesse nel Giardino",
     category: "Events",
     shootingName: "Villa Rossi Wedding",
     photomodel: null,
@@ -62,7 +57,6 @@ export const PHOTOS: Photo[] = [
   {
     id: 6,
     src: "images/portrait_golden_hour.webp",
-    title: "Sogni al Tramonto",
     category: "Creative",
     shootingName: "Golden Hour Session",
     photomodel: "Giulia Marchetti",
@@ -73,7 +67,6 @@ export const PHOTOS: Photo[] = [
   {
     id: 7,
     src: "images/portrait_studio_bw.webp",
-    title: "Profilo nel Buio",
     category: "Portrait",
     shootingName: "Studio Noir",
     photomodel: "Marco Bellini",
@@ -84,7 +77,6 @@ export const PHOTOS: Photo[] = [
   {
     id: 8,
     src: "images/landscape_sunset.webp",
-    title: "Colline Infinite",
     category: "Landscape",
     shootingName: "Tuscan Hills",
     photomodel: null,
@@ -95,7 +87,6 @@ export const PHOTOS: Photo[] = [
   {
     id: 9,
     src: "images/street_night.webp",
-    title: "Luci della Città",
     category: "Street",
     shootingName: "Notte Romana",
     photomodel: null,
@@ -106,7 +97,6 @@ export const PHOTOS: Photo[] = [
   {
     id: 10,
     src: "images/event_wedding.webp",
-    title: "Il Primo Ballo",
     category: "Events",
     shootingName: "Villa Rossi Wedding",
     photomodel: null,
@@ -117,7 +107,6 @@ export const PHOTOS: Photo[] = [
   {
     id: 11,
     src: "images/portrait_golden_hour.webp",
-    title: "Vento d'Estate",
     category: "Creative",
     shootingName: "Summer Breeze",
     photomodel: "Sofia Ricci",
@@ -128,7 +117,6 @@ export const PHOTOS: Photo[] = [
   {
     id: 12,
     src: "images/portrait_studio_bw.webp",
-    title: "Silenzio",
     category: "Portrait",
     shootingName: "Minimal Portraits",
     photomodel: "Elena Conti",

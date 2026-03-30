@@ -71,7 +71,7 @@ export default function GalleryPage() {
       }
       if (filters.date && photo.date.substring(0, 7) !== filters.date) return false;
       if (filters.search) {
-        const haystack = `${photo.title} ${photo.category} ${photo.shootingName} ${photo.photomodel ?? ""}`.toLowerCase();
+        const haystack = `${photo.category} ${photo.shootingName} ${photo.photomodel ?? ""}`.toLowerCase();
         if (!haystack.includes(filters.search.toLowerCase())) return false;
       }
       return true;
@@ -80,7 +80,7 @@ export default function GalleryPage() {
       if (sortBy === "votes") return b.votes - a.votes;
       if (sortBy === "date-new") return new Date(b.date).getTime() - new Date(a.date).getTime();
       if (sortBy === "date-old") return new Date(a.date).getTime() - new Date(b.date).getTime();
-      if (sortBy === "name") return a.title.localeCompare(b.title);
+      if (sortBy === "name") return a.shootingName.localeCompare(b.shootingName);
       return 0;
     });
     return result;
@@ -234,9 +234,8 @@ export default function GalleryPage() {
                       src={base}
                       srcSet={srcSet}
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      alt={photo.title} loading="lazy" />
+                      alt={photo.category} loading="lazy" />
                     <div className="gallery-item-overlay">
-                      <h4 className="gallery-item-title">{photo.title}</h4>
                       <div className="gallery-item-details">
                         <span className="tag">{t.gallery.categories[photo.category] || photo.category}</span>
                         {photo.photomodel && (

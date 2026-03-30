@@ -90,7 +90,6 @@ app.get('/photos', async (c) => {
 
       return {
         id: row.id,
-        title: row.title,
         category: row.category,
         shooting_name: row.shooting_name,
         photomodel,
@@ -139,7 +138,6 @@ app.post('/admin/upload', async (c) => {
     if (!file) return c.json({ error: 'No file uploaded' }, 400)
 
     // Parse metadata
-    const title = formData.get('title') as string
     const category = formData.get('category') as string
     const shooting_name = formData.get('shootingName') as string || null
     const photomodelstr = formData.get('photomodel') as string || '' // Comma separated
@@ -165,9 +163,9 @@ app.post('/admin/upload', async (c) => {
 
     // Insert into D1
     await c.env.portfolio_db.prepare(`
-      INSERT INTO photos (id, title, category, shooting_name, photomodel, date, featured, votes, storage_id, src)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    `).bind(id, title, category, shooting_name, photomodel, date, featured, votes, storage_id, src).run()
+      INSERT INTO photos (id, category, shooting_name, photomodel, date, featured, votes, storage_id, src)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).bind(id, category, shooting_name, photomodel, date, featured, votes, storage_id, src).run()
 
     return c.json({ data: { id, src } })
   } catch (e: any) {
@@ -183,7 +181,6 @@ app.put('/admin/photos/:id', async (c) => {
     const body = await c.req.json()
 
     // Example body matching what the frontend sends
-    const title = body.title
     const category = body.category
     const shooting_name = body.shootingName || null
     const photomodelstr = body.photomodel || '' // Comma separated 
@@ -195,9 +192,9 @@ app.put('/admin/photos/:id', async (c) => {
 
     await c.env.portfolio_db.prepare(`
       UPDATE photos 
-      SET title = ?, category = ?, shooting_name = ?, photomodel = ?, date = ?, featured = ?
+      SET category = ?, shooting_name = ?, photomodel = ?, date = ?, featured = ?
       WHERE id = ?
-    `).bind(title, category, shooting_name, photomodel, date, featured, id).run()
+    `).bind(category, shooting_name, photomodel, date, featured, id).run()
 
     return c.json({ success: true, id })
   } catch (e: any) {

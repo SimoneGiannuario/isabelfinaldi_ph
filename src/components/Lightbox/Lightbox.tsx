@@ -58,8 +58,8 @@ export default function Lightbox({ photo, onClose, onPrev, onNext, currentIndex,
   metaParts.push(formatDate(photo.date));
 
   const positionLabel = currentIndex && totalPhotos
-    ? `Foto ${currentIndex} di ${totalPhotos}: ${photo.title}`
-    : photo.title;
+    ? `Foto ${currentIndex} di ${totalPhotos}: ${photo.category}`
+    : photo.category;
 
   return (
     <div
@@ -76,11 +76,10 @@ export default function Lightbox({ photo, onClose, onPrev, onNext, currentIndex,
           src={photo.src}
           srcSet={getSrcSet(photo.src)}
           sizes="100vw"
-          alt={photo.title} />
+          alt={photo.category} />
       </div>
       <button className="lightbox-nav lightbox-next" onClick={onNext} aria-label="Foto successiva">›</button>
       <div className="lightbox-info" aria-live="polite">
-        <h3>{photo.title}</h3>
         <p>{metaParts.join(" · ")}</p>
         {currentIndex && totalPhotos && (
           <span className="sr-only">Foto {currentIndex} di {totalPhotos}</span>

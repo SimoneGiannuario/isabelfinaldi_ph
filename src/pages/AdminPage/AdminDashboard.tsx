@@ -77,9 +77,7 @@ export default function AdminDashboard() {
   // Aggregate all photos to compute autocomplete dropdowns
   const allPhotos = useMemo(() => [...PHOTOS, ...nhostPhotos], [nhostPhotos]);
 
-  const existingTitles = useMemo(() => {
-    return [...new Set(allPhotos.map(p => p.title).filter(Boolean))].sort();
-  }, [allPhotos]);
+
 
   const existingShootingNames = useMemo(() => {
     return [...new Set(allPhotos.map(p => p.shootingName).filter(Boolean))].sort();
@@ -138,11 +136,10 @@ export default function AdminDashboard() {
             {PHOTOS.map((photo) => (
               <div key={photo.id} className="admin-card admin-card--static">
                 <div className="admin-card-img">
-                  <img src={photo.src} alt={photo.title} />
+                  <img src={photo.src} alt={photo.category} />
                   <span className="admin-card-badge">Integrata</span>
                 </div>
                 <div className="admin-card-info">
-                  <h4>{photo.title}</h4>
                   <p>{photo.category} · {formatDate(photo.date)}</p>
                   {photo.featured && <span className="badge badge--gold">⭐ In evidenza</span>}
                 </div>
@@ -176,11 +173,10 @@ export default function AdminDashboard() {
               {nhostPhotos.map((photo) => (
                 <div key={photo.id} className="admin-card">
                   <div className="admin-card-img">
-                    <img src={photo.src} alt={photo.title} />
+                    <img src={photo.src} alt={photo.category} />
                     {photo.featured && <span className="admin-card-badge admin-card-badge--gold">⭐</span>}
                   </div>
                   <div className="admin-card-info">
-                    <h4>{photo.title}</h4>
                     <p>{photo.category} · {formatDate(photo.date)}</p>
                     {photo.photomodel && (Array.isArray(photo.photomodel) ? photo.photomodel.length > 0 : true) && (
                       <p className="admin-card-model">
@@ -214,7 +210,7 @@ export default function AdminDashboard() {
           onCancel={() => { setShowUpload(false); setEditingPhoto(null); setSaveError(""); }}
           saving={saving}
           saveError={saveError}
-          existingTitles={existingTitles}
+
           existingShootingNames={existingShootingNames}
           existingPhotomodels={existingPhotomodels}
         />

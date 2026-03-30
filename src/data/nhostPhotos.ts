@@ -20,7 +20,6 @@ const getHeaders = () => {
 
 interface NhostPhotoRow {
   id: string;
-  title: string;
   category: string;
   shooting_name: string;
   photomodel: string | string[] | null;
@@ -41,7 +40,6 @@ export async function fetchNhostPhotos(): Promise<Photo[]> {
 
     return photos.map((p) => ({
       id: p.id,
-      title: p.title,
       category: p.category,
       shootingName: p.shooting_name,
       photomodel: Array.isArray(p.photomodel) ? p.photomodel : (p.photomodel ? p.photomodel.replace(/^\{|\}$/g, '').split(',').map(m => m.trim()) : []),
@@ -61,7 +59,6 @@ export async function fetchNhostPhotos(): Promise<Photo[]> {
 // ── Admin: upload image to Storage + insert row ───────────────────────────────
 
 export interface PhotoUploadMeta {
-  title: string;
   category: string;
   shootingName?: string;
   photomodel?: string;
@@ -74,7 +71,6 @@ export async function uploadPhoto(file: File, meta: PhotoUploadMeta): Promise<st
   try {
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('title', meta.title);
     formData.append('category', meta.category);
     if (meta.shootingName) formData.append('shootingName', meta.shootingName);
     if (meta.photomodel) formData.append('photomodel', meta.photomodel);
