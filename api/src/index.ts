@@ -55,11 +55,11 @@ app.post('/admin/login', async (c) => {
       return c.json({ error: 'Invalid password' }, 401);
     }
 
-    // Generate JWT (Valid for 24 hours)
+    // Generate JWT (Valid for 30 days)
     const secret = c.env.JWT_SECRET || 'fallback-secret-for-dev';
     const payload = {
       role: 'admin',
-      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, // 24 hours
+      exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 30, // 30 days
     };
 
     const token = await sign(payload, secret, "HS256");

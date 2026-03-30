@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
+import { createContext, useContext, useState, type ReactNode } from "react";
 // The base URL for the Cloudflare API
 const API_URL = import.meta.env.VITE_CLOUDFLARE_API_URL || 'http://localhost:8787';
 
@@ -12,16 +12,30 @@ interface AdminAuthContextValue {
 const AdminAuthContext = createContext<AdminAuthContextValue | null>(null);
 
 export function AdminAuthProvider({ children }: { children: ReactNode }) {
-  // Start with null (unknown) so we can show a loading state while
-  // checking for an existing session, avoiding a flash of the login screen.
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(() => {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("admin_token");
+      if (!token) return false;
+      
+      try {
+        // Decode the payload of the JWT token
+        const payloadStr = atob(token.split('.')[1]);
+        const payload = JSON.parse(payloadStr);
+        // Check if token is expired
+        if (payload.exp && payload.exp * 1000 < Date.now()) {
+          localStorage.removeItem("admin_token");
+          return false;
+        }
+        return true;
+      } catch (e) {
+        // If decoding fails, the token is invalid format
+        localStorage.removeItem("admin_token");
+        return false;
+      }
+    }
+    return null;
+  });
   const [error, setError] = useState("");
-
-  // On mount, restore session from localStorage if one exists
-  useEffect(() => {
-    const token = localStorage.getItem("admin_token");
-    setIsAuthenticated(!!token);
-  }, []);
 
   const login = async (email: string, password: string): Promise<boolean> => {
     setError("");
