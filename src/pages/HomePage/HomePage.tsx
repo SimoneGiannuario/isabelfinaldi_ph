@@ -200,7 +200,9 @@ export default function HomePage() {
                 </span>
               </div>
               <div className="social-links reveal">
-                <a href="#" aria-label="Instagram">IG</a>
+                <a href="https://www.instagram.com/naitiry.ph/" aria-label="Instagram">IG</a>
+                <a href="https://www.facebook.com/profile.php?id=61576485123692" aria-label="Facebook">FB</a>
+                <a href="https://www.tiktok.com/@naitiry.ph?lang=it-IT" aria-label="Tiktok">TK</a>
                 <a href="https://wa.me/393514791225" aria-label="Whatsapp">WA</a>
               </div>
             </div>
