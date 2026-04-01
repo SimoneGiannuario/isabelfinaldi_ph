@@ -54,7 +54,7 @@ export default function HomePage() {
     <>
       <SEO
         title="Naitiry — Fotografa a Foggia | Portfolio Professionale"
-        description="Portfolio fotografico professionale di Naitiry. Ritratti, paesaggi, street photography, eventi e progetti creativi disponibili in tutta la provincia di Foggia."
+        description="Scopri il portfolio fotografico di Naitiry: ritratti, paesaggi, street, eventi e progetti creativi. Fotografa professionista a Foggia e provincia."
       />
       <script type="application/ld+json">
         {JSON.stringify(structuredData)}

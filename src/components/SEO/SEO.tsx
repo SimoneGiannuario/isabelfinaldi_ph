@@ -1,5 +1,6 @@
 import { Helmet } from "react-helmet-async";
 import { useLocation } from "react-router-dom";
+import { getOptimizedUrl } from "../../data/photos";
 
 interface SEOProps {
   title: string;
@@ -15,14 +16,14 @@ export default function SEO({
   title,
   description,
   type = "website",
-  name = "Isabel Finaldi Photography",
-  image = "/images/tower-bridge.jpg",
+  name = "Naitiry",
+  image = "/images/logo1.webp",
   url,
   noindex = false,
 }: SEOProps) {
   const location = useLocation();
   const currentUrl = url || `https://naitiry.com${location.pathname}`;
-  const fullImage = image.startsWith("http") ? image : `https://naitiry.com${image}`;
+  const fullImage = image.startsWith("http") ? image : getOptimizedUrl(`${import.meta.env.BASE_URL}images/logo1.webp`, 1440);
 
   return (
     <Helmet>
