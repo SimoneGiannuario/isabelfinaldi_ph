@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar/Navbar";
 import Footer from "./components/Footer/Footer";
 import HomePage from "./pages/HomePage/HomePage";
 import "./App.css";
+import { Analytics } from "@vercel/analytics/react";
 
 
 // Lazy-loaded routes — only downloaded when navigated to
@@ -80,6 +81,7 @@ function App() {
             }
           />
         </Routes>
+        <Analytics />
       </BrowserRouter>
     </LanguageProvider>
   );
