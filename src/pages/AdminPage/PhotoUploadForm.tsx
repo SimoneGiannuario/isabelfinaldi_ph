@@ -1,5 +1,6 @@
 import { useState, useRef, type FormEvent, type DragEvent, type ChangeEvent } from "react";
 import { CATEGORIES } from "../../data/photos";
+import { useLang } from "../../context/LanguageContext";
 import type { Photo } from "../../types/photo";
 import type { PhotoUploadMeta } from "../../data/nhostPhotos";
 
@@ -48,6 +49,8 @@ export default function PhotoUploadForm({
   existingPhotomodels = []
 }: PhotoUploadFormProps) {
   const isEdit = !!photo;
+  const { t } = useLang();
+  const catLabel = (c: string) => t.gallery.categories[c] || c;
 
   const initialForm: FormData = isEdit ? {
     category: photo.category,
@@ -76,15 +79,9 @@ export default function PhotoUploadForm({
   const [showModelSuggestions, setShowModelSuggestions] = useState(false);
   const [showShootingSuggestions, setShowShootingSuggestions] = useState(false);
 
-  // Auto-generated title preview
-  const generateTitle = (index: number, total: number) => {
-    const parts: string[] = [];
-    if (form.category) parts.push(form.category);
-    if (form.shootingName) parts.push(form.shootingName);
-    if (total > 1) {
-      parts.push(String(index + 1).padStart(3, '0'));
-    }
-    return parts.join(' - ');
+  // Auto-generated title: just a progressive number
+  const generateTitle = (index: number) => {
+    return String(index + 1).padStart(3, '0');
   };
 
   // Compute available shooting suggestions
@@ -157,15 +154,14 @@ export default function PhotoUploadForm({
     if (!isEdit && files.length === 0) { setError("Carica almeno un'immagine prima di salvare."); return; }
 
     if (isEdit) {
-      // For edits, compute the title from form fields
-      const title = generateTitle(0, 1);
+      // For edits, keep a simple progressive title
+      const title = generateTitle(0);
       onSave({ ...form, title });
     } else {
       // Return array of { ...form, title, file } with progressive titles
-      const total = files.length;
       onSave(files.map((item, i) => ({
         ...form,
-        title: generateTitle(i, total),
+        title: generateTitle(i),
         file: item.file,
       })));
     }
@@ -273,19 +269,19 @@ export default function PhotoUploadForm({
                   fontStyle: 'italic',
                 }}>
                   {isEdit
-                    ? generateTitle(0, 1) || '—'
+                    ? generateTitle(0)
                     : files.length > 1
                       ? (<>
-                          {generateTitle(0, files.length)} … {generateTitle(files.length - 1, files.length)}
+                          {generateTitle(0)} … {generateTitle(files.length - 1)}
                           <span style={{ marginLeft: '8px', fontSize: '11px', color: '#999' }}>
                             ({files.length} foto)
                           </span>
                         </>)
-                      : generateTitle(0, files.length) || '—'
+                      : generateTitle(0)
                   }
                 </div>
                 <small style={{ color: '#999', marginTop: '2px', display: 'block' }}>
-                  Formato: Categoria - Nome Sessione{!isEdit && files.length > 1 ? ' - N° progressivo' : ''}
+                  N° progressivo (001, 002, 003…)
                 </small>
               </div>
 
@@ -293,7 +289,7 @@ export default function PhotoUploadForm({
                 <label>Categoria *</label>
                 <select value={form.category} onChange={(e: ChangeEvent<HTMLSelectElement>) => setFormKey("category", e.target.value)}>
                   {(CATEGORIES ?? ["Portrait", "Landscape", "Street", "Events", "Creative"]).map((c) => (
-                    <option key={c} value={c}>{c}</option>
+                    <option key={c} value={c}>{catLabel(c)}</option>
                   ))}
                 </select>
               </div>

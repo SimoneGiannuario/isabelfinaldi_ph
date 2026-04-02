@@ -1,5 +1,6 @@
 import { useState, useMemo } from "react";
 import { useAdminAuth } from "../../context/AdminAuthContext";
+import { useLang } from "../../context/LanguageContext";
 import { PHOTOS, formatDate } from "../../data/photos";
 import { useNhostPhotos } from "../../hooks/useNhostPhotos";
 import { uploadPhoto, updateNhostPhoto, deleteNhostPhoto } from "../../data/nhostPhotos";
@@ -13,6 +14,8 @@ interface UploadItem extends PhotoUploadMeta {
 
 export default function AdminDashboard() {
   const { logout } = useAdminAuth();
+  const { t } = useLang();
+  const catLabel = (c: string) => t.gallery.categories[c] || c;
   const { nhostPhotos, loading, error: fetchError, refresh } = useNhostPhotos();
   const [showUpload, setShowUpload] = useState(false);
   const [editingPhoto, setEditingPhoto] = useState<Photo | null>(null);
@@ -140,7 +143,7 @@ export default function AdminDashboard() {
                   <span className="admin-card-badge">Integrata</span>
                 </div>
                 <div className="admin-card-info">
-                  <p>{photo.category} · {formatDate(photo.date)}</p>
+                  <p>{catLabel(photo.category)} · {formatDate(photo.date)}</p>
                   {photo.featured && <span className="badge badge--gold">⭐ In evidenza</span>}
                 </div>
               </div>
@@ -180,7 +183,7 @@ export default function AdminDashboard() {
                     {photo.title && (
                       <p style={{ fontWeight: 600, fontSize: '13px', marginBottom: '2px' }}>{photo.title}</p>
                     )}
-                    <p>{photo.category} · {formatDate(photo.date)}</p>
+                    <p>{catLabel(photo.category)} · {formatDate(photo.date)}</p>
                     {photo.photomodel && (Array.isArray(photo.photomodel) ? photo.photomodel.length > 0 : true) && (
                       <p className="admin-card-model">
                         📷 {Array.isArray(photo.photomodel) ? photo.photomodel.join(', ') : photo.photomodel}
