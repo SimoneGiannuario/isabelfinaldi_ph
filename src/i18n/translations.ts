@@ -18,10 +18,10 @@ export const translations: Translations = {
 
     // Hero
     hero: {
-      eyebrow: "Portfolio Fotografico",
+      eyebrow: "Portfolio Fotografico di Naitiry | Foggia, Italia",
       title1: "Naitiry",
       title2: "",
-      description: "Catturando emozioni, luce e storie attraverso l'obiettivo. Basata in Italia, disponibile in tutto il mondo.",
+      description: "Catturando emozioni, luce e storie attraverso l'obiettivo. Basata in Foggia, disponibile in Italia.",
       cta: "Esplora i Miei Lavori →",
       scroll: "Scorri",
     },
@@ -115,10 +115,10 @@ export const translations: Translations = {
     },
 
     hero: {
-      eyebrow: "Photography Portfolio",
+      eyebrow: "Naitiry Photography Portfolio | Foggia, Italy",
       title1: "Naitiry",
       title2: "",
-      description: "Capturing emotions, light, and stories through the lens. Based in Italy, available worldwide.",
+      description: "Capturing emotions, light, and stories through the lens. Based in Foggia, available in Italy.",
       cta: "Explore My Work →",
       scroll: "Scroll",
     },

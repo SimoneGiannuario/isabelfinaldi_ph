@@ -71,10 +71,10 @@ export default function HomePage() {
         </div>
         <div className="hero-overlay" />
         <div className="hero-content">
-          <p className="hero-eyebrow">{t.hero.eyebrow}</p>
-          <h1 className="hero-title">
+          <h1 className="hero-eyebrow">{t.hero.eyebrow}</h1>
+          <h2 className="hero-title">
             {t.hero.title1}
-          </h1>
+          </h2>
           <p className="hero-description">{t.hero.description}</p>
           <Link to="/gallery" className="hero-cta">
             {t.hero.cta}
