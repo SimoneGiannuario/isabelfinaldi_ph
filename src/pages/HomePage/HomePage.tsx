@@ -109,7 +109,9 @@ export default function HomePage() {
                   src={`${base}`}
                   srcSet={srcSet}
                   sizes="(max-width: 768px) calc(100vw - 48px), (max-width: 1024px) 50vw, 33vw"
-                  alt={photo.category} loading="lazy" />
+                  alt={photo.title || photo.category}
+                  title={photo.title || photo.category}
+                  loading="lazy" />
                 <div className="photo-card-overlay">
                   <div className="photo-card-meta">
                     <span>{t.gallery.categories[photo.category] || photo.category}</span>

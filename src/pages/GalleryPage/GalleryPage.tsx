@@ -234,7 +234,9 @@ export default function GalleryPage() {
                       src={base}
                       srcSet={srcSet}
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      alt={photo.category} loading="lazy" />
+                      alt={photo.title || photo.category}
+                      title={photo.title || photo.category}
+                      loading="lazy" />
                     <div className="gallery-item-overlay">
                       <div className="gallery-item-details">
                         <span className="tag">{t.gallery.categories[photo.category] || photo.category}</span>
