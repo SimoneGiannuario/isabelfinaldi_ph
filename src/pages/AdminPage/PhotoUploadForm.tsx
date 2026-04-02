@@ -21,10 +21,9 @@ const EMPTY_FORM: FormData = {
   votes: 0,
 };
 
-interface UploadItem {
-  file: File | null;
+interface UploadFile {
+  file: File;
   previewSrc: string;
-  form: FormData;
 }
 
 interface PhotoUploadFormProps {
@@ -39,7 +38,8 @@ interface PhotoUploadFormProps {
 
 /**
  * PhotoUploadForm
- * For new uploads: passes array of { ...meta, file: File } to onSave.
+ * For new uploads: user enters metadata ONCE, it applies to ALL selected images.
+ *                  Title is auto-generated as: Category - ShootingName - 001, 002, ...
  * For edits:       passes { ...meta } (no file — only metadata changes).
  */
 export default function PhotoUploadForm({
@@ -49,8 +49,7 @@ export default function PhotoUploadForm({
 }: PhotoUploadFormProps) {
   const isEdit = !!photo;
 
-  // Nhost now returns an array for photomodels, but we want the user to type a comma string
-  const initialPhoto: FormData = isEdit ? {
+  const initialForm: FormData = isEdit ? {
     category: photo.category,
     shootingName: photo.shootingName,
     photomodel: Array.isArray(photo.photomodel) ? photo.photomodel.join(', ') : (photo.photomodel || ""),
@@ -59,36 +58,42 @@ export default function PhotoUploadForm({
     votes: photo.votes,
   } : EMPTY_FORM;
 
-  // For multi-upload, we keep an array of items: { file, previewSrc, form }
-  // When editing, we just have one item representing the existing photo.
-  const [items, setItems] = useState<UploadItem[]>(
-    isEdit ? [{ form: initialPhoto, previewSrc: photo.src, file: null }] : []
-  );
+  // Single shared form for all images (or the one being edited)
+  const [form, setForm] = useState<FormData>(initialForm);
 
-  // Which item in the `items` array is currently being edited in the form
-  const [currentIndex, setCurrentIndex] = useState(0);
+  // Files to upload (only for new uploads)
+  const [files, setFiles] = useState<UploadFile[]>([]);
+
+  // Which file preview is currently shown
+  const [previewIndex, setPreviewIndex] = useState(0);
 
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState("");
   const fileRef = useRef<HTMLInputElement>(null);
 
-  // The active form data
-  const currentForm = items.length > 0 ? items[currentIndex].form : EMPTY_FORM;
-
   // Local state for the photomodel autocomplete input
   const [modelInput, setModelInput] = useState("");
   const [showModelSuggestions, setShowModelSuggestions] = useState(false);
-  const [showTitleSuggestions, setShowTitleSuggestions] = useState(false);
   const [showShootingSuggestions, setShowShootingSuggestions] = useState(false);
 
+  // Auto-generated title preview
+  const generateTitle = (index: number, total: number) => {
+    const parts: string[] = [];
+    if (form.category) parts.push(form.category);
+    if (form.shootingName) parts.push(form.shootingName);
+    if (total > 1) {
+      parts.push(String(index + 1).padStart(3, '0'));
+    }
+    return parts.join(' - ');
+  };
 
   // Compute available shooting suggestions
   const availableShootingSuggestions = existingShootingNames.filter(s =>
-    s.toLowerCase().includes((currentForm.shootingName || "").toLowerCase()) && s !== currentForm.shootingName
+    s.toLowerCase().includes((form.shootingName || "").toLowerCase()) && s !== form.shootingName
   );
 
   // Compute remaining models that are NOT yet in the current form's photomodel string
-  const currentModels = (currentForm.photomodel || "").split(',').map(m => m.trim()).filter(Boolean);
+  const currentModels = (form.photomodel || "").split(',').map(m => m.trim()).filter(Boolean);
   const availableModelSuggestions = existingPhotomodels.filter(m =>
     !currentModels.includes(m) &&
     m.toLowerCase().includes(modelInput.toLowerCase())
@@ -98,42 +103,47 @@ export default function PhotoUploadForm({
     const newString = currentModels.length > 0
       ? currentModels.join(', ') + ', ' + modelName
       : modelName;
-    setFormKey("photomodel", newString);
+    setForm(prev => ({ ...prev, photomodel: newString }));
     setModelInput("");
     setShowModelSuggestions(false);
   };
 
   const setFormKey = (key: keyof FormData, val: string | boolean | number) => {
-    setItems((prev) => {
-      const newItems = [...prev];
-      newItems[currentIndex] = {
-        ...newItems[currentIndex],
-        form: { ...newItems[currentIndex].form, [key]: val }
-      };
-      return newItems;
-    });
+    setForm(prev => ({ ...prev, [key]: val }));
   };
 
   const processFiles = (fileList: FileList) => {
-    const newItems: UploadItem[] = [];
+    const newFiles: UploadFile[] = [];
     for (let i = 0; i < fileList.length; i++) {
       const f = fileList[i];
       if (f.type.startsWith("image/")) {
-        newItems.push({
+        newFiles.push({
           file: f,
           previewSrc: URL.createObjectURL(f),
-          form: { ...EMPTY_FORM } // fresh form for each new image
         });
       }
     }
 
-    if (newItems.length === 0) {
+    if (newFiles.length === 0) {
       setError("Seleziona almeno un file immagine valido (JPG, PNG, WebP…)");
       return;
     }
 
-    setItems((prev) => [...prev, ...newItems]);
+    setFiles(prev => [...prev, ...newFiles]);
     setError("");
+  };
+
+  const removeFile = (index: number) => {
+    setFiles(prev => {
+      const next = prev.filter((_, i) => i !== index);
+      // Adjust preview index if needed
+      if (previewIndex >= next.length && next.length > 0) {
+        setPreviewIndex(next.length - 1);
+      } else if (next.length === 0) {
+        setPreviewIndex(0);
+      }
+      return next;
+    });
   };
 
   const onDrop = (e: DragEvent<HTMLDivElement>) => {
@@ -144,13 +154,20 @@ export default function PhotoUploadForm({
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    if (!isEdit && items.length === 0) { setError("Carica almeno un'immagine prima di salvare."); return; }
+    if (!isEdit && files.length === 0) { setError("Carica almeno un'immagine prima di salvare."); return; }
 
     if (isEdit) {
-      onSave({ ...items[0].form });
+      // For edits, compute the title from form fields
+      const title = generateTitle(0, 1);
+      onSave({ ...form, title });
     } else {
-      // Return array of { ...form, file }
-      onSave(items.map(item => ({ ...item.form, file: item.file as File })));
+      // Return array of { ...form, title, file } with progressive titles
+      const total = files.length;
+      onSave(files.map((item, i) => ({
+        ...form,
+        title: generateTitle(i, total),
+        file: item.file,
+      })));
     }
   };
 
@@ -166,28 +183,61 @@ export default function PhotoUploadForm({
           {/* Drop zone — only for new uploads */}
           {!isEdit && (
             <div
-              className={`drop-zone${dragging ? " drop-zone--active" : ""}${items.length > 0 ? " drop-zone--filled" : ""}`}
+              className={`drop-zone${dragging ? " drop-zone--active" : ""}${files.length > 0 ? " drop-zone--filled" : ""}`}
               onDragOver={(e) => { e.preventDefault(); setDragging(true); }}
               onDragLeave={() => setDragging(false)}
               onDrop={onDrop}
               onClick={() => fileRef.current?.click()}
-              style={items.length > 0 ? { padding: '20px' } : {}}
+              style={files.length > 0 ? { padding: '12px' } : {}}
             >
-              {items.length > 0 ? (
-                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
-                  <img
-                    src={items[currentIndex].previewSrc}
-                    alt={`Anteprima ${currentIndex + 1}`}
-                    className="drop-preview"
-                    style={{ maxHeight: '150px', width: 'auto', objectFit: 'contain' }}
-                  />
+              {files.length > 0 ? (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px', width: '100%' }}>
+                  {/* Thumbnails strip */}
+                  <div style={{
+                    display: 'flex', gap: '6px', flexWrap: 'wrap', justifyContent: 'center',
+                    maxHeight: '120px', overflowY: 'auto', width: '100%', padding: '4px'
+                  }}>
+                    {files.map((f, i) => (
+                      <div
+                        key={i}
+                        style={{
+                          position: 'relative',
+                          border: previewIndex === i ? '2px solid var(--accent)' : '2px solid transparent',
+                          borderRadius: '6px',
+                          cursor: 'pointer',
+                          flexShrink: 0,
+                        }}
+                        onClick={(e) => { e.stopPropagation(); setPreviewIndex(i); }}
+                      >
+                        <img
+                          src={f.previewSrc}
+                          alt={`Foto ${i + 1}`}
+                          style={{ width: '50px', height: '50px', objectFit: 'cover', borderRadius: '4px', display: 'block' }}
+                        />
+                        <button
+                          type="button"
+                          onClick={(e) => { e.stopPropagation(); removeFile(i); }}
+                          style={{
+                            position: 'absolute', top: '-6px', right: '-6px',
+                            width: '18px', height: '18px', borderRadius: '50%',
+                            background: '#e74c3c', color: '#fff', border: 'none',
+                            fontSize: '10px', cursor: 'pointer', display: 'flex',
+                            alignItems: 'center', justifyContent: 'center', lineHeight: 1,
+                            padding: 0,
+                          }}
+                          aria-label={`Rimuovi foto ${i + 1}`}
+                        >✕</button>
+                      </div>
+                    ))}
+                  </div>
                   <div style={{ fontSize: '12px', color: '#666' }}>
-                    Foto {currentIndex + 1} di {items.length}
-                    {items.length < 50 && (
-                      <span style={{ marginLeft: '10px', color: 'var(--accent)', cursor: 'pointer', textDecoration: 'underline' }}>
-                        + Aggiungi altre
-                      </span>
-                    )}
+                    {files.length} {files.length === 1 ? 'foto selezionata' : 'foto selezionate'}
+                    <span
+                      style={{ marginLeft: '10px', color: 'var(--accent)', cursor: 'pointer', textDecoration: 'underline' }}
+                      onClick={(e) => { e.stopPropagation(); fileRef.current?.click(); }}
+                    >
+                      + Aggiungi altre
+                    </span>
                   </div>
                 </div>
               ) : (
@@ -207,12 +257,41 @@ export default function PhotoUploadForm({
             </div>
           )}
 
-          {/* Metadata fields */}
-          {items.length > 0 && (
+          {/* Metadata fields — shown when there are files (or editing) */}
+          {(files.length > 0 || isEdit) && (
             <div className="upload-fields">
+              {/* Auto-generated title preview */}
+              <div className="admin-field">
+                <label>Titolo (auto-generato)</label>
+                <div style={{
+                  padding: '8px 12px',
+                  background: 'var(--adm-surface-hover, #f5f5f5)',
+                  borderRadius: '6px',
+                  fontSize: '14px',
+                  color: 'var(--adm-text, #333)',
+                  border: '1px solid var(--adm-border, #ddd)',
+                  fontStyle: 'italic',
+                }}>
+                  {isEdit
+                    ? generateTitle(0, 1) || '—'
+                    : files.length > 1
+                      ? (<>
+                          {generateTitle(0, files.length)} … {generateTitle(files.length - 1, files.length)}
+                          <span style={{ marginLeft: '8px', fontSize: '11px', color: '#999' }}>
+                            ({files.length} foto)
+                          </span>
+                        </>)
+                      : generateTitle(0, files.length) || '—'
+                  }
+                </div>
+                <small style={{ color: '#999', marginTop: '2px', display: 'block' }}>
+                  Formato: Categoria - Nome Sessione{!isEdit && files.length > 1 ? ' - N° progressivo' : ''}
+                </small>
+              </div>
+
               <div className="admin-field">
                 <label>Categoria *</label>
-                <select value={currentForm.category} onChange={(e: ChangeEvent<HTMLSelectElement>) => setFormKey("category", e.target.value)}>
+                <select value={form.category} onChange={(e: ChangeEvent<HTMLSelectElement>) => setFormKey("category", e.target.value)}>
                   {(CATEGORIES ?? ["Portrait", "Landscape", "Street", "Events", "Creative"]).map((c) => (
                     <option key={c} value={c}>{c}</option>
                   ))}
@@ -221,7 +300,7 @@ export default function PhotoUploadForm({
               <div className="admin-field" style={{ position: 'relative' }}>
                 <label>Nome Sessione</label>
                 <input
-                  value={currentForm.shootingName}
+                  value={form.shootingName}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => {
                     setFormKey("shootingName", e.target.value);
                     setShowShootingSuggestions(true);
@@ -230,7 +309,7 @@ export default function PhotoUploadForm({
                   onBlur={() => setTimeout(() => setShowShootingSuggestions(false), 200)}
                   placeholder="Es. Golden Hour Session"
                 />
-                {showShootingSuggestions && availableShootingSuggestions.length > 0 && currentForm.shootingName && (
+                {showShootingSuggestions && availableShootingSuggestions.length > 0 && form.shootingName && (
                   <div style={{
                     position: 'absolute', top: '100%', left: 0, right: 0,
                     background: 'var(--adm-surface)', border: '1px solid var(--adm-border)',
@@ -257,7 +336,7 @@ export default function PhotoUploadForm({
 
                 {/* Visual String representation */}
                 <input
-                  value={currentForm.photomodel ?? ""}
+                  value={form.photomodel ?? ""}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => setFormKey("photomodel", e.target.value || "")}
                   placeholder="Elenco finale (modificabile): Es. Giulia, Marco"
                   style={{ marginBottom: '5px' }}
@@ -301,12 +380,12 @@ export default function PhotoUploadForm({
               </div>
               <div className="admin-field">
                 <label>Data</label>
-                <input type="date" value={currentForm.date} onChange={(e: ChangeEvent<HTMLInputElement>) => setFormKey("date", e.target.value)} />
+                <input type="date" value={form.date} onChange={(e: ChangeEvent<HTMLInputElement>) => setFormKey("date", e.target.value)} />
               </div>
               <div className="admin-field admin-field--row">
                 <label>In evidenza (homepage)</label>
                 <label className="toggle-switch">
-                  <input type="checkbox" checked={currentForm.featured} onChange={(e: ChangeEvent<HTMLInputElement>) => setFormKey("featured", e.target.checked)} />
+                  <input type="checkbox" checked={form.featured} onChange={(e: ChangeEvent<HTMLInputElement>) => setFormKey("featured", e.target.checked)} />
                   <span className="toggle-slider" />
                 </label>
               </div>
@@ -315,22 +394,11 @@ export default function PhotoUploadForm({
 
           {(error || saveError) && <p className="admin-error">{error || saveError}</p>}
 
-          <div className="modal-actions" style={{ justifyContent: items.length > 1 ? 'space-between' : 'flex-end', display: 'flex', width: '100%' }}>
-            {items.length > 1 && (
-              <div className="pagination-actions" style={{ display: 'flex', gap: '10px' }}>
-                <button type="button" className="admin-btn" disabled={currentIndex === 0 || !!saving} onClick={() => setCurrentIndex(c => c - 1)}>
-                  &laquo; Precedente
-                </button>
-                <button type="button" className="admin-btn" disabled={currentIndex === items.length - 1 || !!saving} onClick={() => setCurrentIndex(c => c + 1)}>
-                  Successiva &raquo;
-                </button>
-              </div>
-            )}
-
+          <div className="modal-actions" style={{ justifyContent: 'flex-end', display: 'flex', width: '100%' }}>
             <div style={{ display: 'flex', gap: '10px' }}>
               <button type="button" className="admin-btn" onClick={onCancel} disabled={!!saving}>Annulla</button>
-              <button type="submit" className="admin-btn admin-btn--primary" disabled={!!saving || items.length === 0}>
-                {saving ? "Salvataggio…" : isEdit ? "Salva Modifiche" : (items.length > 1 ? `Carica ${items.length} Foto` : "Carica Foto")}
+              <button type="submit" className="admin-btn admin-btn--primary" disabled={!!saving || (!isEdit && files.length === 0)}>
+                {saving ? "Salvataggio…" : isEdit ? "Salva Modifiche" : (files.length > 1 ? `Carica ${files.length} Foto` : "Carica Foto")}
               </button>
             </div>
           </div>

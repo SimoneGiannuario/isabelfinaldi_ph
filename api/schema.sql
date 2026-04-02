@@ -2,6 +2,7 @@ DROP TABLE IF EXISTS photos;
 
 CREATE TABLE photos (
     id TEXT PRIMARY KEY,
+    title TEXT,
     category TEXT NOT NULL,
     shooting_name TEXT,
     photomodel TEXT,

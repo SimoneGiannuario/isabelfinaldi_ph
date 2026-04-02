@@ -177,6 +177,9 @@ export default function AdminDashboard() {
                     {photo.featured && <span className="admin-card-badge admin-card-badge--gold">⭐</span>}
                   </div>
                   <div className="admin-card-info">
+                    {photo.title && (
+                      <p style={{ fontWeight: 600, fontSize: '13px', marginBottom: '2px' }}>{photo.title}</p>
+                    )}
                     <p>{photo.category} · {formatDate(photo.date)}</p>
                     {photo.photomodel && (Array.isArray(photo.photomodel) ? photo.photomodel.length > 0 : true) && (
                       <p className="admin-card-model">
