@@ -228,6 +228,15 @@ app.delete('/admin/photos/:id', async (c) => {
   }
 })
 
+// Serve robots.txt to satisfy Google Search Console
+app.get('/robots.txt', (c) => {
+  return c.text(
+    'User-agent: *\nDisallow: /\n',
+    200,
+    { 'Content-Type': 'text/plain' }
+  )
+})
+
 app.get('/', (c) => c.text('Cloudflare API for Photos is running!'))
 
 export default app
