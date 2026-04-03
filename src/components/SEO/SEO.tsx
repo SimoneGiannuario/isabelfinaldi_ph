@@ -5,6 +5,7 @@ import { getOptimizedUrl } from "../../data/photos";
 interface SEOProps {
   title: string;
   description: string;
+  keywords?: string;
   type?: string;
   name?: string;
   image?: string;
@@ -15,6 +16,7 @@ interface SEOProps {
 export default function SEO({
   title,
   description,
+  keywords = "fotografa, Foggia, fotografia, fotografo, eventi, comunioni, battesimi, street, biglietti da visita, fotolibri, inviti personalizzati",
   type = "website",
   name = "Naitiry",
   image = "/images/logo1.webp",
@@ -30,6 +32,7 @@ export default function SEO({
       {/* Standard metadata tags */}
       <title>{title}</title>
       <meta name="description" content={description} />
+      <meta name="keywords" content={keywords} />
       <link rel="canonical" href={currentUrl} />
 
       {noindex && <meta name="robots" content="noindex, nofollow" />}

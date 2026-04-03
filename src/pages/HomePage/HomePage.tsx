@@ -227,11 +227,14 @@ export default function HomePage() {
                   <span className="icon">◎</span> {t.contact.location}
                 </span>
               </div>
-              <div className="social-links reveal">
+              <div className="social-links reveal" style={{ flexWrap: 'wrap' }}>
                 <a href="https://www.instagram.com/naitiry.ph/" aria-label="Instagram" itemProp="sameAs">IG</a>
                 <a href="https://www.facebook.com/profile.php?id=61576485123692" aria-label="Facebook" itemProp="sameAs">FB</a>
                 <a href="https://www.tiktok.com/@naitiry.ph?lang=it-IT" aria-label="Tiktok" itemProp="sameAs">TK</a>
                 <a href="https://wa.me/393514791225" aria-label="Whatsapp" itemProp="sameAs">WA</a>
+                <a href="tel:+393514791225" aria-label="Phone" itemProp="telephone" style={{ width: 'auto', padding: '0 1rem', borderRadius: '22px', gap: '8px' }}>
+                  <span style={{ fontSize: '1.2rem', color: 'var(--color-accent)' }}>☏</span> +39 351 479 1225
+                </a>
               </div>
             </div>
           </div>
