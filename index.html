@@ -7,29 +7,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- SEO -->
-  <title>Naitiry — Fotografa a Foggia | Portfolio Professionale</title>
-
-  <meta name="description"
-    content="Scopri il portfolio fotografico di Naitiry: ritratti, paesaggi, street, eventi e progetti creativi. Fotografa professionista a Foggia e provincia." />
-
   <meta name="author" content="Naitiry" />
   <meta name="theme-color" content="#0e0e0e" />
-
-  <!-- Open Graph -->
-  <meta property="og:type" content="website" />
-  <meta property="og:title" content="Naitiry — Fotografa a Foggia | Portfolio Professionale" />
-  <meta property="og:description"
-    content="Scopri il portfolio fotografico di Naitiry: ritratti, paesaggi, street, eventi e progetti creativi. Fotografa professionista a Foggia e provincia." />
-  <meta property="og:url" content="https://naitiry.com" />
-  <meta property="og:site_name" content="Naitiry — Portfolio Fotografico" />
-  <meta property="og:locale" content="it_IT" />
-
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Naitiry — Fotografa a Foggia | Portfolio Professionale" />
-  <meta name="twitter:description"
-    content="Scopri il portfolio fotografico di Naitiry: ritratti, paesaggi, street, eventi e progetti creativi. Fotografa professionista a Foggia e provincia." />
 
   <!-- Preload LCP Logo image -->
   <link rel="preload" as="image" href="/images/logo1.webp" fetchpriority="high" />
@@ -38,15 +17,26 @@
   <!-- Favicon -->
   <link rel="shortcut icon" type="image/x-icon"
     href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>" />
+  <link rel="apple-touch-icon" type="image/x-icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📷</text></svg>" />
   <!-- Inline styles for instant First Contentful Paint -->
 
-  <!-- Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-YP2XJGF1FZ"></script>
+  <!-- Google Analytics (deferred — loads after page becomes idle) -->
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
     gtag('config', 'G-YP2XJGF1FZ');
+    (function () {
+      var cb = function () {
+        var s = document.createElement('script');
+        s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=G-YP2XJGF1FZ';
+        document.head.appendChild(s);
+      };
+      if (typeof requestIdleCallback === 'function') { requestIdleCallback(cb); }
+      else { setTimeout(cb, 2000); }
+    })();
   </script>
 
 

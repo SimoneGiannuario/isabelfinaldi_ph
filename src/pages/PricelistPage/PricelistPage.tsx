@@ -131,7 +131,7 @@ const pricingData = {
 };
 
 export default function PricelistPage() {
-  const { lang, t } = useLang();
+  const { lang } = useLang();
   const data = pricingData[lang];
   const [emblaRef, emblaApi] = useEmblaCarousel({
     loop: true,
@@ -230,6 +230,7 @@ export default function PricelistPage() {
                         className={`btn ${pack.popular ? 'btn-primary' : 'btn-outline'}`}
                       >
                         {lang === 'it' ? 'Richiedi Info' : 'Request Info'}
+                        <span className="sr-only"> - {pack.title}</span>
                       </a>
                     </div>
                   </div>

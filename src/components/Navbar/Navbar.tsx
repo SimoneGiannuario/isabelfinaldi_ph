@@ -117,12 +117,12 @@ export default function Navbar() {
         aria-modal="true"
         aria-label="Menu di navigazione"
       >
-        <Link to="/" onClick={closeMenu}>{t.nav.home}</Link>
-        <a href="/#featured" onClick={closeMenu}>{t.nav.portfolio}</a>
-        <a href="/#about" onClick={closeMenu}>{t.nav.about}</a>
-        <a href="/#contact" onClick={closeMenu}>{t.nav.contact}</a>
-        <Link to="/gallery" onClick={closeMenu}>{t.nav.gallery}</Link>
-        <Link to="/pricelist" onClick={closeMenu}>{t.nav.pricelist}</Link>
+        <Link to="/" onClick={closeMenu}>{t.nav.home}<span className="sr-only"> (Mobile)</span></Link>
+        <a href="/#featured" onClick={closeMenu}>{t.nav.portfolio}<span className="sr-only"> (Mobile)</span></a>
+        <a href="/#about" onClick={closeMenu}>{t.nav.about}<span className="sr-only"> (Mobile)</span></a>
+        <a href="/#contact" onClick={closeMenu}>{t.nav.contact}<span className="sr-only"> (Mobile)</span></a>
+        <Link to="/gallery" onClick={closeMenu}>{t.nav.gallery}<span className="sr-only"> (Mobile)</span></Link>
+        <Link to="/pricelist" onClick={closeMenu}>{t.nav.pricelist}<span className="sr-only"> (Mobile)</span></Link>
         <button className="lang-toggle lang-toggle--mobile" onClick={toggle}>
           {lang === "it" ? "🇬🇧 English" : "🇮🇹 Italiano"}
         </button>
