@@ -47,6 +47,7 @@ export default function HomePage() {
       "latitude": "41.4623",
       "longitude": "15.5447"
     },
+    "telephone": "+393514791225",
     "priceRange": "$$"
   };
 
