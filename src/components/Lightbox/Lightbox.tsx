@@ -76,8 +76,8 @@ export default function Lightbox({ photo, onClose, onPrev, onNext, currentIndex,
           src={photo.src}
           srcSet={getSrcSet(photo.src)}
           sizes="100vw"
-          alt={photo.title || photo.category}
-          title={photo.title || photo.category} />
+          alt={(photo.title || photo.category).replace(/_/g, ' ')}
+          title={(photo.title || photo.category).replace(/_/g, ' ')} />
       </div>
       <button className="lightbox-nav lightbox-next" onClick={onNext} aria-label="Foto successiva">›</button>
       <div className="lightbox-info" aria-live="polite">

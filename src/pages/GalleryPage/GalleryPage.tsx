@@ -235,11 +235,11 @@ export default function GalleryPage() {
                       src={base}
                       srcSet={srcSet}
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                      alt={photo.title || photo.category}
-                      title={photo.title || photo.category}
+                      alt={(photo.title || photo.category).replace(/_/g, ' ')}
+                      title={(photo.title || photo.category).replace(/_/g, ' ')}
                       loading="lazy"
                       itemProp="contentUrl" />
-                    <meta itemProp="name" content={photo.title || photo.category} />
+                    <meta itemProp="name" content={(photo.title || photo.category).replace(/_/g, ' ')} />
                     <meta itemProp="description" content={`${photo.category} — ${photo.shootingName}`} />
                     <meta itemProp="dateCreated" content={photo.date} />
                     <div className="gallery-item-overlay">

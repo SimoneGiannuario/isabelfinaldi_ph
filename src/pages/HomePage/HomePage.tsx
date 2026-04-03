@@ -127,11 +127,11 @@ export default function HomePage() {
                   src={`${base}`}
                   srcSet={srcSet}
                   sizes="(max-width: 768px) calc(100vw - 48px), (max-width: 1024px) 50vw, 33vw"
-                  alt={photo.title || photo.category}
-                  title={photo.title || photo.category}
+                  alt={(photo.title || photo.category).replace(/_/g, ' ')}
+                  title={(photo.title || photo.category).replace(/_/g, ' ')}
                   loading="lazy"
                   itemProp="contentUrl" />
-                <meta itemProp="name" content={photo.title || photo.category} />
+                <meta itemProp="name" content={(photo.title || photo.category).replace(/_/g, ' ')} />
                 <meta itemProp="description" content={`${photo.category} — ${photo.shootingName}`} />
                 <div className="photo-card-overlay">
                   <div className="photo-card-meta">

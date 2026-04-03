@@ -79,11 +79,12 @@ export default function PhotoUploadForm({
   const [showModelSuggestions, setShowModelSuggestions] = useState(false);
   const [showShootingSuggestions, setShowShootingSuggestions] = useState(false);
 
-  // Auto-generated title: category_sessionName_progressiveNumber
+  // Auto-generated title: category_sessionName_Foggia_progressiveNumber
   const generateTitle = (index: number) => {
     const parts: string[] = [];
     if (form.category) parts.push(form.category);
     if (form.shootingName) parts.push(form.shootingName);
+    parts.push("Foggia");
     parts.push(String(index + 1).padStart(3, '0'));
     return parts.join('_');
   };
@@ -285,7 +286,7 @@ export default function PhotoUploadForm({
                   }
                 </div>
                 <small style={{ color: '#999', marginTop: '2px', display: 'block' }}>
-                  Formato: Categoria_Sessione_N° (es. Ritratto_GoldenHour_001)
+                  Formato: Categoria_Sessione_Foggia_N° (es. Ritratto_GoldenHour_Foggia_001)
                 </small>
               </div>
 

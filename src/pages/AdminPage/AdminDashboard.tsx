@@ -176,7 +176,7 @@ export default function AdminDashboard() {
               {nhostPhotos.map((photo) => (
                 <div key={photo.id} className="admin-card">
                   <div className="admin-card-img">
-                    <img src={photo.src} alt={photo.title || photo.category} title={photo.title || photo.category} />
+                    <img src={photo.src} alt={(photo.title || photo.category).replace(/_/g, ' ')} title={(photo.title || photo.category).replace(/_/g, ' ')} />
                     {photo.featured && <span className="admin-card-badge admin-card-badge--gold">⭐</span>}
                   </div>
                   <div className="admin-card-info">
