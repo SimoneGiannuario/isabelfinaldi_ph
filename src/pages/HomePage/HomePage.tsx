@@ -40,7 +40,9 @@ export default function HomePage() {
       "@type": "PostalAddress",
       "addressLocality": "Foggia",
       "addressRegion": "Puglia",
-      "addressCountry": "IT"
+      "addressCountry": "IT",
+      "postalCode": "71121",
+      "streetAddress": ""
     },
     "geo": {
       "@type": "GeoCoordinates",
