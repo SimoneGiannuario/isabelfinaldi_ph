@@ -166,8 +166,8 @@ export default function PricelistPage() {
           <div className="section-divider" style={{ margin: "0 auto var(--space-lg)" }} />
           <p className="pricelist-lead">
             {lang === 'it'
-              ? 'Trasparenza e pacchetti pensati per ogni tua esigenza. Ogni servizio è personalizzabile per adattarsi perfettamente alla tua visione.'
-              : 'Transparency and packages designed for every need. Each service can be customized to perfectly fit your vision.'}
+              ? 'Benvenuti nel listino prezzi ufficiale di Isabel Finaldi Photography. In questa pagina troverai un elenco dettagliato dei miei servizi fotografici, pensati per catturare i tuoi momenti più preziosi. La trasparenza è al primo posto: esplora il mio listino prezzi per scoprire pacchetti chiari e flessibili per ogni esigenza. Ogni servizio è personalizzabile per adattarsi perfettamente alla tua visione. Sfoglia il listino per individuare la soluzione ideale per te.'
+              : 'Welcome to the official price list of Isabel Finaldi Photography. On this page, you will find a detailed pricelist of my photography services, designed to capture your most precious moments. Transparency is my top priority: explore my price list to discover clear and flexible packages for every need. Each service can be customized to perfectly fit your vision. Browse the price list to find the ideal solution for you.'}
           </p>
         </div>
       </section>
@@ -254,8 +254,8 @@ export default function PricelistPage() {
             <h3>{lang === 'it' ? 'Cerchi qualcosa di diverso?' : 'Looking for something different?'}</h3>
             <p>
               {lang === 'it'
-                ? 'Se i pacchetti standard non si adattano alle tue esigenze, contattami per un preventivo personalizzato su misura per il tuo progetto e il tuo budget.'
-                : 'If the standard packages don\'t fit your needs, contact me for a custom quote tailored to your project and budget.'}
+                ? 'Cerchi un\'offerta fuori dal listino prezzi standard? Se i pacchetti presenti in questo listino non si adattano perfettamente alle tue esigenze specifiche, non esitare a contattarmi. Come fotografa professionista, so che ogni evento è unico. Insieme a Isabel Finaldi Photography, potremo elaborare un preventivo personalizzato e su misura per il tuo progetto e il tuo budget. Raccontami la tua idea e creeremo insieme qualcosa di speciale, con prezzi sempre trasparenti.'
+                : 'Looking for an offer outside the standard price list? If the packages in this pricelist don\'t perfectly fit your specific needs, please don\'t hesitate to contact me. As a professional photographer, I know every event is unique. Together with Isabel Finaldi Photography, we can create a custom quote tailored specifically to your project and budget. Tell me your ideas and we will create something special together, always with transparent prices.'}
             </p>
             <a
               href={`https://wa.me/393514791225?text=${encodeURIComponent(
