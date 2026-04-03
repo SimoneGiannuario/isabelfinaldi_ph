@@ -191,7 +191,7 @@ export default function GalleryPage() {
       </div>
 
       {/* GALLERY */}
-      <section className="section gallery-section">
+      <section className="section gallery-section" itemScope itemType="https://schema.org/ImageGallery">
         <div className="container">
           <div className="gallery-info">
             <span className="result-count" role="status" aria-live="polite">{t.gallery.photosFound(filtered.length)}</span>
@@ -229,6 +229,7 @@ export default function GalleryPage() {
                     key={photo.id}
                     className={`gallery-item${voted ? " gallery-item--voted" : ""}`}
                     onClick={() => lightbox.open(index, filtered)}
+                    itemProp="image" itemScope itemType="https://schema.org/ImageObject"
                   >
                     <img
                       src={base}
@@ -236,7 +237,11 @@ export default function GalleryPage() {
                       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       alt={photo.title || photo.category}
                       title={photo.title || photo.category}
-                      loading="lazy" />
+                      loading="lazy"
+                      itemProp="contentUrl" />
+                    <meta itemProp="name" content={photo.title || photo.category} />
+                    <meta itemProp="description" content={`${photo.category} — ${photo.shootingName}`} />
+                    <meta itemProp="dateCreated" content={photo.date} />
                     <div className="gallery-item-overlay">
                       <div className="gallery-item-details">
                         <span className="tag">{t.gallery.categories[photo.category] || photo.category}</span>

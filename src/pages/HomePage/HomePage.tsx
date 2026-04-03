@@ -51,7 +51,21 @@ export default function HomePage() {
   };
 
   return (
-    <>
+    <div itemScope itemType="https://schema.org/ProfessionalService">
+      <meta itemProp="name" content="Naitiry — Isabel Finaldi Photography" />
+      <meta itemProp="url" content="https://naitiry.com" />
+      <meta itemProp="image" content="https://naitiry.com/images/tower-bridge.jpg" />
+      <meta itemProp="description" content="Portfolio fotografico professionale di Naitiry, fotografa a Foggia. Ritratti, paesaggi, street photography, eventi e progetti creativi." />
+      <meta itemProp="priceRange" content="$$" />
+      <div itemProp="address" itemScope itemType="https://schema.org/PostalAddress">
+        <meta itemProp="addressLocality" content="Foggia" />
+        <meta itemProp="addressRegion" content="Puglia" />
+        <meta itemProp="addressCountry" content="IT" />
+      </div>
+      <div itemProp="geo" itemScope itemType="https://schema.org/GeoCoordinates">
+        <meta itemProp="latitude" content="41.4623" />
+        <meta itemProp="longitude" content="15.5447" />
+      </div>
       <SEO
         title="Naitiry — Fotografa a Foggia | Portfolio Professionale"
         description="Scopri il portfolio fotografico di Naitiry: ritratti, paesaggi, street, eventi e progetti creativi. Fotografa professionista a Foggia e provincia."
@@ -61,13 +75,13 @@ export default function HomePage() {
       </script>
 
       {/* HERO */}
-      <section className="hero" id="hero">
+      <section className="hero" id="hero" itemProp="mainEntity" itemScope itemType="https://schema.org/ImageObject">
         <div className="hero-bg">
           <img
             src={getOptimizedUrl(`${import.meta.env.BASE_URL}images/tower-bridge.jpg`, 1440)}
             srcSet={getSrcSet(`${import.meta.env.BASE_URL}images/tower-bridge.jpg`)}
             sizes="(max-width: 768px) 100vw, 100vw"
-            alt="Hero background" fetchPriority="high" loading="eager" />
+            alt="Hero background" fetchPriority="high" loading="eager" itemProp="contentUrl" />
         </div>
         <div className="hero-overlay" />
         <div className="hero-content">
@@ -87,7 +101,7 @@ export default function HomePage() {
       </section>
 
       {/* FEATURED PHOTOS */}
-      <section className="section" id="featured">
+      <section className="section" id="featured" itemScope itemType="https://schema.org/ImageGallery">
         <div className="container">
           <p className="section-subtitle reveal">{t.featured.subtitle}</p>
           <h2 className="section-title reveal">
@@ -104,6 +118,7 @@ export default function HomePage() {
                 key={photo.id}
                 className={`photo-card reveal reveal-delay-${(index % 4) + 1}${index === 0 ? " tall" : ""}`}
                 onClick={() => lightbox.open(index, featured)}
+                itemProp="image" itemScope itemType="https://schema.org/ImageObject"
               >
                 <img
                   src={`${base}`}
@@ -111,7 +126,10 @@ export default function HomePage() {
                   sizes="(max-width: 768px) calc(100vw - 48px), (max-width: 1024px) 50vw, 33vw"
                   alt={photo.title || photo.category}
                   title={photo.title || photo.category}
-                  loading="lazy" />
+                  loading="lazy"
+                  itemProp="contentUrl" />
+                <meta itemProp="name" content={photo.title || photo.category} />
+                <meta itemProp="description" content={`${photo.category} — ${photo.shootingName}`} />
                 <div className="photo-card-overlay">
                   <div className="photo-card-meta">
                     <span>{t.gallery.categories[photo.category] || photo.category}</span>
@@ -133,7 +151,7 @@ export default function HomePage() {
       </section>
 
       {/* ABOUT */}
-      <section className="section about-section" id="about">
+      <section className="section about-section" id="about" itemProp="founder" itemScope itemType="https://schema.org/Person">
         <div className="container">
           <div className="about-grid">
             <div className="about-image reveal">
@@ -146,6 +164,7 @@ export default function HomePage() {
                     srcSet={getSrcSet(imgPath)}
                     sizes="(max-width: 448px) calc(100vw - 48px), (max-width: 768px) 400px, 50vw"
                     alt={`Isabel Finaldi ${index + 1}`}
+                    itemProp="image"
                     className={index === currentAboutImage ? 'active' : ''}
                     loading={index === 0 ? "eager" : "lazy"}
                   />
@@ -153,6 +172,9 @@ export default function HomePage() {
               })}
             </div>
             <div className="about-text">
+              <meta itemProp="name" content="Isabel Finaldi" />
+              <meta itemProp="jobTitle" content="Fotografa professionista" />
+              <meta itemProp="url" content="https://naitiry.com" />
               <p className="section-subtitle reveal">{t.about.subtitle}</p>
               <h2 className="section-title reveal">
                 {t.about.title1}<br /><em>{t.about.title2}</em>
@@ -180,7 +202,7 @@ export default function HomePage() {
       </section>
 
       {/* CONTACT */}
-      <section className="section" id="contact">
+      <section className="section" id="contact" itemProp="contactPoint" itemScope itemType="https://schema.org/ContactPoint">
         <div className="container">
           <div className="contact-wrapper">
             <div className="contact-info">
@@ -191,10 +213,11 @@ export default function HomePage() {
               <div className="section-divider reveal" />
               <p className="reveal">{t.contact.paragraph}</p>
               <div className="contact-details reveal">
-                <a href="mailto:naitiry.ph@gmail.com">
+                <meta itemProp="contactType" content="customer service" />
+                <a href="mailto:naitiry.ph@gmail.com" itemProp="email">
                   <span className="icon">✉</span> naitiry.ph@gmail.com
                 </a>
-                <a href="tel:+393514791225">
+                <a href="tel:+393514791225" itemProp="telephone">
                   <span className="icon">☏</span> +39 351 479 1225
                 </a>
                 <span className="contact-location">
@@ -202,10 +225,10 @@ export default function HomePage() {
                 </span>
               </div>
               <div className="social-links reveal">
-                <a href="https://www.instagram.com/naitiry.ph/" aria-label="Instagram">IG</a>
-                <a href="https://www.facebook.com/profile.php?id=61576485123692" aria-label="Facebook">FB</a>
-                <a href="https://www.tiktok.com/@naitiry.ph?lang=it-IT" aria-label="Tiktok">TK</a>
-                <a href="https://wa.me/393514791225" aria-label="Whatsapp">WA</a>
+                <a href="https://www.instagram.com/naitiry.ph/" aria-label="Instagram" itemProp="sameAs">IG</a>
+                <a href="https://www.facebook.com/profile.php?id=61576485123692" aria-label="Facebook" itemProp="sameAs">FB</a>
+                <a href="https://www.tiktok.com/@naitiry.ph?lang=it-IT" aria-label="Tiktok" itemProp="sameAs">TK</a>
+                <a href="https://wa.me/393514791225" aria-label="Whatsapp" itemProp="sameAs">WA</a>
               </div>
             </div>
           </div>
@@ -222,6 +245,6 @@ export default function HomePage() {
           totalPhotos={featured.length}
         />
       )}
-    </>
+    </div>
   );
 }

@@ -69,6 +69,8 @@ export default function Navbar() {
         className={`navbar${scrolled ? " scrolled" : ""}`}
         role="navigation"
         aria-label={t.nav.home ? "Menu principale" : "Main navigation"}
+        itemScope
+        itemType="https://schema.org/SiteNavigationElement"
       >
         <div className="container">
           <Link to="/" className="nav-logo" onClick={closeMenu}>

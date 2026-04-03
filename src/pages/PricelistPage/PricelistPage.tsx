@@ -173,13 +173,14 @@ export default function PricelistPage() {
       </section>
 
       {/* PRICING GRID */}
-      <section className="section pricelist-cards-section">
+      <section className="section pricelist-cards-section" itemScope itemType="https://schema.org/OfferCatalog">
+        <meta itemProp="name" content={lang === 'it' ? 'Servizi fotografici' : 'Photography services'} />
         <div className="container pricelist-carousel-wrapper">
           <div className="embla" ref={emblaRef}>
             <div className="embla__container" style={{ display: 'flex' }}>
               {data.map((pack, index) => (
                 <div key={index} className="embla__slide" style={{ flex: '0 0 var(--slide-size)', minWidth: 0, paddingLeft: '1rem' }}>
-                  <div className={`pricing-card ${pack.popular ? 'pricing-card--popular' : ''}`}>
+                  <div className={`pricing-card ${pack.popular ? 'pricing-card--popular' : ''}`} itemProp="itemListElement" itemScope itemType="https://schema.org/Offer">
                     {pack.popular && (
                       <div className="pricing-badge">
                         {lang === 'it' ? 'Più Richiesto' : 'Most Popular'}
@@ -187,8 +188,9 @@ export default function PricelistPage() {
                     )}
 
                     <div className="pricing-card-header">
-                      <h3 className="pricing-title">{pack.title}</h3>
-                      <div className="pricing-price">{pack.price}</div>
+                      <h3 className="pricing-title" itemProp="name">{pack.title}</h3>
+                      <div className="pricing-price" itemProp="price">{pack.price}</div>
+                      <meta itemProp="priceCurrency" content="EUR" />
                       {pack.image && (
                         <div className="pricing-image">
                           <img
@@ -200,7 +202,7 @@ export default function PricelistPage() {
                           />
                         </div>
                       )}
-                      <p className="pricing-description">{pack.description}</p>
+                      <p className="pricing-description" itemProp="description">{pack.description}</p>
                     </div>
 
                     <div className="pricing-card-body">
