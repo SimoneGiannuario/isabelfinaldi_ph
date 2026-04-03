@@ -14,7 +14,7 @@ interface FormData {
 }
 
 const EMPTY_FORM: FormData = {
-  category: "Portrait",
+  category: "Ritratto",
   shootingName: "",
   photomodel: "",
   date: new Date().toISOString().slice(0, 10),
@@ -79,9 +79,13 @@ export default function PhotoUploadForm({
   const [showModelSuggestions, setShowModelSuggestions] = useState(false);
   const [showShootingSuggestions, setShowShootingSuggestions] = useState(false);
 
-  // Auto-generated title: just a progressive number
+  // Auto-generated title: category_sessionName_progressiveNumber
   const generateTitle = (index: number) => {
-    return String(index + 1).padStart(3, '0');
+    const parts: string[] = [];
+    if (form.category) parts.push(form.category);
+    if (form.shootingName) parts.push(form.shootingName);
+    parts.push(String(index + 1).padStart(3, '0'));
+    return parts.join('_');
   };
 
   // Compute available shooting suggestions
@@ -281,14 +285,14 @@ export default function PhotoUploadForm({
                   }
                 </div>
                 <small style={{ color: '#999', marginTop: '2px', display: 'block' }}>
-                  N° progressivo (001, 002, 003…)
+                  Formato: Categoria_Sessione_N° (es. Ritratto_GoldenHour_001)
                 </small>
               </div>
 
               <div className="admin-field">
                 <label>Categoria *</label>
                 <select value={form.category} onChange={(e: ChangeEvent<HTMLSelectElement>) => setFormKey("category", e.target.value)}>
-                  {(CATEGORIES ?? ["Portrait", "Landscape", "Street", "Events", "Creative"]).map((c) => (
+                  {(CATEGORIES ?? ["Ritratto", "Paesaggio", "Street", "Eventi", "Creativo"]).map((c) => (
                     <option key={c} value={c}>{catLabel(c)}</option>
                   ))}
                 </select>

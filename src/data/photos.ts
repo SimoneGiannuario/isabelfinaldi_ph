@@ -1,13 +1,13 @@
 // Photo data — edit this to add/update/remove photos
 import type { Photo } from "../types/photo";
 
-export const CATEGORIES: string[] = ["Portrait", "Landscape", "Street", "Events", "Creative"];
+export const CATEGORIES: string[] = ["Ritratto", "Paesaggio", "Street", "Eventi", "Creativo"];
 
 export const PHOTOS: Photo[] = [
   {
     id: 1,
     src: "images/portrait_golden_hour.webp",
-    category: "Portrait",
+    category: "Ritratto",
     shootingName: "Golden Hour Session",
     photomodel: "Giulia Marchetti",
     date: "2025-09-14",
@@ -17,7 +17,7 @@ export const PHOTOS: Photo[] = [
   {
     id: 2,
     src: "images/portrait_studio_bw.webp",
-    category: "Portrait",
+    category: "Ritratto",
     shootingName: "Studio Noir",
     photomodel: "Marco Bellini",
     date: "2025-11-02",
@@ -27,7 +27,7 @@ export const PHOTOS: Photo[] = [
   {
     id: 3,
     src: "images/landscape_sunset.webp",
-    category: "Landscape",
+    category: "Paesaggio",
     shootingName: "Tuscan Hills",
     photomodel: null,
     date: "2025-06-20",
@@ -47,7 +47,7 @@ export const PHOTOS: Photo[] = [
   {
     id: 5,
     src: "images/event_wedding.webp",
-    category: "Events",
+    category: "Eventi",
     shootingName: "Villa Rossi Wedding",
     photomodel: null,
     date: "2025-07-12",
@@ -57,7 +57,7 @@ export const PHOTOS: Photo[] = [
   {
     id: 6,
     src: "images/portrait_golden_hour.webp",
-    category: "Creative",
+    category: "Creativo",
     shootingName: "Golden Hour Session",
     photomodel: "Giulia Marchetti",
     date: "2025-09-14",
@@ -67,7 +67,7 @@ export const PHOTOS: Photo[] = [
   {
     id: 7,
     src: "images/portrait_studio_bw.webp",
-    category: "Portrait",
+    category: "Ritratto",
     shootingName: "Studio Noir",
     photomodel: "Marco Bellini",
     date: "2025-11-02",
@@ -77,7 +77,7 @@ export const PHOTOS: Photo[] = [
   {
     id: 8,
     src: "images/landscape_sunset.webp",
-    category: "Landscape",
+    category: "Paesaggio",
     shootingName: "Tuscan Hills",
     photomodel: null,
     date: "2025-06-20",
@@ -97,7 +97,7 @@ export const PHOTOS: Photo[] = [
   {
     id: 10,
     src: "images/event_wedding.webp",
-    category: "Events",
+    category: "Eventi",
     shootingName: "Villa Rossi Wedding",
     photomodel: null,
     date: "2025-07-12",
@@ -107,7 +107,7 @@ export const PHOTOS: Photo[] = [
   {
     id: 11,
     src: "images/portrait_golden_hour.webp",
-    category: "Creative",
+    category: "Creativo",
     shootingName: "Summer Breeze",
     photomodel: "Sofia Ricci",
     date: "2026-02-05",
@@ -117,7 +117,7 @@ export const PHOTOS: Photo[] = [
   {
     id: 12,
     src: "images/portrait_studio_bw.webp",
-    category: "Portrait",
+    category: "Ritratto",
     shootingName: "Minimal Portraits",
     photomodel: "Elena Conti",
     date: "2025-12-18",
