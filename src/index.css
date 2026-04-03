@@ -1,5 +1,5 @@
 /* ============================================================
-   Global Design System — Isabel Finaldi Photography
+   Global Design System — Naitiry Photography
    ============================================================ */
 
 @font-face {
@@ -26,7 +26,7 @@
   /*  --color-bg-secondary: #161616; */
   /*  --color-bg-card: #1a1a1a; */
   /*  --color-surface: #222222; */
-  --color-bg: #fefaf9;  
+  --color-bg: #fefaf9;
   --color-bg-secondary: #fefaf9;
   --color-bg-card: #fefaf9;
   --color-surface: #b5b0ab;
@@ -299,7 +299,7 @@ body.screenshot-guard::before {
 }
 
 body.screenshot-guard::after {
-  content: "© Isabel Finaldi Photography — Tutti i diritti riservati";
+  content: "© Naitiry Photography — Tutti i diritti riservati";
   position: fixed;
   inset: 0;
   z-index: 100000;
@@ -330,7 +330,7 @@ body.screenshot-guard::after {
 
   .gallery-item::before,
   .photo-card::before {
-    content: "© Isabel Finaldi Photography — Tutti i diritti riservati";
+    content: "© Naitiry Photography — Tutti i diritti riservati";
     display: block;
     padding: var(--space-xl);
     background: #fefaf9;

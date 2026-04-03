@@ -1,5 +1,5 @@
 /* ============================================================
-   Admin Panel — Isabel Finaldi Photography
+   Admin Panel — Naitiry Photography
    ============================================================ */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Inter:wght@300;400;500;600&display=swap');
 
@@ -226,6 +226,31 @@
 
 .admin-card--static:hover {
   opacity: 1;
+}
+
+.admin-card--selected {
+  border-color: var(--adm-accent);
+  box-shadow: 0 0 0 2px var(--adm-accent);
+}
+
+.admin-card-select {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 10;
+  background: var(--adm-card);
+  border-radius: 4px;
+  padding: 6px;
+  cursor: pointer;
+  display: flex;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.admin-card-select input {
+  cursor: pointer;
+  width: 14px;
+  height: 14px;
+  margin: 0;
 }
 
 .admin-card--modified {

@@ -74,7 +74,7 @@ export default function Navbar() {
       >
         <div className="container">
           <Link to="/" className="nav-logo" onClick={closeMenu}>
-            <img src={`${import.meta.env.BASE_URL}images/logo1.webp`} alt="Isabel Finaldi" className="nav-logo-img" fetchPriority="high" />
+            <img src={`${import.meta.env.BASE_URL}images/logo1.webp`} alt="Naitiry" className="nav-logo-img" fetchPriority="high" />
           </Link>
           <ul className="nav-links" role="list">
             <li><NavLink to="/" end>{t.nav.home}</NavLink></li>

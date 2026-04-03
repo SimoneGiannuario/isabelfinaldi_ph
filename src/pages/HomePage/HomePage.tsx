@@ -32,7 +32,7 @@ export default function HomePage() {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "ProfessionalService",
-    "name": "Naitiry - Isabel Finaldi Photography",
+    "name": "Naitiry Photography",
     "image": "https://naitiry.com/images/tower-bridge.jpg",
     "description": "Portfolio fotografico professionale di Naitiry, fotografa a Foggia. Ritratti, paesaggi, street photography, eventi e progetti creativi.",
     "url": "https://naitiry.com",
@@ -55,7 +55,7 @@ export default function HomePage() {
 
   return (
     <div itemScope itemType="https://schema.org/ProfessionalService">
-      <meta itemProp="name" content="Naitiry — Isabel Finaldi Photography" />
+      <meta itemProp="name" content="Naitiry Photography" />
       <meta itemProp="url" content="https://naitiry.com" />
       <meta itemProp="image" content="https://naitiry.com/images/tower-bridge.jpg" />
       <meta itemProp="description" content="Portfolio fotografico professionale di Naitiry, fotografa a Foggia. Ritratti, paesaggi, street photography, eventi e progetti creativi." />
@@ -166,7 +166,7 @@ export default function HomePage() {
                     src={getOptimizedUrl(imgPath, 600)}
                     srcSet={getSrcSet(imgPath)}
                     sizes="(max-width: 448px) calc(100vw - 48px), (max-width: 768px) 400px, 50vw"
-                    alt={`Isabel Finaldi ${index + 1}`}
+                    alt={`Naitiry ${index + 1}`}
                     itemProp="image"
                     className={index === currentAboutImage ? 'active' : ''}
                     loading={index === 0 ? "eager" : "lazy"}
@@ -175,7 +175,7 @@ export default function HomePage() {
               })}
             </div>
             <div className="about-text">
-              <meta itemProp="name" content="Isabel Finaldi" />
+              <meta itemProp="name" content="Naitiry" />
               <meta itemProp="jobTitle" content="Fotografa professionista" />
               <meta itemProp="url" content="https://naitiry.com" />
               <p className="section-subtitle reveal">{t.about.subtitle}</p>

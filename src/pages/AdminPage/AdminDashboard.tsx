@@ -20,6 +20,8 @@ export default function AdminDashboard() {
   const [showUpload, setShowUpload] = useState(false);
   const [editingPhoto, setEditingPhoto] = useState<Photo | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<Photo | null>(null);
+  const [deleteBulkConfirm, setDeleteBulkConfirm] = useState(false);
+  const [selectedPhotoIds, setSelectedPhotoIds] = useState<Set<string>>(new Set());
   const [saving, setSaving] = useState<boolean | string>(false);
   const [saveError, setSaveError] = useState("");
 
@@ -60,6 +62,11 @@ export default function AdminDashboard() {
   const handleDelete = async (photo: Photo) => {
     setSaving(true);
     try {
+      if (selectedPhotoIds.has(photo.id as string)) {
+         const newSet = new Set(selectedPhotoIds);
+         newSet.delete(photo.id as string);
+         setSelectedPhotoIds(newSet);
+      }
       await deleteNhostPhoto(photo.id as string);
       await refresh();
     } catch (err) {
@@ -67,6 +74,39 @@ export default function AdminDashboard() {
     } finally {
       setSaving(false);
       setDeleteConfirm(null);
+    }
+  };
+
+  const handleBulkDelete = async () => {
+    setSaving(true);
+    try {
+      for (const id of selectedPhotoIds) {
+        await deleteNhostPhoto(id);
+      }
+      setSelectedPhotoIds(new Set());
+      await refresh();
+    } catch (err) {
+      setSaveError((err as Error).message ?? "Errore nella cancellazione multipla.");
+    } finally {
+      setSaving(false);
+      setDeleteBulkConfirm(false);
+    }
+  };
+
+  const toggleSelection = (id: string) => {
+    setSelectedPhotoIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  };
+
+  const handleSelectAll = () => {
+    if (selectedPhotoIds.size === nhostPhotos.length) {
+      setSelectedPhotoIds(new Set());
+    } else {
+      setSelectedPhotoIds(new Set(nhostPhotos.map(p => p.id as string)));
     }
   };
 
@@ -120,12 +160,22 @@ export default function AdminDashboard() {
               {/* {PHOTOS.length} foto integrate ·  */}{nhostPhotos.length} caricate · {totalCount} totali
             </p>
           </div>
-          <button
-            className="admin-btn admin-btn--primary"
-            onClick={() => { setEditingPhoto(null); setSaveError(""); setShowUpload(true); }}
-          >
-            + Carica Foto
-          </button>
+          <div style={{ display: 'flex', gap: '10px' }}>
+            {selectedPhotoIds.size > 0 && (
+              <button
+                className="admin-btn admin-btn--danger"
+                onClick={() => setDeleteBulkConfirm(true)}
+              >
+                🗑️ Elimina ({selectedPhotoIds.size})
+              </button>
+            )}
+            <button
+              className="admin-btn admin-btn--primary"
+              onClick={() => { setEditingPhoto(null); setSaveError(""); setShowUpload(true); }}
+            >
+              + Carica Foto
+            </button>
+          </div>
         </header>
 
         {saveError && <p className="admin-error" style={{ padding: "0 var(--adm-space)" }}>{saveError}</p>}
@@ -153,9 +203,22 @@ export default function AdminDashboard() {
 
         {/* ── Uploaded (Nhost) photos ── */}
         <section className="admin-section">
-          <h3 className="admin-section-title">
-            ☁️ Foto Caricate <span className="badge">{nhostPhotos.length}</span>
-          </h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+            <h3 className="admin-section-title" style={{ marginBottom: 0 }}>
+              ☁️ Foto Caricate <span className="badge">{nhostPhotos.length}</span>
+            </h3>
+            {nhostPhotos.length > 0 && (
+              <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '0.85rem' }}>
+                <input 
+                  type="checkbox" 
+                  checked={nhostPhotos.length > 0 && selectedPhotoIds.size === nhostPhotos.length}
+                  onChange={handleSelectAll}
+                  style={{ cursor: 'pointer' }}
+                />
+                Seleziona Tutte
+              </label>
+            )}
+          </div>
 
           {loading ? (
             <p style={{ color: "var(--adm-muted)", padding: "var(--adm-space)" }}>Caricamento…</p>
@@ -174,8 +237,19 @@ export default function AdminDashboard() {
           ) : (
             <div className="admin-grid">
               {nhostPhotos.map((photo) => (
-                <div key={photo.id} className="admin-card">
+                <div key={photo.id} className={`admin-card ${selectedPhotoIds.has(photo.id as string) ? 'admin-card--selected' : ''}`} onClick={() => toggleSelection(photo.id as string)} style={{ cursor: 'pointer' }}>
                   <div className="admin-card-img">
+                    <div 
+                      className="admin-card-select" 
+                      onClick={(e) => { e.stopPropagation(); toggleSelection(photo.id as string); }}
+                    >
+                      <input 
+                        type="checkbox" 
+                        checked={selectedPhotoIds.has(photo.id as string)} 
+                        onChange={() => {}} 
+                        style={{ cursor: 'pointer' }}
+                      />
+                    </div>
                     <img src={photo.src} alt={(photo.title || photo.category).replace(/_/g, ' ')} title={(photo.title || photo.category).replace(/_/g, ' ')} />
                     {photo.featured && <span className="admin-card-badge admin-card-badge--gold">⭐</span>}
                   </div>
@@ -190,7 +264,7 @@ export default function AdminDashboard() {
                       </p>
                     )}
                   </div>
-                  <div className="admin-card-actions">
+                  <div className="admin-card-actions" onClick={(e) => e.stopPropagation()}>
                     <button className="admin-btn admin-btn--sm" onClick={() => handleEdit(photo)}>
                       ✏️ Modifica
                     </button>
@@ -220,6 +294,26 @@ export default function AdminDashboard() {
           existingShootingNames={existingShootingNames}
           existingPhotomodels={existingPhotomodels}
         />
+      )}
+
+      {/* Bulk Delete confirmation */}
+      {deleteBulkConfirm && (
+        <div className="modal-overlay" onClick={() => setDeleteBulkConfirm(false)}>
+          <div className="modal-box modal-box--sm" onClick={(e) => e.stopPropagation()}>
+            <h3>Eliminare le {selectedPhotoIds.size} foto selezionate?</h3>
+            <p>Questa azione non può essere annullata. I file verranno rimossi da Nhost Storage.</p>
+            <div className="modal-actions">
+              <button className="admin-btn" onClick={() => setDeleteBulkConfirm(false)} disabled={!!saving}>Annulla</button>
+              <button
+                className="admin-btn admin-btn--danger"
+                onClick={handleBulkDelete}
+                disabled={!!saving}
+              >
+                {saving ? "Eliminazione…" : "Sì, elimina tutte"}
+              </button>
+            </div>
+          </div>
+        </div>
       )}
 
       {/* Delete confirmation */}

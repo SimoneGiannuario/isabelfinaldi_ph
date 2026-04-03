@@ -107,9 +107,9 @@ export default function GalleryPage() {
 
   return (
     <>
-      <SEO 
-        title="Galleria — Isabel Finaldi Photography"
-        description="Esplora il portfolio fotografico di Isabel Finaldi. Sfoglia ritratti, paesaggi, matrimoni e progetti creativi."
+      <SEO
+        title="Galleria — Naitiry Photography"
+        description="Esplora il portfolio fotografico di Naitiry. Sfoglia ritratti, paesaggi, matrimoni e progetti creativi."
       />
       {/* HEADER */}
       <section className="gallery-header">
