@@ -4,5 +4,59 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
+  ],
+  "routes": [
+    {
+      "src": "/account/lost-password/?",
+      "status": 410
+    },
+    {
+      "src": "/cart/?",
+      "status": 410
+    },
+    {
+      "src": "/product/.*/feed/?",
+      "status": 410
+    },
+    {
+      "src": "/category/uncategorized/?",
+      "status": 410
+    },
+    {
+      "src": "/blog/?",
+      "status": 410
+    },
+    {
+      "src": "/product-category/e-books/?",
+      "status": 410
+    },
+    {
+      "src": "/privacy-policy/?",
+      "status": 410
+    },
+    {
+      "src": "/product/holistic-guide-for-women-with-acne-and-hormonal-imbalances/?",
+      "status": 410
+    },
+    {
+      "src": "/shop/?",
+      "status": 410
+    },
+    {
+      "src": "/cycle-syncing-for-hormone-balance-radiant-skin/?",
+      "status": 410
+    },
+    {
+      "src": "/product/holistic-guide-for-women-with-acne-and-hormonal-imbalances/feed/?",
+      "status": 410
+    },
+    {
+      "src": "/et-sit-et-ad-occaecati-quos/?",
+      "status": 410
+    },
+    {
+      "src": "/terms-conditions/?",
+      "status": 410
+    }
   ]
 }
