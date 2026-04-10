@@ -4,7 +4,7 @@ import { useLocation } from "react-router-dom";
 export default function GoogleAnalyticsTracker() {
   const location = useLocation();
 
-  // Track page views
+  // Track page views & engagement time
   useEffect(() => {
     if (typeof window !== "undefined") {
       const dataLayer = (window as any).dataLayer = (window as any).dataLayer || [];
@@ -12,6 +12,26 @@ export default function GoogleAnalyticsTracker() {
         event: "page_view",
         page: location.pathname + location.search,
       });
+
+      const sendEngagedEvent = (seconds: number) => {
+        dataLayer.push({
+          event: `engaged_${seconds}s`,
+          page_path: window.location.pathname,
+          page_title: document.title
+        });
+      };
+
+      // Set engagement timers
+      const t30 = setTimeout(() => sendEngagedEvent(30), 30000);
+      const t60 = setTimeout(() => sendEngagedEvent(60), 60000);
+      const t120 = setTimeout(() => sendEngagedEvent(120), 120000);
+
+      // Clear timers when navigating to another page
+      return () => {
+        clearTimeout(t30);
+        clearTimeout(t60);
+        clearTimeout(t120);
+      };
     }
   }, [location]);
 
