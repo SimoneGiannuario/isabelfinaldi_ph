@@ -7,6 +7,7 @@ import Footer from "./components/Footer/Footer";
 import HomePage from "./pages/HomePage/HomePage";
 import "./App.css";
 import { Analytics } from "@vercel/analytics/react";
+import GoogleAnalyticsTracker from "./components/GoogleAnalyticsTracker";
 
 
 // Lazy-loaded routes — only downloaded when navigated to
@@ -44,6 +45,7 @@ function App() {
     <LanguageProvider>
       <PhotoProtection />
       <BrowserRouter >{/* basename="/isabelfinaldi_ph" */}
+        <GoogleAnalyticsTracker />
         {/* Skip navigation — first focusable element */}
         <a href="#main-content" className="skip-nav">
           Vai al contenuto principale
