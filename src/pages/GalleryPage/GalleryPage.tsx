@@ -39,6 +39,17 @@ export default function GalleryPage() {
     window.scrollTo(0, 0);
   }, []);
 
+  useEffect(() => {
+    if (lightbox.isOpen && lightbox.currentPhoto) {
+      const imageTitle = (lightbox.currentPhoto.title || lightbox.currentPhoto.category).replace(/_/g, ' ');
+      const dataLayer = (window as any).dataLayer = (window as any).dataLayer || [];
+      dataLayer.push({
+        event: "gallery_image_open",
+        image_name: imageTitle
+      });
+    }
+  }, [lightbox.isOpen, lightbox.index, lightbox.currentPhoto]);
+
   const unique = (key: keyof Photo): string[] => {
     const raw = allPhotos.map((p) => p[key]).filter(Boolean);
     // If the value might contain commas (like photomodels), handle both arrays and strings
