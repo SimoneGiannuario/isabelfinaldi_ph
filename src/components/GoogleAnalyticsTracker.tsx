@@ -26,11 +26,42 @@ export default function GoogleAnalyticsTracker() {
       const t60 = setTimeout(() => sendEngagedEvent(60), 60000);
       const t120 = setTimeout(() => sendEngagedEvent(120), 120000);
 
-      // Clear timers when navigating to another page
+      // Scroll tracking
+      let scroll25 = false;
+      let scroll50 = false;
+      let scroll75 = false;
+      let scroll90 = false;
+
+      const handleScroll = () => {
+        const scrollHeight = document.body.scrollHeight || document.documentElement.scrollHeight;
+        const scrollPercent = (window.scrollY / (scrollHeight - window.innerHeight)) * 100;
+
+        if (scrollPercent > 25 && !scroll25) {
+          scroll25 = true;
+          dataLayer.push({ event: "scroll_25" });
+        }
+        if (scrollPercent > 50 && !scroll50) {
+          scroll50 = true;
+          dataLayer.push({ event: "scroll_50" });
+        }
+        if (scrollPercent > 75 && !scroll75) {
+          scroll75 = true;
+          dataLayer.push({ event: "scroll_75" });
+        }
+        if (scrollPercent > 90 && !scroll90) {
+          scroll90 = true;
+          dataLayer.push({ event: "scroll_90" });
+        }
+      };
+
+      window.addEventListener("scroll", handleScroll, { passive: true });
+
+      // Clear timers and listeners when navigating to another page
       return () => {
         clearTimeout(t30);
         clearTimeout(t60);
         clearTimeout(t120);
+        window.removeEventListener("scroll", handleScroll);
       };
     }
   }, [location]);
