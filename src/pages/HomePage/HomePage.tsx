@@ -31,7 +31,7 @@ export default function HomePage() {
 
   const structuredData = {
     "@context": "https://schema.org",
-    "@type": "ProfessionalService",
+    "@type": "Person",
     "name": "Naitiry Photography",
     "image": "https://naitiry.com/images/tower-bridge.jpg",
     "description": "Portfolio fotografico professionale di Naitiry, fotografa a Foggia. Ritratti, paesaggi, street photography, eventi e progetti creativi.",
