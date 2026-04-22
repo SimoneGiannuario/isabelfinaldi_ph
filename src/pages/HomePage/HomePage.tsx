@@ -36,6 +36,7 @@ export default function HomePage() {
     "image": "https://naitiry.com/images/tower-bridge.jpg",
     "description": "Portfolio fotografico professionale di Naitiry, fotografa a Foggia. Ritratti, paesaggi, street photography, eventi e progetti creativi.",
     "url": "https://naitiry.com",
+    "logo": "https://naitiry.com/images/logo1.webp",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Foggia",
@@ -60,6 +61,7 @@ export default function HomePage() {
       <meta itemProp="image" content="https://naitiry.com/images/tower-bridge.jpg" />
       <meta itemProp="description" content="Portfolio fotografico professionale di Naitiry, fotografa a Foggia. Ritratti, paesaggi, street photography, eventi e progetti creativi." />
       <meta itemProp="priceRange" content="$$" />
+      <meta itemProp="logo" content="https://naitiry.com/images/logo1.webp" />
       <div itemProp="address" itemScope itemType="https://schema.org/PostalAddress">
         <meta itemProp="addressLocality" content="Foggia" />
         <meta itemProp="addressRegion" content="Puglia" />
