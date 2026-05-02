@@ -6,12 +6,11 @@ const preloadedUrls = new Set<string>();
 
 /**
  * useNhostPhotos
- * Fetches photos stored in Nhost (Hasura + Storage) and merges
- * them with the hardcoded static PHOTOS array.
+ * Fetches photos stored in Nhost (Hasura + Storage)
  *
  * Returns:
  *   nhostPhotos  — only the Nhost-uploaded ones
- *   allPhotos    — static PHOTOS + nhostPhotos merged
+ *   allPhotos    — nhostPhotos merged
  *   loading      — true while fetching
  *   error        — fetch error string or null
  *   refresh()    — re-fetch from Nhost
@@ -49,7 +48,7 @@ export function useNhostPhotos() {
 
   useEffect(() => { load(); }, [load]);
 
-  const allPhotos: Photo[] = [/* ...PHOTOS,  */...nhostPhotos];
+  const allPhotos: Photo[] = [...nhostPhotos];
 
   return { nhostPhotos, allPhotos, loading, error, refresh: load };
 }

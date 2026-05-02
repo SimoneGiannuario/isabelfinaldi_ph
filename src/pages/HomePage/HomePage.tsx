@@ -15,6 +15,20 @@ export default function HomePage() {
   const lightbox = useLightbox(featured);
   useScrollReveal();
 
+  const [verticalPhotos, setVerticalPhotos] = useState<Set<string | number>>(new Set());
+
+  const handleImageLoad = (id: string | number, e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const target = e.currentTarget;
+    if (target.naturalHeight > target.naturalWidth) {
+      setVerticalPhotos(prev => {
+        if (prev.has(id)) return prev;
+        const next = new Set(prev);
+        next.add(id);
+        return next;
+      });
+    }
+  };
+
   const [currentAboutImage, setCurrentAboutImage] = useState(0);
   const aboutImages = ['Isabel-web.jpeg', 'Isabel-web1.jpeg', 'Isabel-web2.jpeg'];
 
@@ -121,7 +135,7 @@ export default function HomePage() {
 
               return (<div
                 key={photo.id}
-                className={`photo-card reveal reveal-delay-${(index % 4) + 1}${index === 0 ? " tall" : ""}`}
+                className={`photo-card reveal reveal-delay-${(index % 4) + 1}${verticalPhotos.has(photo.id) ? " vertical" : ""}`}
                 onClick={() => lightbox.open(index, featured)}
                 itemProp="image" itemScope itemType="https://schema.org/ImageObject"
               >
@@ -132,6 +146,7 @@ export default function HomePage() {
                   alt={(photo.title || photo.category).replace(/_/g, ' ')}
                   title={(photo.title || photo.category).replace(/_/g, ' ')}
                   loading="lazy"
+                  onLoad={(e) => handleImageLoad(photo.id, e)}
                   itemProp="contentUrl" />
                 <meta itemProp="name" content={(photo.title || photo.category).replace(/_/g, ' ')} />
                 <meta itemProp="description" content={`${photo.category} — ${photo.shootingName}`} />

@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { PHOTOS } from "../data/photos";
 import type { Photo } from "../types/photo";
 
 /**
@@ -33,7 +32,7 @@ interface LightboxState {
   photos: Photo[];
 }
 
-export function useLightbox(photos: Photo[] = PHOTOS) {
+export function useLightbox(photos: Photo[]) {
   const [state, setState] = useState<LightboxState>({ open: false, index: 0, photos });
 
   const open = useCallback((index: number, filteredPhotos?: Photo[]) => {

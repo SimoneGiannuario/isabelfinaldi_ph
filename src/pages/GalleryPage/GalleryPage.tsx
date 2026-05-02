@@ -25,6 +25,20 @@ export default function GalleryPage() {
   const lightbox = useLightbox(allPhotos);
   const votes = useVotes();
 
+  const [verticalPhotos, setVerticalPhotos] = useState<Set<string | number>>(new Set());
+
+  const handleImageLoad = (id: string | number, e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const target = e.currentTarget;
+    if (target.naturalHeight > target.naturalWidth) {
+      setVerticalPhotos(prev => {
+        if (prev.has(id)) return prev;
+        const next = new Set(prev);
+        next.add(id);
+        return next;
+      });
+    }
+  };
+
   const [filters, setFilters] = useState<Filters>({
     category: "",
     shootingName: "",
@@ -238,7 +252,7 @@ export default function GalleryPage() {
                 return (
                   <div
                     key={photo.id}
-                    className={`gallery-item${voted ? " gallery-item--voted" : ""}`}
+                    className={`gallery-item${voted ? " gallery-item--voted" : ""}${verticalPhotos.has(photo.id) ? " vertical" : ""}`}
                     onClick={() => lightbox.open(index, filtered)}
                     itemProp="image" itemScope itemType="https://schema.org/ImageObject"
                   >
@@ -249,6 +263,7 @@ export default function GalleryPage() {
                       alt={(photo.title || photo.category).replace(/_/g, ' ')}
                       title={(photo.title || photo.category).replace(/_/g, ' ')}
                       loading="lazy"
+                      onLoad={(e) => handleImageLoad(photo.id, e)}
                       itemProp="contentUrl" />
                     <meta itemProp="name" content={(photo.title || photo.category).replace(/_/g, ' ')} />
                     <meta itemProp="description" content={`${photo.category} — ${photo.shootingName}`} />

@@ -1,7 +1,7 @@
 import { useState, useMemo } from "react";
 import { useAdminAuth } from "../../context/AdminAuthContext";
 import { useLang } from "../../context/LanguageContext";
-import { PHOTOS, formatDate } from "../../data/photos";
+import { formatDate } from "../../data/photos";
 import { useNhostPhotos } from "../../hooks/useNhostPhotos";
 import { uploadPhoto, updateNhostPhoto, deleteNhostPhoto } from "../../data/nhostPhotos";
 import type { PhotoUploadMeta } from "../../data/nhostPhotos";
@@ -24,6 +24,20 @@ export default function AdminDashboard() {
   const [selectedPhotoIds, setSelectedPhotoIds] = useState<Set<string>>(new Set());
   const [saving, setSaving] = useState<boolean | string>(false);
   const [saveError, setSaveError] = useState("");
+  const [verticalPhotos, setVerticalPhotos] = useState<Set<string | number>>(new Set());
+  const [filters, setFilters] = useState({ category: "", photomodel: "", search: "" });
+
+  const handleImageLoad = (id: string | number, e: React.SyntheticEvent<HTMLImageElement, Event>) => {
+    const target = e.currentTarget;
+    if (target.naturalHeight > target.naturalWidth) {
+      setVerticalPhotos(prev => {
+        if (prev.has(id)) return prev;
+        const next = new Set(prev);
+        next.add(id);
+        return next;
+      });
+    }
+  };
 
   const handleSave = async (formDataOrArray: PhotoUploadMeta | UploadItem[]) => {
     setSaveError("");
@@ -63,9 +77,9 @@ export default function AdminDashboard() {
     setSaving(true);
     try {
       if (selectedPhotoIds.has(photo.id as string)) {
-         const newSet = new Set(selectedPhotoIds);
-         newSet.delete(photo.id as string);
-         setSelectedPhotoIds(newSet);
+        const newSet = new Set(selectedPhotoIds);
+        newSet.delete(photo.id as string);
+        setSelectedPhotoIds(newSet);
       }
       await deleteNhostPhoto(photo.id as string);
       await refresh();
@@ -103,10 +117,10 @@ export default function AdminDashboard() {
   };
 
   const handleSelectAll = () => {
-    if (selectedPhotoIds.size === nhostPhotos.length) {
+    if (selectedPhotoIds.size === filteredPhotos.length) {
       setSelectedPhotoIds(new Set());
     } else {
-      setSelectedPhotoIds(new Set(nhostPhotos.map(p => p.id as string)));
+      setSelectedPhotoIds(new Set(filteredPhotos.map(p => p.id as string)));
     }
   };
 
@@ -115,15 +129,19 @@ export default function AdminDashboard() {
     setShowUpload(true);
   };
 
-  const totalCount = /* PHOTOS.length +  */nhostPhotos.length;
+  const totalCount = nhostPhotos.length;
 
   // Aggregate all photos to compute autocomplete dropdowns
-  const allPhotos = useMemo(() => [...PHOTOS, ...nhostPhotos], [nhostPhotos]);
+  const allPhotos = useMemo(() => [...nhostPhotos], [nhostPhotos]);
 
 
 
   const existingShootingNames = useMemo(() => {
     return [...new Set(allPhotos.map(p => p.shootingName).filter(Boolean))].sort();
+  }, [allPhotos]);
+
+  const existingCategories = useMemo(() => {
+    return [...new Set(allPhotos.map(p => p.category).filter(Boolean))].sort();
   }, [allPhotos]);
 
   const existingPhotomodels = useMemo(() => {
@@ -133,6 +151,49 @@ export default function AdminDashboard() {
     ).filter(Boolean);
     return [...new Set(splitVals)].sort();
   }, [allPhotos]);
+
+  const filteredPhotos = useMemo(() => {
+    return nhostPhotos.filter(photo => {
+      if (filters.category && photo.category !== filters.category) return false;
+      if (filters.photomodel) {
+        const models = Array.isArray(photo.photomodel) ? photo.photomodel : (photo.photomodel ? String(photo.photomodel).split(',').map(m => m.trim()) : []);
+        if (!models.includes(filters.photomodel)) return false;
+      }
+      if (filters.search) {
+        const haystack = `${photo.category} ${photo.shootingName} ${photo.title || ""} ${photo.photomodel || ""}`.toLowerCase();
+        if (!haystack.includes(filters.search.toLowerCase())) return false;
+      }
+      return true;
+    });
+  }, [nhostPhotos, filters]);
+
+  const groupedPhotos = useMemo(() => {
+    const groups: Record<string, Photo[]> = {};
+    filteredPhotos.forEach(photo => {
+      const groupName = photo.shootingName || "Altro";
+      if (!groups[groupName]) groups[groupName] = [];
+      groups[groupName].push(photo);
+    });
+
+    // Sort photos within groups by most recent
+    Object.values(groups).forEach(photos => {
+      photos.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    });
+
+    const sortedKeys = Object.keys(groups).sort((a, b) => {
+      if (a === "Altro") return 1;
+      if (b === "Altro") return -1;
+      // Sort groups by the date of their most recent photo
+      const dateA = new Date(groups[a][0].date).getTime();
+      const dateB = new Date(groups[b][0].date).getTime();
+      return dateB - dateA;
+    });
+
+    return sortedKeys.map(key => ({
+      shootingName: key,
+      photos: groups[key]
+    }));
+  }, [filteredPhotos]);
 
   return (
     <div className="admin-layout">
@@ -157,7 +218,7 @@ export default function AdminDashboard() {
           <div>
             <h1 className="admin-title">Gestione Foto</h1>
             <p className="admin-subtitle">
-              {/* {PHOTOS.length} foto integrate ·  */}{nhostPhotos.length} caricate · {totalCount} totali
+              {nhostPhotos.length} caricate
             </p>
           </div>
           <div style={{ display: 'flex', gap: '10px' }}>
@@ -180,45 +241,58 @@ export default function AdminDashboard() {
 
         {saveError && <p className="admin-error" style={{ padding: "0 var(--adm-space)" }}>{saveError}</p>}
 
-        {/* ── Static (integrated) photos ── */}
-        {/* <section className="admin-section" id="photos">
-          <h3 className="admin-section-title">
-            📸 Foto Integrate <span className="badge">{PHOTOS.length}</span>
-          </h3>
-          <div className="admin-grid">
-            {PHOTOS.map((photo) => (
-              <div key={photo.id} className="admin-card admin-card--static">
-                <div className="admin-card-img">
-                  <img src={photo.src} alt={photo.category} />
-                  <span className="admin-card-badge">Integrata</span>
-                </div>
-                <div className="admin-card-info">
-                  <p>{catLabel(photo.category)} · {formatDate(photo.date)}</p>
-                  {photo.featured && <span className="badge badge--gold">⭐ In evidenza</span>}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section> */}
 
         {/* ── Uploaded (Nhost) photos ── */}
         <section className="admin-section">
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
             <h3 className="admin-section-title" style={{ marginBottom: 0 }}>
-              ☁️ Foto Caricate <span className="badge">{nhostPhotos.length}</span>
+              ☁️ Foto Caricate <span className="badge">{filteredPhotos.length}</span>
             </h3>
-            {nhostPhotos.length > 0 && (
+            {filteredPhotos.length > 0 && (
               <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontSize: '0.85rem' }}>
-                <input 
-                  type="checkbox" 
-                  checked={nhostPhotos.length > 0 && selectedPhotoIds.size === nhostPhotos.length}
+                <input
+                  type="checkbox"
+                  checked={filteredPhotos.length > 0 && selectedPhotoIds.size === filteredPhotos.length}
                   onChange={handleSelectAll}
                   style={{ cursor: 'pointer' }}
                 />
-                Seleziona Tutte
+                Seleziona Tutte le Trovate
               </label>
             )}
           </div>
+
+          {nhostPhotos.length > 0 && (
+            <div style={{ marginBottom: '2rem', display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+              <input
+                type="text"
+                placeholder="Cerca foto..."
+                value={filters.search}
+                onChange={e => setFilters(prev => ({ ...prev, search: e.target.value }))}
+                style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--adm-border)', background: 'var(--adm-surface)', color: 'var(--adm-text)', outline: 'none' }}
+              />
+              <select
+                value={filters.category}
+                onChange={e => setFilters(prev => ({ ...prev, category: e.target.value }))}
+                style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--adm-border)', background: 'var(--adm-surface)', color: 'var(--adm-text)', outline: 'none' }}
+              >
+                <option value="">Tutte le categorie</option>
+                {existingCategories.map(c => <option key={c} value={c}>{catLabel(c)}</option>)}
+              </select>
+              <select
+                value={filters.photomodel}
+                onChange={e => setFilters(prev => ({ ...prev, photomodel: e.target.value }))}
+                style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid var(--adm-border)', background: 'var(--adm-surface)', color: 'var(--adm-text)', outline: 'none' }}
+              >
+                <option value="">Tutti i modelli</option>
+                {existingPhotomodels.map(m => <option key={m} value={m}>{m}</option>)}
+              </select>
+              {(filters.search || filters.category || filters.photomodel) && (
+                <button onClick={() => setFilters({ category: "", photomodel: "", search: "" })} className="admin-btn admin-btn--ghost" style={{ fontSize: '0.85rem', padding: '8px 12px' }}>
+                  Resetta Filtri
+                </button>
+              )}
+            </div>
+          )}
 
           {loading ? (
             <p style={{ color: "var(--adm-muted)", padding: "var(--adm-space)" }}>Caricamento…</p>
@@ -234,46 +308,71 @@ export default function AdminDashboard() {
                 + Carica la prima foto
               </button>
             </div>
+          ) : filteredPhotos.length === 0 ? (
+            <div className="admin-empty">
+              <p>Nessuna foto trovata con i filtri attuali.</p>
+              <button
+                className="admin-btn admin-btn--primary"
+                onClick={() => setFilters({ category: "", photomodel: "", search: "" })}
+              >
+                Resetta Filtri
+              </button>
+            </div>
           ) : (
-            <div className="admin-grid">
-              {nhostPhotos.map((photo) => (
-                <div key={photo.id} className={`admin-card ${selectedPhotoIds.has(photo.id as string) ? 'admin-card--selected' : ''}`} onClick={() => toggleSelection(photo.id as string)} style={{ cursor: 'pointer' }}>
-                  <div className="admin-card-img">
-                    <div 
-                      className="admin-card-select" 
-                      onClick={(e) => { e.stopPropagation(); toggleSelection(photo.id as string); }}
-                    >
-                      <input 
-                        type="checkbox" 
-                        checked={selectedPhotoIds.has(photo.id as string)} 
-                        onChange={() => {}} 
-                        style={{ cursor: 'pointer' }}
-                      />
-                    </div>
-                    <img src={photo.src} alt={(photo.title || photo.category).replace(/_/g, ' ')} title={(photo.title || photo.category).replace(/_/g, ' ')} />
-                    {photo.featured && <span className="admin-card-badge admin-card-badge--gold">⭐</span>}
-                  </div>
-                  <div className="admin-card-info">
-                    {photo.title && (
-                      <p style={{ fontWeight: 600, fontSize: '13px', marginBottom: '2px' }}>{photo.title}</p>
-                    )}
-                    <p>{catLabel(photo.category)} · {formatDate(photo.date)}</p>
-                    {photo.photomodel && (Array.isArray(photo.photomodel) ? photo.photomodel.length > 0 : true) && (
-                      <p className="admin-card-model">
-                        📷 {Array.isArray(photo.photomodel) ? photo.photomodel.join(', ') : photo.photomodel}
-                      </p>
-                    )}
-                  </div>
-                  <div className="admin-card-actions" onClick={(e) => e.stopPropagation()}>
-                    <button className="admin-btn admin-btn--sm" onClick={() => handleEdit(photo)}>
-                      ✏️ Modifica
-                    </button>
-                    <button
-                      className="admin-btn admin-btn--sm admin-btn--danger"
-                      onClick={() => setDeleteConfirm(photo)}
-                    >
-                      🗑️ Elimina
-                    </button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '3rem' }}>
+              {groupedPhotos.map(group => (
+                <div key={group.shootingName}>
+                  <h4 style={{
+                    marginBottom: '1.25rem',
+                    paddingBottom: '0.5rem',
+                    borderBottom: '1px solid var(--adm-border)',
+                    fontSize: '1.1rem',
+                    fontFamily: 'var(--font-heading)'
+                  }}>
+                    📸 {group.shootingName} <span className="badge" style={{ marginLeft: '8px' }}>{group.photos.length}</span>
+                  </h4>
+                  <div className="admin-grid">
+                    {group.photos.map((photo) => (
+                      <div key={photo.id} className={`admin-card ${selectedPhotoIds.has(photo.id as string) ? 'admin-card--selected' : ''}${verticalPhotos.has(photo.id as string) ? ' vertical' : ''}`} onClick={() => toggleSelection(photo.id as string)} style={{ cursor: 'pointer' }}>
+                        <div className="admin-card-img">
+                          <div
+                            className="admin-card-select"
+                            onClick={(e) => { e.stopPropagation(); toggleSelection(photo.id as string); }}
+                          >
+                            <input
+                              type="checkbox"
+                              checked={selectedPhotoIds.has(photo.id as string)}
+                              onChange={() => { }}
+                              style={{ cursor: 'pointer' }}
+                            />
+                          </div>
+                          <img src={photo.src} alt={(photo.title || photo.category).replace(/_/g, ' ')} title={(photo.title || photo.category).replace(/_/g, ' ')} onLoad={(e) => handleImageLoad(photo.id as string, e)} />
+                          {photo.featured && <span className="admin-card-badge admin-card-badge--gold">⭐</span>}
+                        </div>
+                        <div className="admin-card-info">
+                          {photo.title && (
+                            <p style={{ fontWeight: 600, fontSize: '13px', marginBottom: '2px' }}>{photo.title}</p>
+                          )}
+                          <p>{catLabel(photo.category)} · {formatDate(photo.date)}</p>
+                          {photo.photomodel && (Array.isArray(photo.photomodel) ? photo.photomodel.length > 0 : true) && (
+                            <p className="admin-card-model">
+                              📷 {Array.isArray(photo.photomodel) ? photo.photomodel.join(', ') : photo.photomodel}
+                            </p>
+                          )}
+                        </div>
+                        <div className="admin-card-actions" onClick={(e) => e.stopPropagation()}>
+                          <button className="admin-btn admin-btn--sm" onClick={() => handleEdit(photo)}>
+                            ✏️ Modifica
+                          </button>
+                          <button
+                            className="admin-btn admin-btn--sm admin-btn--danger"
+                            onClick={() => setDeleteConfirm(photo)}
+                          >
+                            🗑️ Elimina
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
               ))}

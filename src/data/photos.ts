@@ -3,129 +3,6 @@ import type { Photo } from "../types/photo";
 
 export const CATEGORIES: string[] = ["Ritratto", "Paesaggio", "Street", "Eventi", "Creativo"];
 
-export const PHOTOS: Photo[] = [
-  {
-    id: 1,
-    src: "images/portrait_golden_hour.webp",
-    category: "Ritratto",
-    shootingName: "Golden Hour Session",
-    photomodel: "Giulia Marchetti",
-    date: "2025-09-14",
-    featured: true,
-    votes: 128,
-  },
-  {
-    id: 2,
-    src: "images/portrait_studio_bw.webp",
-    category: "Ritratto",
-    shootingName: "Studio Noir",
-    photomodel: "Marco Bellini",
-    date: "2025-11-02",
-    featured: true,
-    votes: 97,
-  },
-  {
-    id: 3,
-    src: "images/landscape_sunset.webp",
-    category: "Paesaggio",
-    shootingName: "Tuscan Hills",
-    photomodel: null,
-    date: "2025-06-20",
-    featured: true,
-    votes: 145,
-  },
-  {
-    id: 4,
-    src: "images/street_night.webp",
-    category: "Street",
-    shootingName: "Urban Vibes",
-    photomodel: null,
-    date: "2025-08-05",
-    featured: true,
-    votes: 112,
-  },
-  {
-    id: 5,
-    src: "images/event_wedding.webp",
-    category: "Eventi",
-    shootingName: "Villa Rossi Wedding",
-    photomodel: null,
-    date: "2025-07-12",
-    featured: true,
-    votes: 156,
-  },
-  {
-    id: 6,
-    src: "images/portrait_golden_hour.webp",
-    category: "Creativo",
-    shootingName: "Golden Hour Session",
-    photomodel: "Giulia Marchetti",
-    date: "2025-09-14",
-    featured: false,
-    votes: 64,
-  },
-  {
-    id: 7,
-    src: "images/portrait_studio_bw.webp",
-    category: "Ritratto",
-    shootingName: "Studio Noir",
-    photomodel: "Marco Bellini",
-    date: "2025-11-02",
-    featured: false,
-    votes: 81,
-  },
-  {
-    id: 8,
-    src: "images/landscape_sunset.webp",
-    category: "Paesaggio",
-    shootingName: "Tuscan Hills",
-    photomodel: null,
-    date: "2025-06-20",
-    featured: false,
-    votes: 73,
-  },
-  {
-    id: 9,
-    src: "images/street_night.webp",
-    category: "Street",
-    shootingName: "Notte Romana",
-    photomodel: null,
-    date: "2026-01-10",
-    featured: false,
-    votes: 55,
-  },
-  {
-    id: 10,
-    src: "images/event_wedding.webp",
-    category: "Eventi",
-    shootingName: "Villa Rossi Wedding",
-    photomodel: null,
-    date: "2025-07-12",
-    featured: false,
-    votes: 89,
-  },
-  {
-    id: 11,
-    src: "images/portrait_golden_hour.webp",
-    category: "Creativo",
-    shootingName: "Summer Breeze",
-    photomodel: "Sofia Ricci",
-    date: "2026-02-05",
-    featured: true,
-    votes: 134,
-  },
-  {
-    id: 12,
-    src: "images/portrait_studio_bw.webp",
-    category: "Ritratto",
-    shootingName: "Minimal Portraits",
-    photomodel: "Elena Conti",
-    date: "2025-12-18",
-    featured: false,
-    votes: 42,
-  },
-];
-
 export function getFeaturedPhotos(): Photo[] {
   return getAllPhotos().filter((p) => p.featured).sort((a, b) => b.votes - a.votes);
 }
@@ -179,11 +56,7 @@ function withBase(photo: Photo): Photo {
 }
 
 export function getAllPhotos(): Photo[] {
-  const overrides = getStaticOverrides();
-  const staticWithOverrides = PHOTOS.map((p) =>
-    overrides[p.id] ? { ...p, ...overrides[p.id] } : p
-  );
-  return [...staticWithOverrides, ...getCustomPhotos()].map(withBase);
+  return [...getCustomPhotos()].map(withBase);
 }
 
 export function saveCustomPhoto(photo: Omit<Photo, "id" | "custom">): Photo {
