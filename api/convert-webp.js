@@ -35,7 +35,7 @@ export default async function handler(req, res) {
       pipeline = pipeline.resize({ width });
     }
 
-    pipeline = pipeline.webp({ quality: 80 });
+    pipeline = pipeline.webp({ quality: 85 });
 
     // Headers di caching
     res.setHeader("Content-Type", "image/webp");

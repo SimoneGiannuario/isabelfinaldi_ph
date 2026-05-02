@@ -16,7 +16,7 @@ for (const file of files) {
     const output = path.join(dir, file.replace('.webp', `-${size}w.webp`));
     await sharp(input)
       .resize(size)
-      .webp({ quality: 80 })
+      .webp({ quality: 85 })
       .toFile(output);
     console.log(`Generated ${output}`);
   }

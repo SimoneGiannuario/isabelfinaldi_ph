@@ -13,7 +13,7 @@ for (const file of files) {
   const stats = fs.statSync(input);
 
   await sharp(input)
-    .webp({ quality: 80 })
+    .webp({ quality: 85 })
     .toFile(output);
 
   const newStats = fs.statSync(output);
