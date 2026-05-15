@@ -1,19 +1,6 @@
 {
   "routes": [
     {
-      "src": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.naitiry.com"
-        }
-      ],
-      "headers": {
-        "Location": "https://naitiry.com/$1"
-      },
-      "status": 301
-    },
-    {
       "src": "/account/lost-password/?",
       "status": 410
     },
