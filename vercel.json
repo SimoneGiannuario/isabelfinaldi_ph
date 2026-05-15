@@ -1,11 +1,18 @@
 {
-  "rewrites": [
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
-    }
-  ],
   "routes": [
+    {
+      "src": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.naitiry.com"
+        }
+      ],
+      "headers": {
+        "Location": "https://naitiry.com/$1"
+      },
+      "status": 301
+    },
     {
       "src": "/account/lost-password/?",
       "status": 410
@@ -57,19 +64,10 @@
     {
       "src": "/terms-conditions/?",
       "status": 410
-    }
-  ],
-  "redirects": [
+    },
     {
-      "source": "/(.*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "www.naitiry.com"
-        }
-      ],
-      "destination": "https://naitiry.com/$1",
-      "permanent": true
+      "src": "/(.*)",
+      "dest": "/index.html"
     }
   ]
 }
