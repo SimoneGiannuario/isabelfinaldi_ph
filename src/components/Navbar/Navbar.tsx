@@ -18,6 +18,8 @@ export default function Navbar() {
 
   const closeMenu = () => {
     setMenuOpen(false);
+    document.body.classList.remove("menu-open");
+    document.documentElement.style.overflow = "";
     document.body.style.overflow = "";
     // Return focus to hamburger when closing
     hamburgerRef.current?.focus();
@@ -26,7 +28,15 @@ export default function Navbar() {
   const toggleMenu = () => {
     const next = !menuOpen;
     setMenuOpen(next);
-    document.body.style.overflow = next ? "hidden" : "";
+    if (next) {
+      document.body.classList.add("menu-open");
+      document.documentElement.style.overflow = "hidden";
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.classList.remove("menu-open");
+      document.documentElement.style.overflow = "";
+      document.body.style.overflow = "";
+    }
     // When opening, focus the first link inside the menu
     if (next) {
       setTimeout(() => {
@@ -41,6 +51,13 @@ export default function Navbar() {
     if (!menuOpen) return;
     const menu = menuRef.current;
     if (!menu) return;
+
+    const preventScroll = (e: Event) => {
+      if (e.target instanceof Element && menu.contains(e.target)) {
+        e.preventDefault();
+      }
+    };
+    document.addEventListener("touchmove", preventScroll, { passive: false });
 
     const focusable = menu.querySelectorAll<HTMLElement>(
       'a, button, [tabindex]:not([tabindex="-1"])'
