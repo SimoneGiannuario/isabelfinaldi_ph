@@ -60,6 +60,44 @@ export const translations: Translations = {
       location: "Foggia, Italia",
     },
 
+    feedback: {
+      subtitle: "Le parole dei miei clienti",
+      title1: "Feedback",
+      title2: "e recensioni",
+      items: [
+        {
+          quote: "Foto bellissime, qualità e soprattutto spontaneità, soddisfatta assolutamente di tutte le foto fotografate durante la festa.",
+          name: "Noemi R. ",
+          role: "Eventi",
+        },
+        {
+          quote: "Meravigliose non potevo chiedere di meglio! Le foto sono una più bella dell'altra e l'invito che hai creato è un vero gioiello. Grazie per la tua bravura e per la velocità, sei riuscita a rendere tutto perfetto. Sei una garanzia!",
+          name: "Stella T.",
+          role: "Eventi",
+        },
+        {
+          quote: "Non potevo scegliere di meglio. Servizio soddisfacente in ogni modo. Pronta ad immortalare ogni istante di una giornata speciale. Grazie.",
+          name: "Angela C.",
+          role: "Eventi",
+        },
+        {
+          quote: "L'esperienza dello shooting di oggi è stata incredibile dall'inizio alla fine. Sei riuscita a farmi sentire completamente a mio agio e a catturare emozioni vere e spontanee. Le foto trasmettono esattamente quello che volevo: libertà, luce ed emozione pura. Super professionale, creativa e attenta a ogni dettaglio. Ti ringrazio di cuore per la tua bravura e pazienza.",
+          name: "Miriana",
+          role: "Eventi",
+        },
+        {
+          quote: "Mi sono commossa. Sei bravissima",
+          name: "Francesca C.",
+          role: "Eventi",
+        },
+        {
+          quote: "La recensione che farò è a dir poco eccellente... disponibilità,, educazione, professionalità, empatia, simpatia... ma soprattutto ti viene incontro alle esigenze... ringrazio il \"cielo\" di averla incontrata e conosciuta...",
+          name: "Maria Rosaria, Andrea e Fabio",
+          role: "Eventi",
+        },
+      ],
+    },
+
     // Footer
     footer: {
       rights: "© 2026 Naitiry. Tutti i diritti riservati.",
@@ -152,6 +190,44 @@ export const translations: Translations = {
       messagePlaceholder: "Tell me about your project...",
       sendButton: "Send Message",
       location: "Foggia, Italy",
+    },
+
+    feedback: {
+      subtitle: "What clients say",
+      title1: "Feedback",
+      title2: "and reviews",
+      items: [
+        {
+          quote: "Foto bellissime, qualità e soprattutto spontaneità, soddisfatta assolutamente di tutte le foto fotografate durante la festa.",
+          name: "Noemi R. ",
+          role: "Eventi",
+        },
+        {
+          quote: "Meravigliose non potevo chiedere di meglio! Le foto sono una più bella dell'altra e l'invito che hai creato è un vero gioiello. Grazie per la tua bravura e per la velocità, sei riuscita a rendere tutto perfetto. Sei una garanzia!",
+          name: "Stella T.",
+          role: "Eventi",
+        },
+        {
+          quote: "Non potevo scegliere di meglio. Servizio soddisfacente in ogni modo. Pronta ad immortalare ogni istante di una giornata speciale. Grazie.",
+          name: "Angela C.",
+          role: "Eventi",
+        },
+        {
+          quote: "L'esperienza dello shooting di oggi è stata incredibile dall'inizio alla fine. Sei riuscita a farmi sentire completamente a mio agio e a catturare emozioni vere e spontanee. Le foto trasmettono esattamente quello che volevo: libertà, luce ed emozione pura. Super professionale, creativa e attenta a ogni dettaglio. Ti ringrazio di cuore per la tua bravura e pazienza.",
+          name: "Miriana",
+          role: "Eventi",
+        },
+        {
+          quote: "Mi sono commossa. Sei bravissima",
+          name: "Francesca C.",
+          role: "Eventi",
+        },
+        {
+          quote: "La recensione che farò è a dir poco eccellente... disponibilità,, educazione, professionalità, empatia, simpatia... ma soprattutto ti viene incontro alle esigenze... ringrazio il \"cielo\" di averla incontrata e conosciuta...",
+          name: "Maria Rosaria, Andrea e Fabio",
+          role: "Eventi",
+        },
+      ],
     },
 
     footer: {

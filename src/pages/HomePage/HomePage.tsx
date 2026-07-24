@@ -31,6 +31,7 @@ export default function HomePage() {
 
   const [currentAboutImage, setCurrentAboutImage] = useState(0);
   const aboutImages = ['Isabel-web.jpeg', 'Isabel-web1.jpeg', 'Isabel-web2.jpeg'];
+  const [currentFeedbackIndex, setCurrentFeedbackIndex] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -40,8 +41,19 @@ export default function HomePage() {
   }, [aboutImages.length]);
 
   useEffect(() => {
+    const interval = window.setInterval(() => {
+      setCurrentFeedbackIndex((prev) => (prev + 1) % t.feedback.items.length);
+    }, 5500);
+    return () => window.clearInterval(interval);
+  }, [t.feedback.items.length]);
+
+  useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
+  const handleFeedbackNavigate = (direction: number) => {
+    setCurrentFeedbackIndex((prev) => (prev + direction + t.feedback.items.length) % t.feedback.items.length);
+  };
 
   const structuredData = {
     "@context": "https://schema.org",
@@ -254,6 +266,69 @@ export default function HomePage() {
                 </a>
               </div>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="section feedback-section" id="feedback">
+        <div className="container">
+          <div className="feedback-header reveal">
+            <p className="section-subtitle">{t.feedback.subtitle}</p>
+            <h2 className="section-title">
+              {t.feedback.title1} <em>{t.feedback.title2}</em>
+            </h2>
+            <div className="section-divider reveal" />
+          </div>
+
+          <div className="feedback-carousel reveal">
+            <button
+              type="button"
+              className="feedback-nav"
+              onClick={() => handleFeedbackNavigate(-1)}
+              aria-label="Previous feedback"
+            >
+              ←
+            </button>
+
+            <div className="feedback-viewport" aria-live="polite">
+              <div
+                className="feedback-slider"
+                style={{ transform: `translateX(-${currentFeedbackIndex * 100}%)` }}
+              >
+                {t.feedback.items.map((item, index) => (
+                  <div className="feedback-slide" key={`${item.name}-${index}`}>
+                    <div className="feedback-card">
+                      <p className="feedback-quote">“{item.quote}”</p>
+                      <div className="feedback-author">
+                        <h3>{item.name}</h3>
+                        <span>{item.role}</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <button
+              type="button"
+              className="feedback-nav"
+              onClick={() => handleFeedbackNavigate(1)}
+              aria-label="Next feedback"
+            >
+              →
+            </button>
+          </div>
+
+          <div className="feedback-dots reveal">
+            {t.feedback.items.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                className={`feedback-dot ${index === currentFeedbackIndex ? "active" : ""}`}
+                onClick={() => setCurrentFeedbackIndex(index)}
+                aria-label={`Go to feedback ${index + 1}`}
+              />
+            ))}
           </div>
         </div>
       </section>

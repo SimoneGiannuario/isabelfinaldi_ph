@@ -47,6 +47,19 @@ export interface ContactTranslations {
   location: string;
 }
 
+export interface FeedbackItemTranslations {
+  quote: string;
+  name: string;
+  role: string;
+}
+
+export interface FeedbackTranslations {
+  subtitle: string;
+  title1: string;
+  title2: string;
+  items: FeedbackItemTranslations[];
+}
+
 export interface FooterTranslations {
   rights: string;
 }
@@ -88,6 +101,7 @@ export interface TranslationSet {
   featured: FeaturedTranslations;
   about: AboutTranslations;
   contact: ContactTranslations;
+  feedback: FeedbackTranslations;
   footer: FooterTranslations;
   gallery: GalleryTranslations;
 }

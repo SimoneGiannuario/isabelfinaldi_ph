@@ -8,6 +8,20 @@ import "./PricelistPage.css";
 const pricingData = {
   it: [
     {
+      title: "Foto parenti personalizzate",
+      price: "Da 10€",
+      image: "images/foto-parenti.jpeg",
+      description: "Crea un ricordo unico e speciale con le foto dei tuoi parenti, realizzate con cura e attenzione ai dettagli. Perfette per celebrare momenti importanti e condividere emozioni autentiche. Ogni scatto è pensato per catturare l'essenza dei tuoi cari, trasformando i ricordi in immagini preziose da custodire nel tempo.",
+      features: [
+        "Foto parenti personalizzate",
+        "Design curato e raffinato",
+        "Perfetti per eventi speciali",
+        "Pratici, raffinati e pronti da condividere",
+        "Consegna rapida"
+      ],
+      popular: false,
+    },
+    {
       title: "Inviti personalizzati",
       price: "Da 10€",
       image: "images/inviti.jpeg",
@@ -68,6 +82,20 @@ const pricingData = {
     }
   ],
   en: [
+    {
+      title: "Personalized Family Photos",
+      price: "From €10",
+      image: "images/foto-parenti.jpeg",
+      description: "Create a unique and special keepsake with photos of your relatives, crafted with care and attention to detail. Perfect for celebrating important moments and sharing authentic emotions. Each shot is designed to capture the essence of your loved ones, transforming memories into precious images to cherish for a lifetime.",
+      features: [
+        "Personalized Family Photos",
+        "Elegant and refined design",
+        "Perfect for special events",
+        "Practical, refined, and ready to share",
+        "Fast delivery"
+      ],
+      popular: false,
+    },
     {
       title: "Custom Invitations",
       price: "From 10€",
