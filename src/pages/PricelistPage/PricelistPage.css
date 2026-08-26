@@ -17,6 +17,28 @@
   line-height: 1.6;
 }
 
+.pricelist-2027-packages {
+  background-color: var(--color-bg);
+  padding: 0 var(--space-md) var(--space-xl);
+  text-align: center;
+}
+
+.pricelist-2027-title {
+  font-family: var(--font-heading);
+  font-size: var(--text-xl);
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 auto var(--space-lg);
+}
+
+.pricelist-2027-packages img {
+  width: min(100%, 1200px);
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  border-radius: var(--radius-md);
+}
+
 /* PRICING CARDS SECTION */
 .pricelist-cards-section {
   background-color: var(--color-bg);

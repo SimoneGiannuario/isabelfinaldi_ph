@@ -63,6 +63,10 @@
 
   --max-width: 1400px;
   --nav-height: 80px;
+
+  --text-l: 1.25rem;
+  --text-xl: 1.5rem;
+  --text-xxl: 1.75rem;
 }
 
 /* ---------- Reset ---------- */

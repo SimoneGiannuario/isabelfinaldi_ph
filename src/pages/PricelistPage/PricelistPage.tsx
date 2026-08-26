@@ -200,6 +200,18 @@ export default function PricelistPage() {
         </div>
       </section>
 
+      {/* 2027 PACKAGES */}
+      <section className="pricelist-2027-packages" aria-label="Pacchetti 2027">
+        <h2 className="pricelist-2027-title">Nuovi prezzi in vigore da gennaio 2027</h2>
+        <img
+          src={getOptimizedUrl(`${import.meta.env.BASE_URL}images/pacchetti-2027.jpeg`, 1600)}
+          srcSet={getSrcSet(`${import.meta.env.BASE_URL}images/pacchetti-2027.jpeg`)}
+          sizes="(max-width: 768px) calc(100vw - 2rem), 1200px"
+          alt="Pacchetti 2027"
+          loading="lazy"
+        />
+      </section>
+
       {/* PRICING GRID */}
       <section className="section pricelist-cards-section" itemScope itemType="https://schema.org/OfferCatalog">
         <meta itemProp="name" content={lang === 'it' ? 'Servizi fotografici' : 'Photography services'} />
