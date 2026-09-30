@@ -23,6 +23,14 @@ export interface FeaturedTranslations {
   viewAll: string;
 }
 
+export interface EventsTranslations {
+  subtitle: string;
+  title1: string;
+  title2: string;
+  paragraph: string;
+  imageAlt: string;
+}
+
 export interface AboutTranslations {
   subtitle: string;
   title1: string;
@@ -99,6 +107,7 @@ export interface TranslationSet {
   nav: NavTranslations;
   hero: HeroTranslations;
   featured: FeaturedTranslations;
+  events: EventsTranslations;
   about: AboutTranslations;
   contact: ContactTranslations;
   feedback: FeedbackTranslations;

@@ -34,6 +34,14 @@ export const translations: Translations = {
       viewAll: "Vedi Galleria Completa →",
     },
 
+    events: {
+      subtitle: "Storie da ricordare - Christmas Edition",
+      title1: "🎄✨ La magia del Natale ",
+      title2: "arriva in sala posa! ✨🎄",
+      paragraph: "Dal 2 al 16 novembre ti aspetto per una speciale sessione fotografica natalizia dedicata a famiglie, bambini e a tutti quei momenti da custodire nel cuore. 🤎<br>Un'atmosfera calda e accogliente, per creare insieme ricordi da conservare e regalare. 📸✨ <br><br>📅 Prenotazioni entro il 31 ottobre <br>💌 Per maggiori informazioni, scrivimi in privato. I posti sono limitati… non lasciarti sfuggire la tua sessione di Natale! 🎁🎄",
+      imageAlt: "La magia del Natale con Naitiry",
+    },
+
     // About section
     about: {
       subtitle: "Chi Sono",
@@ -166,6 +174,14 @@ export const translations: Translations = {
       title1: "Featured",
       title2: "Work",
       viewAll: "View Full Gallery →",
+    },
+
+    events: {
+      subtitle: "Memories to treasure - Christmas Edition",
+      title1: "🎄✨ The magic of Christmas",
+      title2: "comes to the studio! ✨🎄",
+      paragraph: "From November 2 to 16, join me for a special Christmas photo session for families, children, and all the moments you want to hold close. 🤎 A warm, welcoming atmosphere where we can create memories to keep and share. 📸✨ 📅 Book by October 31 💌 Message me for more information. Spaces are limited… don't miss your Christmas session! 🎁🎄",
+      imageAlt: "The magic of Christmas with Naitiry",
     },
 
     about: {

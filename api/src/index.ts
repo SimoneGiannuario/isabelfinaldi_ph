@@ -12,6 +12,29 @@ type Bindings = {
 
 const app = new Hono<{ Bindings: Bindings }>()
 
+interface EventSectionRow {
+  id: string
+  image_key: string
+  expires_at: string
+  title1_it: string
+  title2_it: string
+  description_it: string
+  title1_en: string
+  title2_en: string
+  description_en: string
+}
+
+function serializeEventSection(origin: string, row: EventSectionRow) {
+  return {
+    imageUrl: `${origin}/images/${row.image_key.split('/').map(encodeURIComponent).join('/')}`,
+    expiresAt: row.expires_at.length === 10 ? `${row.expires_at}T23:59:59.999Z` : row.expires_at,
+    translations: {
+      it: { title1: row.title1_it, title2: row.title2_it, description: row.description_it },
+      en: { title1: row.title1_en, title2: row.title2_en, description: row.description_en },
+    },
+  }
+}
+
 // Handle CORS
 app.use('/*', cors({
   origin: ['http://localhost:5173', 'https://isabelfinaldi-ph.vercel.app', 'https://naitiry.vercel.app', 'https://naitiry.com', 'https://www.naitiry.com'], // Replace with frontend URL
@@ -110,9 +133,9 @@ app.get('/photos', async (c) => {
 })
 
 // For serving the actual image if you don't use a custom domain for the R2 bucket directly
-app.get('/images/:id', async (c) => {
-  const id = c.req.param('id')
-  const object = await c.env.STORAGE.get(id)
+app.get('/images/*', async (c) => {
+  const imageKey = c.req.path.slice('/images/'.length).split('/').map(decodeURIComponent).join('/')
+  const object = await c.env.STORAGE.get(imageKey)
 
   if (object === null) {
     return new Response('Object Not Found', { status: 404 })
@@ -129,6 +152,133 @@ app.get('/images/:id', async (c) => {
   headers.set('Cache-Control', 'public, max-age=31536000')
 
   return new Response(object.body, { headers })
+})
+
+// Public: return the homepage event only while its expiry date is current.
+app.get('/events', async (c) => {
+  try {
+    const row = await c.env.portfolio_db.prepare(`
+      SELECT * FROM event_sections
+      WHERE id = 'homepage'
+        AND julianday(CASE
+          WHEN length(expires_at) = 10 THEN expires_at || 'T23:59:59.999Z'
+          ELSE expires_at
+        END) > julianday('now')
+    `).first<EventSectionRow>()
+
+    return c.json({ data: { event: row ? serializeEventSection(new URL(c.req.url).origin, row) : null } })
+  } catch (e: any) {
+    return c.json({ error: e.message }, 500)
+  }
+})
+
+// Admin: return the saved event, including expired entries for editing.
+app.get('/admin/events', async (c) => {
+  try {
+    const row = await c.env.portfolio_db.prepare(
+      "SELECT * FROM event_sections WHERE id = 'homepage'"
+    ).first<EventSectionRow>()
+
+    return c.json({ data: { event: row ? serializeEventSection(new URL(c.req.url).origin, row) : null } })
+  } catch (e: any) {
+    return c.json({ error: e.message }, 500)
+  }
+})
+
+// Admin: create or update the homepage event and optionally replace its image.
+app.put('/admin/events', async (c) => {
+  let uploadedKey: string | null = null
+
+  try {
+    const formData = await c.req.formData()
+    const file = formData.get('file') as unknown as File | null
+    const expiresAt = String(formData.get('expiresAt') || '')
+    const expiration = new Date(expiresAt)
+    if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/.test(expiresAt) || Number.isNaN(expiration.getTime()) || expiration.toISOString() !== expiresAt) {
+      return c.json({ error: 'Inserisci una data e un’ora di scadenza valide.' }, 400)
+    }
+
+    const translations = {
+      it: {
+        title1: String(formData.get('title1_it') || '').trim(),
+        title2: String(formData.get('title2_it') || '').trim(),
+        description: String(formData.get('description_it') || ''),
+      },
+      en: {
+        title1: String(formData.get('title1_en') || '').trim(),
+        title2: String(formData.get('title2_en') || '').trim(),
+        description: String(formData.get('description_en') || ''),
+      },
+    }
+
+    if (Object.values(translations).some((text) => !text.title1 || !text.title2 || !text.description.trim())) {
+      return c.json({ error: 'Compila titolo e descrizione in italiano e inglese.' }, 400)
+    }
+
+    const current = await c.env.portfolio_db.prepare(
+      "SELECT image_key FROM event_sections WHERE id = 'homepage'"
+    ).first<{ image_key: string }>()
+
+    let imageKey = current?.image_key || ''
+    if (file instanceof File && file.size > 0) {
+      const extensions: Record<string, string> = {
+        'image/jpeg': 'jpg',
+        'image/png': 'png',
+        'image/webp': 'webp',
+        'image/avif': 'avif',
+      }
+      const extension = extensions[file.type]
+      if (!extension) return c.json({ error: 'Formato immagine non supportato. Usa JPEG, PNG, WebP o AVIF.' }, 415)
+      if (file.size > 10 * 1024 * 1024) return c.json({ error: 'L’immagine deve essere inferiore a 10 MB.' }, 413)
+
+      imageKey = `events/${crypto.randomUUID()}.${extension}`
+      uploadedKey = imageKey
+      await c.env.STORAGE.put(imageKey, file.stream(), {
+        httpMetadata: { contentType: file.type, cacheControl: 'public, max-age=31536000, immutable' },
+      })
+    }
+
+    if (!imageKey) return c.json({ error: 'Carica un’immagine per creare la sezione evento.' }, 400)
+
+    await c.env.portfolio_db.prepare(`
+      INSERT INTO event_sections (
+        id, image_key, expires_at,
+        title1_it, title2_it, description_it,
+        title1_en, title2_en, description_en, updated_at
+      ) VALUES ('homepage', ?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+      ON CONFLICT(id) DO UPDATE SET
+        image_key = excluded.image_key,
+        expires_at = excluded.expires_at,
+        title1_it = excluded.title1_it,
+        title2_it = excluded.title2_it,
+        description_it = excluded.description_it,
+        title1_en = excluded.title1_en,
+        title2_en = excluded.title2_en,
+        description_en = excluded.description_en,
+        updated_at = CURRENT_TIMESTAMP
+    `).bind(
+      imageKey,
+      expiresAt,
+      translations.it.title1,
+      translations.it.title2,
+      translations.it.description,
+      translations.en.title1,
+      translations.en.title2,
+      translations.en.description,
+    ).run()
+
+    if (current?.image_key && current.image_key !== imageKey) {
+      await c.env.STORAGE.delete(current.image_key).catch(() => undefined)
+    }
+
+    const row = await c.env.portfolio_db.prepare(
+      "SELECT * FROM event_sections WHERE id = 'homepage'"
+    ).first<EventSectionRow>()
+    return c.json({ data: { event: row ? serializeEventSection(new URL(c.req.url).origin, row) : null } })
+  } catch (e: any) {
+    if (uploadedKey) await c.env.STORAGE.delete(uploadedKey).catch(() => undefined)
+    return c.json({ error: e.message }, 500)
+  }
 })
 
 // POST /upload (Admin only)

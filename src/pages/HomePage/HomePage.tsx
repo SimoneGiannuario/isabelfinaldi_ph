@@ -3,17 +3,28 @@ import { Link } from "react-router-dom";
 import { useNhostPhotos } from "../../hooks/useNhostPhotos";
 import { useScrollReveal, useLightbox } from "../../hooks/usePortfolio";
 import { useLang } from "../../context/LanguageContext";
+import { fetchHomepageEvent, type HomepageEvent } from "../../data/nhostPhotos";
 import { getSrcSet, getOptimizedUrl } from "../../data/photos";
+import DOMPurify from "dompurify";
 import Lightbox from "../../components/Lightbox/Lightbox";
 import SEO from "../../components/SEO/SEO";
 import "./HomePage.css";
 
 export default function HomePage() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const { allPhotos } = useNhostPhotos();
   const featured = useMemo(() => allPhotos.filter((p) => p.featured).sort((a, b) => b.votes - a.votes), [allPhotos]);
+  const [homepageEvent, setHomepageEvent] = useState<HomepageEvent | null>(null);
   const lightbox = useLightbox(featured);
   useScrollReveal();
+
+  useEffect(() => {
+    let active = true;
+    fetchHomepageEvent()
+      .then((event) => { if (active) setHomepageEvent(event); })
+      .catch((error: unknown) => console.error("Homepage event:", error));
+    return () => { active = false; };
+  }, []);
 
   const [verticalPhotos, setVerticalPhotos] = useState<Set<string | number>>(new Set());
 
@@ -130,6 +141,38 @@ export default function HomePage() {
           <div className="scroll-line" />
         </div>
       </section>
+
+      {/* EVENTS */}
+      {homepageEvent && (
+        <section className="section event-section" id="events">
+          <div className="container">
+            <div className="event-grid">
+              <div className="event-image reveal">
+                <img
+                  src={getOptimizedUrl(homepageEvent.imageUrl, 1000)}
+                  srcSet={getSrcSet(homepageEvent.imageUrl)}
+                  sizes="(max-width: 768px) min(calc(100vw - 48px), 560px), 42vw"
+                  alt={t.events.imageAlt}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </div>
+              <div className="event-text">
+                <p className="section-subtitle reveal">{t.events.subtitle}</p>
+                <h2 className="section-title reveal">
+                  {homepageEvent.translations[lang].title1}<br />
+                  <em>{homepageEvent.translations[lang].title2}</em>
+                </h2>
+                <div className="section-divider reveal" />
+                <div
+                  className="event-description reveal"
+                  dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(homepageEvent.translations[lang].description) }}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* FEATURED PHOTOS */}
       <section className="section" id="featured" itemScope itemType="https://schema.org/ImageGallery">

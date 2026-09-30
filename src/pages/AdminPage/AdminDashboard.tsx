@@ -7,6 +7,7 @@ import { uploadPhoto, updateNhostPhoto, deleteNhostPhoto } from "../../data/nhos
 import type { PhotoUploadMeta } from "../../data/nhostPhotos";
 import type { Photo } from "../../types/photo";
 import PhotoUploadForm from "./PhotoUploadForm";
+import EventSectionEditor from "./EventSectionEditor";
 
 interface UploadItem extends PhotoUploadMeta {
   file: File;
@@ -18,6 +19,7 @@ export default function AdminDashboard() {
   const catLabel = (c: string) => t.gallery.categories[c] || c;
   const { nhostPhotos, loading, error: fetchError, refresh } = useNhostPhotos();
   const [showUpload, setShowUpload] = useState(false);
+  const [showEventEditor, setShowEventEditor] = useState(false);
   const [editingPhoto, setEditingPhoto] = useState<Photo | null>(null);
   const [deleteConfirm, setDeleteConfirm] = useState<Photo | null>(null);
   const [deleteBulkConfirm, setDeleteBulkConfirm] = useState(false);
@@ -221,7 +223,10 @@ export default function AdminDashboard() {
               {nhostPhotos.length} caricate
             </p>
           </div>
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+            <button className="admin-btn" onClick={() => setShowEventEditor(true)}>
+              🎄 Gestisci evento
+            </button>
             {selectedPhotoIds.size > 0 && (
               <button
                 className="admin-btn admin-btn--danger"
@@ -394,6 +399,8 @@ export default function AdminDashboard() {
           existingPhotomodels={existingPhotomodels}
         />
       )}
+
+      {showEventEditor && <EventSectionEditor onClose={() => setShowEventEditor(false)} />}
 
       {/* Bulk Delete confirmation */}
       {deleteBulkConfirm && (
