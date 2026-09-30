@@ -160,7 +160,7 @@ export default function HomePage() {
               <div className="event-text">
                 <p className="section-subtitle reveal">{t.events.subtitle}</p>
                 <h2 className="section-title reveal">
-                  {homepageEvent.translations[lang].title1}<br />
+                  {homepageEvent.translations[lang].title1}
                   <em>{homepageEvent.translations[lang].title2}</em>
                 </h2>
                 <div className="section-divider reveal" />
