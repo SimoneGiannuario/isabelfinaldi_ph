@@ -161,7 +161,7 @@ export default function HomePage() {
                 <p className="section-subtitle reveal">{t.events.subtitle}</p>
                 <h2 className="section-title reveal">
                   {homepageEvent.translations[lang].title1}
-                  <em>{homepageEvent.translations[lang].title2}</em>
+                  <em>{homepageEvent.translations[lang].title2.startsWith(" ") ? homepageEvent.translations[lang].title2 : ' ' + homepageEvent.translations[lang].title2}</em>
                 </h2>
                 <div className="section-divider reveal" />
                 <div
